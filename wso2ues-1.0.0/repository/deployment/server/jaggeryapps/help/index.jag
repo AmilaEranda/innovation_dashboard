@@ -1,0 +1,271 @@
+<%
+var user = require('/modules/user.js').current();
+%>
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<title>Help | Sri Lanka Innovation Dashboard</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta name="description" content="">
+		<meta name="author" content="">
+
+		<!-- Le styles -->
+		<!-- END imports needed for gadget rendering -->
+		<link href="css/bootstrap.min.css" rel="stylesheet">
+		<link href="css/bootstrap-responsive.min.css" rel="stylesheet">
+		<link href="css/font-awesome.min.css" rel="stylesheet">
+		<link href="css/font-awesome-ie7.min.css" rel="stylesheet">
+
+		<link rel="stylesheet" type="text/css" href="css/navigation.css"/>
+		<link rel="stylesheet" type="text/css" href="css/jquery.gridster.min.css"/>
+		<link rel="stylesheet" type="text/css" href="css/portal-dashboard-designer.css"/>
+		<link rel="stylesheet" type="text/css" href="css/styles.css">
+		<!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+		<!--[if lt IE 9]>
+		<script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+		<script src="js/respond.min.js"></script>
+		<![endif]-->
+
+		<!-- Fav and touch icons -->
+		<link rel="shortcut icon" href="/portal/themes/portal/favicon.ico">
+		<link rel="apple-touch-icon-precomposed" sizes="144x144"
+			  href="img/apple-touch-icon-144-precomposed.png">
+		<link rel="apple-touch-icon-precomposed" sizes="114x114"
+			  href="img/apple-touch-icon-114-precomposed.png">
+		<link rel="apple-touch-icon-precomposed" sizes="72x72"
+			  href="img/apple-touch-icon-72-precomposed.png">
+		<link rel="apple-touch-icon-precomposed" href="img/apple-touch-icon-57-precomposed.png">
+		
+		<script src="js/jquery-1.8.3.min.js"></script>
+		<script src="js/bootstrap.min.js"></script>
+		<script src="js/navigation.js"></script>
+		<script src="js/jquery-ui-1.10.1.custom.min.js"></script>
+		
+		<style type="text/css" >
+			body {
+				padding-top: 60px;
+			}
+			
+			@media all and (max-width: 1200px) and (min-width: 0px) {
+				body {
+					padding-top: 0px !important;
+				}
+			}
+			
+			.help-item {
+				border-bottom: 1px solid #ddd;
+				padding-bottom: 20px;
+			}
+			
+			.footer-copyright {
+				border-top: 1px solid #ddd;
+				padding-top: 40px;
+				padding-bottom: 20px;
+				text-align: center;
+			}
+		</style>
+		<link href="css2/list-styles.css" rel="stylesheet">
+	</head>
+	<body>
+		<div class="navbar navbar-inverse navbar-fixed-top">
+			<div class="navbar-inner">
+				<div class="container-fluid">
+					<a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse"> <span class="icon-bar"></span> <span class="icon-bar"></span> <span class="icon-bar"></span> </a>
+					<a class="brand" href="#"></a>
+					<div class="nav-collapse collapse">
+						<ul class="nav pull-right">
+							<li class="nav-separator">
+		                        <a href="/user/"><i class="icon-user"></i> MyProfile</a>
+		                    </li>   
+							<li class="nav-separator">
+		                        <a href="/userdashboard/"><i class="icon-user"></i><i class="icon-dashboard"></i> MyDashboard</a>
+		                    </li>
+							<li>
+								<a href="/dashboard/"><i class="icon-dashboard"></i>&nbsp; CommonDashboard</a>
+							</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="container">
+			<div class="row">
+				<div class="span12">
+					<h1>Help</h1>
+				</div>
+			</div>
+			<div class="row">
+				<div class="span3">
+					<h3 class="panel-title">Contents</h3>
+					<div class="list-group">
+						<a href="#hwto-signin" class="list-group-item">How to Sign in</a>
+						<a href="#hwto-psnlz" class="list-group-item">How to Personalize your dashboard</a>
+						<a href="#hwto-add-blck" class="list-group-item">How to add new block to dashboard</a>
+						<a href="#hwto-add-new-gdgt" class="list-group-item">How to add new Gadget</a>
+						<a href="#hwto-cstmz-gdgt" class="list-group-item">How to customize a Gadget</a>
+						<a href="#hwto-rmv-gdgt" class="list-group-item">How to remove a Gadget</a>
+						<a href="#hwto-mxmz-gdgt" class="list-group-item">How to maximize a Gadget</a>
+						<a href="#hwto-sv-prefs" class="list-group-item">How to save preferences of a Gadget</a>
+					</div>
+				</div>
+				<div class="span9">
+					<div class="row">
+						<div class="span9 help-item">
+							<div class="panel panel-default">
+								<a id="hwto-signin"></a><br><br>
+								<div class="panel-heading">
+									<h3 class="panel-title">How to Sign in</h3>
+								</div>
+								<div class="panel-body">
+									<p>After you register with us, you can sign in with your email address associated with your account, and your password.</p>
+									<img src="images/sign-in.png" />
+									<h4>To sign in:</h4>
+									<ol>
+										<li>Click on Sign in link at top right corner of your page.</li>
+										<li>Enter your email address, and password.</li>
+										<li>Click Sign in.</li>
+									</ol>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="row">
+						<div class="span9 help-item">
+							<div class="panel panel-default">
+								<div class="panel-heading">
+									<a id="hwto-psnlz"></a><br><br>
+									<h3 class="panel-title">How to Personalize your dashboard</h3>
+								</div>
+								<div class="panel-body">
+									<p>In the dashboard view, there is an icon of magic stick in the top right corner. Move your cursor on top of it.</p>
+									<img src="images/personalize1.png" />
+									<p>When mouse cursor is top of the magic stick it will convert to personalize button. Then you can click it.</p>
+									<img src="images/personalize2.png" />
+									<p>After you click personalize button it a new edit bar will appear at the top of the page.</p>
+									<img src="images/personalize3.png" />
+									<p>In the personalize mode, you can do various thins including add gadgets, remove gadgets, change gadgets' positions etc.</p>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="row">
+						<div class="span9 help-item">
+							<div class="panel panel-default">
+								<div class="panel-heading">
+									<a id="hwto-add-blck"></a><br><br>
+									<h3 class="panel-title">How to add new block to dashboard</h3>
+								</div>
+								<div class="panel-body">
+									<p>In the personalize mode, click on Add Block button.</p>
+									<img src="images/personalize4.png" />
+									<p>Then the "Define gadget size in grid" window will appear.</p>
+									<img src="images/add-gadget1.png" />
+									<ol>
+										<li>Change the new block's size by dragging resize handle of the block.</li>
+										<li>Then click "Add Empty Block" button to add the block to dashboard.</li>
+										<li>Click anywhere outside the window to cancel the operation and close window.</li>
+									</ol>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="row">
+						<div class="span9 help-item">
+							<div class="panel panel-default">
+								<div class="panel-heading">
+									<a id="hwto-add-new-gdgt"></a><br><br>
+									<h3 class="panel-title">How to add new Gadget</h3>
+								</div>
+								<div class="panel-body">
+									<p>In the personalize mode, click on Add Gadget button in the block.</p>
+									<img src="images/add-gadget2.png" />
+									<p>Then Add Gadget from Store window will appear. Select any gadget and press add gadget button.</p>
+									<img src="images/add-gadget3.png" style="width: 50%;" />
+									<p>To see gadgets according to categories, click relevant tag in the left pane.</p>
+									<p>You can see the bookmarked gadgets in the bookmarks tab.</p>
+									<p>After adding gadgets make sure to press save button in the dashboard.</p>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="row">
+						<div class="span9 help-item">
+							<div class="panel panel-default">
+								<div class="panel-heading">
+									<a id="hwto-cstmz-gdgt"></a><br><br>
+									<h3 class="panel-title">How to customize a Gadget</h3>
+								</div>
+								<div class="panel-body">
+									<p>In the personalize mode, mouse over any gadget block. It will display edit pane at the top right corner of the gadget block.</p>
+									<img src="images/edit-gadget1.png" />
+									<p>You can remove, maximize and save preferences for gadget.</p>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="row">
+						<div class="span9 help-item">
+							<div class="panel panel-default">
+								<div class="panel-heading">
+									<a id="hwto-rmv-gdgt"></a><br><br>
+									<h3 class="panel-title">How to remove a Gadget</h3>
+								</div>
+								<div class="panel-body">
+									<p>In the personalize mode, mouse over any gadget block. It will display edit pane at the top right corner of the gadget block.</p>
+									<p>Click on close button at edit pane.</p>
+									<img src="images/edit-gadget2.png" />
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="row">
+						<div class="span9 help-item">
+							<div class="panel panel-default">
+								<div class="panel-heading">
+									<a id="hwto-mxmz-gdgt"></a><br><br>
+									<h3 class="panel-title">How to maximize a Gadget</h3>
+								</div>
+								<div class="panel-body">
+									<p>In the personalize mode, mouse over any gadget block. It will display edit pane at the top right corner of the gadget block.</p>
+									<p>Click on expand button at edit pane.</p>
+									<img src="images/edit-gadget3.png" />
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="row">
+						<div class="span9">
+							<div class="panel panel-default">
+								<div class="panel-heading">
+									<a id="hwto-sv-prefs"></a><br><br>
+									<h3 class="panel-title">How to save preferences of a Gadget</h3>
+								</div>
+								<div class="panel-body">
+									<p>In the personalize mode, mouse over any gadget block. It will display edit pane at the top right corner of the gadget block.</p>
+									<img src="images/edit-gadget4.png" />
+									<p>Click on cog button at edit pane.</p>
+									<img src="images/edit-gadget5.png" />
+									<p>Preference window will appear and you can edit settings for each gadget.</p>
+									<p>Press save button or cancel to cancel operation</p>
+								</div>
+							</div>
+						</div>
+					</div>
+					
+				</div>
+			</div>
+		</div>
+		<div class="container">
+			<div class="row">
+				<div class="span12">
+					<div class="footer-copyright">
+						<span> &copy; <a href="http://www.opensource.lk" target="_blank">Lanka Software Foundation</a> All Rights Reserved. </span>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+	</body>
+</html>
+
