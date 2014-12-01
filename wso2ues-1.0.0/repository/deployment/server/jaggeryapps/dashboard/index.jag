@@ -153,7 +153,7 @@ if (!user) {
 				<div class="span5">
 					
 				</div>
-				<div class="span7">
+				<!--<div class="span7">
 					<div class="nav-collapse collapse">
 						<ul class="nav pull-right">
 
@@ -163,7 +163,7 @@ if (!user) {
 							</li>
 						</ul>
 					</div>
-				</div>
+				</div>-->
 			</div>
 
 			<!--/.nav-collapse -->
