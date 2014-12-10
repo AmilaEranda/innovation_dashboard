@@ -1,0 +1,4 @@
+<%
+//var db = new Database("jdbc:mysql://dashboard.costi.gov.lk:3306/innovation_db", "root", "omnibis");
+var db = new Database("jdbc:mysql://localhost:3306/innovation_db_costi9", "root", "123");
+%>

@@ -1,0 +1,75 @@
+<%
+var type = request.getParameter("type");
+var id = request.getParameter("id");
+var aoiId = request.getParameter("aoiId");
+var saoiId = request.getParameter("saoiId");
+var ssaoiId = request.getParameter("ssaoiId");
+
+include_once("../../../db/db.jag");
+
+function getDBData() {
+	var dbdt = [];
+	var strQuery = "";
+	if ("undefined" === typeof type || type === null || type === "" || type === "org") { // select all organizations
+		if (aoiId === null || aoiId === "" || aoiId === "0" || "undefined" === typeof aoiId || parseInt(aoiId) === 0) { // no interest selected
+			strQuery = "SELECT po.organization_id AS `org_id`, o.name AS `org_name`, COUNT(DISTINCT p.person_id) AS `per_count` FROM person p LEFT JOIN person_organization po ON p.person_id = po.person_id LEFT JOIN organization o ON o.organization_id = po.organization_id WHERE po.his_default = 1 AND p.record_status = 1 GROUP BY po.organization_id ORDER BY COUNT(DISTINCT p.person_id) DESC";
+		} else if (aoiId !== "0" && saoiId === "0" && ssaoiId === "0") {
+			strQuery = "SELECT po.organization_id AS `org_id`, o.name AS `org_name`, COUNT(DISTINCT p.person_id) AS `per_count` FROM person p LEFT JOIN person_organization po ON p.person_id = po.person_id LEFT JOIN organization o ON o.organization_id = po.organization_id LEFT JOIN person_area_of_interest paoi ON paoi.person_person_id = p.person_id WHERE po.his_default = 1 AND p.record_status = 1 AND paoi.area_of_interest_id = " + parseInt(aoiId) + " GROUP BY po.organization_id ORDER BY COUNT(DISTINCT p.person_id) DESC";
+		} else if(saoiId !== "0" && ssaoiId === "0") {
+			strQuery = "SELECT po.organization_id AS `org_id`, o.name AS `org_name`, COUNT(DISTINCT p.person_id) AS `per_count` FROM person p LEFT JOIN person_organization po ON p.person_id = po.person_id LEFT JOIN organization o ON o.organization_id = po.organization_id LEFT JOIN person_area_of_interest paoi ON paoi.person_person_id = p.person_id WHERE po.his_default = 1 AND p.record_status = 1 AND paoi.sub_area_of_interest_id = " + parseInt(saoiId) + " GROUP BY po.organization_id ORDER BY COUNT(DISTINCT p.person_id) DESC";
+		} else if(ssaoiId !== "0") {
+			strQuery = "SELECT po.organization_id AS `org_id`, o.name AS `org_name`, COUNT(DISTINCT p.person_id) AS `per_count` FROM person p LEFT JOIN person_organization po ON p.person_id = po.person_id LEFT JOIN organization o ON o.organization_id = po.organization_id LEFT JOIN person_area_of_interest paoi ON paoi.person_person_id = p.person_id WHERE po.his_default = 1 AND p.record_status = 1 AND paoi.sub_sub_area_of_interest_id = " + parseInt(ssaoiId) + " GROUP BY po.organization_id ORDER BY COUNT(DISTINCT p.person_id) DESC";
+		}
+		var result = db.query(strQuery);
+		for(var i = 0; i < result.length; i++){
+			dbdt.push({"name": result[i].org_name.trim().replace(/\t+/g, " "), "value": result[i].per_count, "id": result[i].org_id, "type": "org"});
+		}
+	} else if (type === "fac") { // one organization selected
+		if (aoiId === null || aoiId === "" || aoiId === "0" || "undefined" === typeof aoiId || parseInt(aoiId) === 0){ // no interest selected
+			strQuery = "SELECT fa.faculty_id AS `fac_id`, fa.description AS `fac_name`, COUNT(DISTINCT pe.person_id) AS `per_count` FROM faculty AS fa LEFT JOIN department AS de ON de.faculty_id = fa.faculty_id LEFT JOIN person AS pe ON pe.department_id = de.department_id LEFT JOIN person_organization AS po ON po.person_id = pe.person_id WHERE po.organization_id = " + parseInt(id) + " AND po.his_default = 1 AND pe.record_status = 1 GROUP BY fa.faculty_id ORDER BY COUNT(DISTINCT pe.person_id) DESC";
+		} else if (aoiId !== "0" && saoiId === "0" && ssaoiId === "0") {
+			strQuery = "SELECT fa.faculty_id AS `fac_id`, fa.description AS `fac_name`, COUNT(DISTINCT pe.person_id) AS `per_count` FROM faculty AS fa LEFT JOIN department AS de ON de.faculty_id = fa.faculty_id LEFT JOIN person AS pe ON pe.department_id = de.department_id LEFT JOIN person_organization AS po ON po.person_id = pe.person_id LEFT JOIN person_area_of_interest paoi ON paoi.person_person_id = po.person_id WHERE po.organization_id = " + parseInt(id) + " AND paoi.area_of_interest_id = " + parseInt(aoiId) + " AND po.his_default = 1 AND pe.record_status = 1 GROUP BY fa.faculty_id ORDER BY COUNT(DISTINCT pe.person_id) DESC";
+		} else if(saoiId !== "0" && ssaoiId === "0") {
+			strQuery = "SELECT fa.faculty_id AS `fac_id`, fa.description AS `fac_name`, COUNT(DISTINCT pe.person_id) AS `per_count` FROM faculty AS fa LEFT JOIN department AS de ON de.faculty_id = fa.faculty_id LEFT JOIN person AS pe ON pe.department_id = de.department_id LEFT JOIN person_organization AS po ON po.person_id = pe.person_id LEFT JOIN person_area_of_interest paoi ON paoi.person_person_id = po.person_id WHERE po.organization_id = " + parseInt(id) + " AND paoi.sub_area_of_interest_id = " + parseInt(saoiId) + " AND po.his_default = 1 AND pe.record_status = 1 GROUP BY fa.faculty_id ORDER BY COUNT(DISTINCT pe.person_id) DESC";
+		} else if(ssaoiId !== "0") {
+			strQuery = "SELECT fa.faculty_id AS `fac_id`, fa.description AS `fac_name`, COUNT(DISTINCT pe.person_id) AS `per_count` FROM faculty AS fa LEFT JOIN department AS de ON de.faculty_id = fa.faculty_id LEFT JOIN person AS pe ON pe.department_id = de.department_id LEFT JOIN person_organization AS po ON po.person_id = pe.person_id LEFT JOIN person_area_of_interest paoi ON paoi.person_person_id = po.person_id WHERE po.organization_id = " + parseInt(id) + " AND paoi.sub_sub_area_of_interest_id = " + parseInt(ssaoiId) + " AND po.his_default = 1 AND pe.record_status = 1 GROUP BY fa.faculty_id ORDER BY COUNT(DISTINCT pe.person_id) DESC";
+		}
+		var result = db.query(strQuery);
+		for(var i = 0; i < result.length; i++){
+			dbdt.push({"name": result[i].fac_name.trim().replace(/\t+/g, " "), "value": result[i].per_count, "id": result[i].fac_id, "type": "fac"});
+		}
+		if (result.length < 1) {
+			if (aoiId === null || aoiId === "" || aoiId === "0" || "undefined" === typeof aoiId || parseInt(aoiId) === 0){ // no interest selected
+				strQuery = "SELECT di.division_id AS `fac_id`, di.discription AS `fac_name`, COUNT(DISTINCT pe.person_id) AS `per_count` FROM division AS di LEFT JOIN person AS pe ON pe.division_id = di.division_id LEFT JOIN person_organization AS po ON po.person_id = pe.person_id WHERE po.organization_id = " + parseInt(id) + " AND po.his_default = 1 AND pe.record_status = 1 GROUP BY di.division_id ORDER BY COUNT(DISTINCT pe.person_id) DESC";
+			} else if (aoiId !== "0" && saoiId === "0" && ssaoiId === "0") {
+				strQuery = "SELECT di.division_id AS `fac_id`, di.discription AS `fac_name`, COUNT(DISTINCT pe.person_id) AS `per_count` FROM division AS di LEFT JOIN person AS pe ON pe.division_id = di.division_id LEFT JOIN person_organization AS po ON po.person_id = pe.person_id LEFT JOIN person_area_of_interest paoi ON paoi.person_person_id = po.person_id WHERE po.organization_id = " + parseInt(id) + " AND paoi.area_of_interest_id = " + parseInt(aoiId) + " AND po.his_default = 1 AND pe.record_status = 1 GROUP BY di.division_id ORDER BY COUNT(DISTINCT pe.person_id) DESC";
+			} else if(saoiId !== "0" && ssaoiId === "0") {
+				strQuery = "SELECT di.division_id AS `fac_id`, di.discription AS `fac_name`, COUNT(DISTINCT pe.person_id) AS `per_count` FROM division AS di LEFT JOIN person AS pe ON pe.division_id = di.division_id LEFT JOIN person_organization AS po ON po.person_id = pe.person_id LEFT JOIN person_area_of_interest paoi ON paoi.person_person_id = po.person_id WHERE po.organization_id = " + parseInt(id) + " AND paoi.sub_area_of_interest_id = " + parseInt(saoiId) + " AND po.his_default = 1 AND pe.record_status = 1 GROUP BY di.division_id ORDER BY COUNT(DISTINCT pe.person_id) DESC";
+			} else if(ssaoiId !== "0") {
+				strQuery = "SELECT di.division_id AS `fac_id`, di.discription AS `fac_name`, COUNT(DISTINCT pe.person_id) AS `per_count` FROM division AS di LEFT JOIN person AS pe ON pe.division_id = di.division_id LEFT JOIN person_organization AS po ON po.person_id = pe.person_id LEFT JOIN person_area_of_interest paoi ON paoi.person_person_id = po.person_id WHERE po.organization_id = " + parseInt(id) + " AND paoi.sub_sub_area_of_interest_id = " + parseInt(ssaoiId) + " AND po.his_default = 1 AND pe.record_status = 1 GROUP BY di.division_id ORDER BY COUNT(DISTINCT pe.person_id) DESC";
+			}
+			result = db.query(strQuery);
+			for(var i = 0; i < result.length; i++){
+				dbdt.push({"name": result[i].fac_name.trim().replace(/\t+/g, " "), "value": result[i].per_count, "id": result[i].fac_id, "type": "div"});
+			}
+		}
+	} else if (type === "dep"){ // one faculty selected
+		if (aoiId === null || aoiId === "" || aoiId === "0" || "undefined" === typeof aoiId || parseInt(aoiId) === 0){ // no interest selected
+			strQuery = "SELECT de.department_id AS `dep_id`, de.description AS `dep_name`, COUNT(DISTINCT pe.person_id) AS `per_count` FROM faculty AS fa LEFT JOIN department AS de ON de.faculty_id = fa.faculty_id LEFT JOIN person AS pe ON pe.department_id = de.department_id LEFT JOIN person_organization AS po ON po.person_id = pe.person_id WHERE fa.faculty_id = " + parseInt(id) + " AND po.his_default = 1 AND pe.record_status = 1 GROUP BY de.department_id ORDER BY COUNT(DISTINCT pe.person_id) DESC";
+		} else if (aoiId !== "0" && saoiId === "0" && ssaoiId === "0") {
+			strQuery = "SELECT de.department_id AS `dep_id`, de.description AS `dep_name`, COUNT(DISTINCT pe.person_id) AS `per_count` FROM faculty AS fa LEFT JOIN department AS de ON de.faculty_id = fa.faculty_id LEFT JOIN person AS pe ON pe.department_id = de.department_id LEFT JOIN person_organization AS po ON po.person_id = pe.person_id LEFT JOIN person_area_of_interest paoi ON paoi.person_person_id = po.person_id WHERE fa.faculty_id = " + parseInt(id) + " AND paoi.area_of_interest_id = " + parseInt(aoiId) + " AND po.his_default = 1 AND pe.record_status = 1 GROUP BY de.department_id ORDER BY COUNT(DISTINCT pe.person_id) DESC";
+		} else if(saoiId !== "0" && ssaoiId === "0") {
+			strQuery = "SELECT de.department_id AS `dep_id`, de.description AS `dep_name`, COUNT(DISTINCT pe.person_id) AS `per_count` FROM faculty AS fa LEFT JOIN department AS de ON de.faculty_id = fa.faculty_id LEFT JOIN person AS pe ON pe.department_id = de.department_id LEFT JOIN person_organization AS po ON po.person_id = pe.person_id LEFT JOIN person_area_of_interest paoi ON paoi.person_person_id = po.person_id WHERE fa.faculty_id = " + parseInt(id) + " AND paoi.sub_area_of_interest_id = " + parseInt(saoiId) + " AND po.his_default = 1 AND pe.record_status = 1 GROUP BY de.department_id ORDER BY COUNT(DISTINCT pe.person_id) DESC";
+		} else if(ssaoiId !== "0") {
+			strQuery = "SELECT de.department_id AS `dep_id`, de.description AS `dep_name`, COUNT(DISTINCT pe.person_id) AS `per_count` FROM faculty AS fa LEFT JOIN department AS de ON de.faculty_id = fa.faculty_id LEFT JOIN person AS pe ON pe.department_id = de.department_id LEFT JOIN person_organization AS po ON po.person_id = pe.person_id LEFT JOIN person_area_of_interest paoi ON paoi.person_person_id = po.person_id WHERE fa.faculty_id = " + parseInt(id) + " AND paoi.sub_sub_area_of_interest_id = " + parseInt(ssaoiId) + " AND po.his_default = 1 AND pe.record_status = 1 GROUP BY de.department_id ORDER BY COUNT(DISTINCT pe.person_id) DESC";
+		}
+		var result = db.query(strQuery);
+		for(var i = 0; i < result.length; i++){
+			dbdt.push({"name": result[i].dep_name.trim().replace(/\t+/g, " "), "value": result[i].per_count, "id": result[i].dep_id, "type": "dep"});
+		}
+	}
+	return {people_count_data: dbdt};
+}
+print(getDBData());
+
+%>

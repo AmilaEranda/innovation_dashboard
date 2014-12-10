@@ -76,13 +76,10 @@ var user = require('/modules/user.js').current();
 					<div class="nav-collapse collapse">
 						<ul class="nav pull-right">
 							<li class="nav-separator">
-		                        <a href="/user/"><i class="icon-user"></i> MyProfile</a>
-		                    </li>   
-							<li class="nav-separator">
-		                        <a href="/userdashboard/"><i class="icon-user"></i><i class="icon-dashboard"></i> MyDashboard</a>
-		                    </li>
+								<a href="/user"><i class="icon-dashboard"></i>&nbsp; My Dashboard</a>
+							</li>
 							<li>
-								<a href="/dashboard/"><i class="icon-dashboard"></i>&nbsp; CommonDashboard</a>
+								<a href="/common"><i class="icon-dashboard"></i>&nbsp; Common Dashboard</a>
 							</li>
 						</ul>
 					</div>
@@ -99,14 +96,14 @@ var user = require('/modules/user.js').current();
 				<div class="span3">
 					<h3 class="panel-title">Contents</h3>
 					<div class="list-group">
-						<a href="#hwto-signin" class="list-group-item">How to Sign in</a>
-						<a href="#hwto-psnlz" class="list-group-item">How to Personalize your dashboard</a>
-						<a href="#hwto-add-blck" class="list-group-item">How to add new block to dashboard</a>
-						<a href="#hwto-add-new-gdgt" class="list-group-item">How to add new Gadget</a>
-						<a href="#hwto-cstmz-gdgt" class="list-group-item">How to customize a Gadget</a>
-						<a href="#hwto-rmv-gdgt" class="list-group-item">How to remove a Gadget</a>
-						<a href="#hwto-mxmz-gdgt" class="list-group-item">How to maximize a Gadget</a>
-						<a href="#hwto-sv-prefs" class="list-group-item">How to save preferences of a Gadget</a>
+						<a href="#hwto-signin" class="list-group-item">Sign in</a>
+						<a href="#hwto-psnlz" class="list-group-item">Personalize your dashboard</a>
+						<a href="#hwto-add-blck" class="list-group-item">Add new block to dashboard</a>
+						<a href="#hwto-add-new-gdgt" class="list-group-item">Add a new Gadget</a>
+						<a href="#hwto-cstmz-gdgt" class="list-group-item">Customize a Gadget</a>
+						<a href="#hwto-rmv-gdgt" class="list-group-item">Remove a Gadget</a>
+						<a href="#hwto-mxmz-gdgt" class="list-group-item">Maximize a Gadget</a>
+						<a href="#hwto-sv-prefs" class="list-group-item">Save preferences of a Gadget</a>
 					</div>
 				</div>
 				<div class="span9">
@@ -115,7 +112,7 @@ var user = require('/modules/user.js').current();
 							<div class="panel panel-default">
 								<a id="hwto-signin"></a><br><br>
 								<div class="panel-heading">
-									<h3 class="panel-title">How to Sign in</h3>
+									<h3 class="panel-title">Sign in</h3>
 								</div>
 								<div class="panel-body">
 									<p>After you register with us, you can sign in with your email address associated with your account, and your password.</p>
@@ -135,16 +132,19 @@ var user = require('/modules/user.js').current();
 							<div class="panel panel-default">
 								<div class="panel-heading">
 									<a id="hwto-psnlz"></a><br><br>
-									<h3 class="panel-title">How to Personalize your dashboard</h3>
+									<h3 class="panel-title">Personalize your dashboard</h3>
 								</div>
 								<div class="panel-body">
+									<p>You can create your preferred views of the information by creating your own dashboard. i.e. personalizing. This is done by the use of gadgets.</p>
+									<p>A <b class="text-success">gadget</b> is a small graphical tool with a particular function. For example, a particular view of a selected set of information. What you can do with gadgets is described later.</p>
 									<p>In the dashboard view, there is an icon of magic stick in the top right corner. Move your cursor on top of it.</p>
 									<img src="images/personalize1.png" />
 									<p>When mouse cursor is top of the magic stick it will convert to personalize button. Then you can click it.</p>
 									<img src="images/personalize2.png" />
-									<p>After you click personalize button it a new edit bar will appear at the top of the page.</p>
+									<p>When you click the personalize option, you are in the personalize mode.</p>
+									<p>When entering the personalize mode, a new edit bar will appear at the top of the page.</p>
 									<img src="images/personalize3.png" />
-									<p>In the personalize mode, you can do various thins including add gadgets, remove gadgets, change gadgets' positions etc.</p>
+									<p>In the personalize mode, you can carry out various activities including adding gadgets, removing gadgets, changing gadgets' positions etc.</p>
 								</div>
 							</div>
 						</div>
@@ -154,15 +154,15 @@ var user = require('/modules/user.js').current();
 							<div class="panel panel-default">
 								<div class="panel-heading">
 									<a id="hwto-add-blck"></a><br><br>
-									<h3 class="panel-title">How to add new block to dashboard</h3>
+									<h3 class="panel-title">Add new block to dashboard</h3>
 								</div>
 								<div class="panel-body">
 									<p>In the personalize mode, click on Add Block button.</p>
 									<img src="images/personalize4.png" />
-									<p>Then the "Define gadget size in grid" window will appear.</p>
+									<p>Then the "Define gadget size in grid" window will appear. The window width indicates the screen width. Thus 1 block (1 &#215; 1) indicates 1/6 <sup>th</sup> of the screen width. Based on this you can decide the size of the block you prefer.</p>
 									<img src="images/add-gadget1.png" />
 									<ol>
-										<li>Change the new block's size by dragging resize handle of the block.</li>
+										<li>Change the new block's size by dragging the resize handle of the block.</li>
 										<li>Then click "Add Empty Block" button to add the block to dashboard.</li>
 										<li>Click anywhere outside the window to cancel the operation and close window.</li>
 									</ol>
@@ -175,16 +175,17 @@ var user = require('/modules/user.js').current();
 							<div class="panel panel-default">
 								<div class="panel-heading">
 									<a id="hwto-add-new-gdgt"></a><br><br>
-									<h3 class="panel-title">How to add new Gadget</h3>
+									<h3 class="panel-title">Add a new Gadget</h3>
 								</div>
 								<div class="panel-body">
 									<p>In the personalize mode, click on Add Gadget button in the block.</p>
 									<img src="images/add-gadget2.png" />
-									<p>Then Add Gadget from Store window will appear. Select any gadget and press add gadget button.</p>
+									<p>Then Add Gadget from Store window will appear. Select any gadget you prefer and press add gadget button.</p>
+									<p>Gadgets can be viewed relevant to the 3 main themes people, places or position.</p>
 									<img src="images/add-gadget3.png" style="width: 50%;" />
-									<p>To see gadgets according to categories, click relevant tag in the left pane.</p>
-									<p>You can see the bookmarked gadgets in the bookmarks tab.</p>
-									<p>After adding gadgets make sure to press save button in the dashboard.</p>
+									<p>The gadgets relevant to a particular category, click the relevant tag in the left pane.</p>
+									<p>After adding gadgets make sure the gadgets are saved by pressing the save option on the top right hand menu.</p>
+									<p>Please note that this only saves the location and the size of the gadgets. Once you customize the gadget the preferences selected need to be saved for each gadget.</p>
 								</div>
 							</div>
 						</div>
@@ -194,12 +195,13 @@ var user = require('/modules/user.js').current();
 							<div class="panel panel-default">
 								<div class="panel-heading">
 									<a id="hwto-cstmz-gdgt"></a><br><br>
-									<h3 class="panel-title">How to customize a Gadget</h3>
+									<h3 class="panel-title">Customize a Gadget</h3>
 								</div>
 								<div class="panel-body">
-									<p>In the personalize mode, mouse over any gadget block. It will display edit pane at the top right corner of the gadget block.</p>
+									<p>You can customize a newly added gadget or any previously saved gadget.</p>
+									<p>In the personalize mode, when you mouse over any gadget block, an edit pane will appear at the top right corner of the gadget block.</p>
 									<img src="images/edit-gadget1.png" />
-									<p>You can remove, maximize and save preferences for gadget.</p>
+									<p>You can remove, maximize and save preferences for a gadget.</p>
 								</div>
 							</div>
 						</div>
@@ -209,11 +211,10 @@ var user = require('/modules/user.js').current();
 							<div class="panel panel-default">
 								<div class="panel-heading">
 									<a id="hwto-rmv-gdgt"></a><br><br>
-									<h3 class="panel-title">How to remove a Gadget</h3>
+									<h4 class="panel-title">Remove a Gadget</h4>
 								</div>
 								<div class="panel-body">
-									<p>In the personalize mode, mouse over any gadget block. It will display edit pane at the top right corner of the gadget block.</p>
-									<p>Click on close button at edit pane.</p>
+									<p>On the edit pane click on the close button will remove that gadget from the view.</p>
 									<img src="images/edit-gadget2.png" />
 								</div>
 							</div>
@@ -224,7 +225,7 @@ var user = require('/modules/user.js').current();
 							<div class="panel panel-default">
 								<div class="panel-heading">
 									<a id="hwto-mxmz-gdgt"></a><br><br>
-									<h3 class="panel-title">How to maximize a Gadget</h3>
+									<h4 class="panel-title">Maximize a Gadget</h4>
 								</div>
 								<div class="panel-body">
 									<p>In the personalize mode, mouse over any gadget block. It will display edit pane at the top right corner of the gadget block.</p>
@@ -239,14 +240,14 @@ var user = require('/modules/user.js').current();
 							<div class="panel panel-default">
 								<div class="panel-heading">
 									<a id="hwto-sv-prefs"></a><br><br>
-									<h3 class="panel-title">How to save preferences of a Gadget</h3>
+									<h4 class="panel-title">Save preferences of a Gadget</h4>
 								</div>
 								<div class="panel-body">
 									<p>In the personalize mode, mouse over any gadget block. It will display edit pane at the top right corner of the gadget block.</p>
+									<p>Preference window will appear and you can edit settings for each gadget.</p>
 									<img src="images/edit-gadget4.png" />
 									<p>Click on cog button at edit pane.</p>
 									<img src="images/edit-gadget5.png" />
-									<p>Preference window will appear and you can edit settings for each gadget.</p>
 									<p>Press save button or cancel to cancel operation</p>
 								</div>
 							</div>
@@ -260,7 +261,7 @@ var user = require('/modules/user.js').current();
 			<div class="row">
 				<div class="span12">
 					<div class="footer-copyright">
-						<span> &copy; <a href="http://www.opensource.lk" target="_blank">Lanka Software Foundation</a> All Rights Reserved. </span>
+						<p>&#169; Copyright 2014 <a href="http://www.opensource.lk" target="_blank">Lanka Software Foundation</a></p>
 					</div>
 				</div>
 			</div>

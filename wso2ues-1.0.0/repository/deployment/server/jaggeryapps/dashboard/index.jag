@@ -1,7 +1,7 @@
 <%
 var user = require('/modules/user.js').current();
 if (!user) {
-    //response.sendRedirect('/dashboard/login');
+    response.sendRedirect('/dashboard/login');
 }
 %>
 <!DOCTYPE html>
@@ -61,20 +61,31 @@ if (!user) {
 
 			<div class="nav-collapse collapse">
 				<ul class="nav pull-right">
-                    <li class="nav-separator">
-                        <a href="/help/" target="_blank"><i class="icon-question-sign"></i> Help</a>
-                    </li>                   
-                </ul>
-                <ul class="nav pull-right">
-                    <li class="nav-separator">
-                        <a href="/userdashboard/"><i class="icon-user"></i><i class="icon-dashboard"></i> MyDashboard</a>
-                    </li>                   
-                </ul>
-                <ul class="nav pull-right">
-                    <li class="nav-separator">
-                        <a href="/user/"><i class="icon-user"></i> MyProfile</a>
-                    </li>                   
-                </ul>
+
+					<li class="nav-separator">
+
+						<a href="/store?user=<%=session.get('LOGGED_IN_USER')%>" target="_blank"><i class="icon-shopping-cart"></i> Store</a>
+
+					</li>
+
+					
+					<li>
+
+						<a class="dropdown-toggle" data-toggle="dropdown" href="#"><i class="icon-user"></i> <%= session.get("LOGGED_IN_USER") %> <b class="caret"></b></a>
+						<ul class="dropdown-menu dropdown-account" role="menu" aria-labelledby="dLabel">
+							<li>
+
+								
+								<a href="/dashboard/logout.jag"><i class="icon-signout"></i> Sign out</a>
+								
+
+							</li>
+
+						</ul>
+
+					</li>
+					
+				</ul>
 			</div>
 			<!--/.nav-collapse -->
 		</div>
@@ -153,7 +164,7 @@ if (!user) {
 				<div class="span5">
 					
 				</div>
-				<!--<div class="span7">
+				<div class="span7">
 					<div class="nav-collapse collapse">
 						<ul class="nav pull-right">
 
@@ -163,7 +174,7 @@ if (!user) {
 							</li>
 						</ul>
 					</div>
-				</div>-->
+				</div>
 			</div>
 
 			<!--/.nav-collapse -->
@@ -192,7 +203,7 @@ if (!user) {
             
 			
             <li class="layout_block static" data-sizey="1" data-sizex="2" data-col="1" data-row="1"
-                data-url="" data-wid="15" data-prefs="{}" data-title="">
+                data-url="" data-wid="33" data-prefs="{}" data-title="">
                 <div class="grid_header">
            			<h3></h3>
             		<span class="grid_header_controls">
@@ -216,7 +227,7 @@ if (!user) {
             </li>
             
             <li class="layout_block static" data-sizey="1" data-sizex="2" data-col="3" data-row="1"
-                data-url="" data-wid="16" data-prefs="{}" data-title="">
+                data-url="" data-wid="34" data-prefs="{}" data-title="">
                 <div class="grid_header">
            			<h3></h3>
             		<span class="grid_header_controls">
@@ -240,7 +251,7 @@ if (!user) {
             </li>
             
             <li class="layout_block static" data-sizey="1" data-sizex="1" data-col="5" data-row="1"
-                data-url="" data-wid="17" data-prefs="{}" data-title="">
+                data-url="" data-wid="35" data-prefs="{}" data-title="">
                 <div class="grid_header">
            			<h3></h3>
             		<span class="grid_header_controls">
@@ -264,7 +275,7 @@ if (!user) {
             </li>
             
             <li class="layout_block static" data-sizey="1" data-sizex="1" data-col="6" data-row="1"
-                data-url="" data-wid="18" data-prefs="{}" data-title="">
+                data-url="" data-wid="36" data-prefs="{}" data-title="">
                 <div class="grid_header">
            			<h3></h3>
             		<span class="grid_header_controls">
@@ -287,8 +298,8 @@ if (!user) {
          		
             </li>
             
-            <li class="layout_block " data-sizey="2" data-sizex="2" data-col="1" data-row="2"
-                data-url="http://localhost:9763/portal/gadgets/bubble-chart/bubble-chart.xml" data-wid="19" data-prefs="{}" data-title="Bubble Chart">
+            <li class="layout_block " data-sizey="3" data-sizex="3" data-col="4" data-row="5"
+                data-url="http://localhost:9763/portal/gadgets/publications-people/publications-people.xml" data-wid="37" data-prefs="{}" data-title="Publications - People">
                 <div class="grid_header">
            			<h3></h3>
             		<span class="grid_header_controls">
@@ -310,8 +321,54 @@ if (!user) {
                 
             </li>
             
-            <li class="layout_block " data-sizey="2" data-sizex="2" data-col="3" data-row="2"
-                data-url="http://localhost:9763/portal/gadgets/horizontal-bar-chart/horizontal-bar-chart.xml" data-wid="20" data-prefs="{}" data-title="Horizontal Bar Chart">
+            <li class="layout_block " data-sizey="3" data-sizex="3" data-col="1" data-row="5"
+                data-url="http://localhost:9763/portal/gadgets/organization-map/organization-map.xml" data-wid="38" data-prefs="{}" data-title="Organizations and Institutes">
+                <div class="grid_header">
+           			<h3></h3>
+            		<span class="grid_header_controls">
+                		<a class="show-widget-pref" data-collapse="true"><i class="icon-cog"></i></a>
+                		<a class="expand-widget"><i class="icon-resize-full"></i></a>
+                		<a class="shrink-widget"><i class="icon-resize-small"></i></a>
+                		<a class="close-widget" href="#"><i class="icon-remove"></i></a>
+            		</span>
+        		</div>
+        		<div class="gadget-pref-cont">
+        	
+        		</div>
+                
+
+                <div class="add-gadget-item">
+
+                </div>
+                
+                
+            </li>
+            
+            <li class="layout_block " data-sizey="3" data-sizex="3" data-col="4" data-row="2"
+                data-url="http://localhost:9763/portal/gadgets/global-innovation-index-2013/global-innovation-index-2013.xml" data-wid="39" data-prefs="{}" data-title="Global Innovation Index 2013">
+                <div class="grid_header">
+           			<h3></h3>
+            		<span class="grid_header_controls">
+                		<a class="show-widget-pref" data-collapse="true"><i class="icon-cog"></i></a>
+                		<a class="expand-widget"><i class="icon-resize-full"></i></a>
+                		<a class="shrink-widget"><i class="icon-resize-small"></i></a>
+                		<a class="close-widget" href="#"><i class="icon-remove"></i></a>
+            		</span>
+        		</div>
+        		<div class="gadget-pref-cont">
+        	
+        		</div>
+                
+
+                <div class="add-gadget-item">
+
+                </div>
+                
+                
+            </li>
+            
+            <li class="layout_block " data-sizey="3" data-sizex="3" data-col="1" data-row="2"
+                data-url="http://localhost:9763/portal/gadgets/people-organizations/people-organizations.xml" data-wid="40" data-prefs="{}" data-title="People - Organizations">
                 <div class="grid_header">
            			<h3></h3>
             		<span class="grid_header_controls">

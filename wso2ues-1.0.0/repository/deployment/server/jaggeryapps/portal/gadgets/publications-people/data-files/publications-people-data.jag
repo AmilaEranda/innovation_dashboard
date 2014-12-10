@@ -1,0 +1,56 @@
+<%
+include_once("../../../db/db.jag");
+
+var pid = request.getParameter("pid");
+var aoiId = request.getParameter("aoiId");
+var saoiId = request.getParameter("saoiId");
+var ssaoiId = request.getParameter("ssaoiId");
+
+function getDBData() {
+	var dbdt = [];
+	var strQuery = "";
+	if(pid == null || pid == "" || pid === null){ // select all people
+		if (aoiId == null || aoiId == "" || aoiId == "0" || "undefined" == typeof aoiId){
+			strQuery = "SELECT CONCAT(per.first_name, ' ', per.last_name) AS `person_name`, COUNT(pbl.publication_id) AS `pbl_count`, per.person_id AS `person_id` FROM person per LEFT JOIN person_publication ppbl ON per.person_id = ppbl.person_id LEFT JOIN publication pbl ON pbl.publication_id = ppbl.publication_id WHERE per.record_status = 1 GROUP BY per.person_id ORDER BY COUNT(pbl.publication_id) DESC, per.first_name ASC, per.last_name ASC LIMIT 100";
+		} else if (aoiId !== "0" && saoiId === "0" && ssaoiId === "0"){
+			strQuery = "SELECT CONCAT(per.first_name, ' ', per.last_name) AS `person_name`, COUNT(DISTINCT pbl.publication_id) AS `pbl_count`, per.person_id AS `person_id` FROM person per LEFT JOIN person_publication ppbl ON per.person_id = ppbl.person_id LEFT JOIN publication pbl ON pbl.publication_id = ppbl.publication_id LEFT JOIN publication_area_of_interest paoi ON paoi.publication_publication_id = pbl.publication_id WHERE per.record_status = 1 AND paoi.area_of_interest_id = " + parseInt(aoiId) + " GROUP BY per.person_id ORDER BY COUNT(DISTINCT pbl.publication_id) DESC , per.first_name ASC, per.last_name ASC LIMIT 100";
+		} else if(saoiId !== "0" && ssaoiId === "0"){
+			strQuery = "SELECT CONCAT(per.first_name, ' ', per.last_name) AS `person_name`, COUNT(DISTINCT pbl.publication_id) AS `pbl_count`, per.person_id AS `person_id` FROM person per LEFT JOIN person_publication ppbl ON per.person_id = ppbl.person_id LEFT JOIN publication pbl ON pbl.publication_id = ppbl.publication_id LEFT JOIN publication_area_of_interest paoi ON paoi.publication_publication_id = pbl.publication_id WHERE per.record_status = 1 AND paoi.sub_area_of_interest_id = " + parseInt(saoiId) + " GROUP BY per.person_id ORDER BY COUNT(DISTINCT pbl.publication_id) DESC , per.first_name ASC, per.last_name ASC LIMIT 100";
+		} else if(ssaoiId !== "0"){
+			strQuery = "SELECT CONCAT(per.first_name, ' ', per.last_name) AS `person_name`, COUNT(DISTINCT pbl.publication_id) AS `pbl_count`, per.person_id AS `person_id` FROM person per LEFT JOIN person_publication ppbl ON per.person_id = ppbl.person_id LEFT JOIN publication pbl ON pbl.publication_id = ppbl.publication_id LEFT JOIN publication_area_of_interest paoi ON paoi.publication_publication_id = pbl.publication_id WHERE per.record_status = 1 AND paoi.sub_sub_area_of_interest_id = " + parseInt(ssaoiId) + " GROUP BY per.person_id ORDER BY COUNT(DISTINCT pbl.publication_id) DESC , per.first_name ASC, per.last_name ASC LIMIT 100";
+		}
+		var result = db.query(strQuery);
+		for(var i = 0; i < result.length; i++){
+			dbdt.push({"name": result[i].person_name.trim().replace(/\t+/g, " "), "value": result[i].pbl_count, "id": result[i].person_id, "type": "peo"});
+		}
+	} else {
+		if (aoiId == null || aoiId == "" || aoiId == "0" || "undefined" == typeof aoiId){
+			strQuery = "SELECT pbl.year AS `pbl_year`, COUNT(pbl.publication_id) AS `pbl_count` FROM person per LEFT JOIN person_publication ppbl ON per.person_id = ppbl.person_id LEFT JOIN publication pbl ON pbl.publication_id = ppbl.publication_id WHERE per.record_status = 1 AND per.person_id = " + parseInt(pid) + " AND pbl.year IS NOT NULL GROUP BY pbl.year ORDER BY pbl.year ASC LIMIT 100";
+		} else if (aoiId !== "0" && saoiId === "0" && ssaoiId === "0"){
+			strQuery = "SELECT pbl.year AS `pbl_year`, COUNT(DISTINCT pbl.publication_id) AS `pbl_count` FROM person per LEFT JOIN person_publication ppbl ON per.person_id = ppbl.person_id LEFT JOIN publication pbl ON pbl.publication_id = ppbl.publication_id LEFT JOIN publication_area_of_interest paoi ON paoi.publication_publication_id = pbl.publication_id WHERE per.record_status = 1 AND per.person_id = " + parseInt(pid) + " AND pbl.year IS NOT NULL AND paoi.area_of_interest_id = " + parseInt(aoiId) + " GROUP BY pbl.year ORDER BY pbl.year ASC LIMIT 100";
+		} else if(saoiId !== "0" && ssaoiId === "0"){
+			strQuery = "SELECT pbl.year AS `pbl_year`, COUNT(DISTINCT pbl.publication_id) AS `pbl_count` FROM person per LEFT JOIN person_publication ppbl ON per.person_id = ppbl.person_id LEFT JOIN publication pbl ON pbl.publication_id = ppbl.publication_id LEFT JOIN publication_area_of_interest paoi ON paoi.publication_publication_id = pbl.publication_id WHERE per.record_status = 1 AND per.person_id = " + parseInt(pid) + " AND pbl.year IS NOT NULL AND paoi.sub_area_of_interest_id = " + parseInt(saoiId) + " GROUP BY pbl.year ORDER BY pbl.year ASC LIMIT 100";
+		} else if(ssaoiId !== "0"){
+			strQuery = "SELECT pbl.year AS `pbl_year`, COUNT(DISTINCT pbl.publication_id) AS `pbl_count` FROM person per LEFT JOIN person_publication ppbl ON per.person_id = ppbl.person_id LEFT JOIN publication pbl ON pbl.publication_id = ppbl.publication_id LEFT JOIN publication_area_of_interest paoi ON paoi.publication_publication_id = pbl.publication_id WHERE per.record_status = 1 AND per.person_id = " + parseInt(pid) + " AND pbl.year IS NOT NULL AND paoi.sub_sub_area_of_interest_id = " + parseInt(ssaoiId) + " GROUP BY pbl.year ORDER BY pbl.year ASC LIMIT 100";
+		}
+		var result = db.query(strQuery);
+		for(var i = 0; i < result.length; i++){
+			var strYear = ("" + result[i].pbl_year + "").substring(0, 4);
+			dbdt.push({"name": strYear, "value": result[i].pbl_count, "id": "", "type": "yea"});
+			if(i !== result.length - 1){
+				var currYear = parseInt(("" + result[i].pbl_year + "").substring(0, 4));
+				var nextYear = parseInt(("" + result[i+1].pbl_year + "").substring(0, 4));
+				if(currYear + 1 !== nextYear){
+					for(var j = currYear + 1; j < nextYear; j++){
+						var ye = ("" + j + "").substring(0, 4);
+						dbdt.push({"name": ye, "value": 0, "id": "", "type": "yea"});
+					}
+				}
+			}
+		}
+	}
+	return {publications_count_data: dbdt};
+}
+print(getDBData());
+
+%>

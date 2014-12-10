@@ -525,6 +525,7 @@ $(function() {
 				UESContainer.redrawGadget(id, {
 					prefs : newPref
 				});
+				$('#btn-save').click();
 				hidePref();
 
 			};
@@ -542,7 +543,25 @@ $(function() {
 				var pref = prefInfo[prefName];
 				var prefId = 'gadget-pref-' + id + '-' + prefName;
 				html += '<label  for="' + prefId + '">' + pref.displayName + '</label>';
-				html += '<input name="' + prefName + '" type="text" id="' + prefId + '" value="' + (currentPref[prefName] || pref.defaultValue ) + '">';
+				// --
+				if (pref.dataType.toLowerCase() === "enum"){
+					var prefEnumValues = pref.orderedEnumValues;
+					html += '<select name="' + prefName + '">';
+					for(var i = 0; i < prefEnumValues.length; i++){
+						html += '<option value="' + prefEnumValues[i].value + '"';
+						if((currentPref[prefName] || pref.defaultValue ) === prefEnumValues[i].value){
+							html += ' selected="selected">';
+						} else {
+							html += '>';
+						}
+						html += prefEnumValues[i].value + '</option>';
+					}
+					html += '</select>'
+				} else {
+					html += '<input name="' + prefName + '" type="text" id="' + prefId + '" value="' + (currentPref[prefName] || pref.defaultValue ) + '">';
+				}
+				// --
+				//html += '<input name="' + prefName + '" type="text" id="' + prefId + '" value="' + (currentPref[prefName] || pref.defaultValue ) + '">';
 			}
 			html += '<br><button class="btn btn-cancel-pref">Cancel</button>';
 			html += '<button class="btn btn-primary btn-save-pref">Save</button>';

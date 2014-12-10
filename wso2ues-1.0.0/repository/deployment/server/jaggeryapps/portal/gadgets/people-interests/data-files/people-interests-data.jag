@@ -1,0 +1,29 @@
+<%
+var type = request.getParameter("type");
+var id = request.getParameter("id");
+
+include_once("../../../db/db.jag");
+
+function getDBData() {
+	var dbdt = [];
+	if(type == null || type == "" || type == "aoi"){
+		var result = db.query("SELECT aoi.name AS `aoi_name`, aoi.area_of_interest_id AS `aoi_id`, COUNT(DISTINCT psaoi.person_person_id) AS `people_count` FROM area_of_interest AS aoi LEFT JOIN person_area_of_interest AS psaoi ON aoi.area_of_interest_id = psaoi.area_of_interest_id GROUP BY aoi.area_of_interest_id");
+		for(var i = 0; i < result.length; i++){
+			dbdt.push({"name": result[i].aoi_name.trim(), "value": result[i].people_count, "id": result[i].aoi_id, "type": "aoi"});
+		}
+	} else if (type == "saoi"){
+		var result = db.query("SELECT saoi.name AS `saoi_name`, saoi.sub_area_of_interest_id AS `saoi_id`, COUNT(DISTINCT psaoi.person_person_id) AS `people_count` FROM sub_area_of_interest AS saoi LEFT JOIN person_area_of_interest AS psaoi ON saoi.sub_area_of_interest_id = psaoi.sub_area_of_interest_id WHERE saoi.area_of_interest_id = '" + parseInt(id) + "' GROUP BY saoi.sub_area_of_interest_id");
+		for(var i = 0; i < result.length; i++){
+			dbdt.push({"name": result[i].saoi_name.trim(), "value": result[i].people_count, "id": result[i].saoi_id, "type": "saoi"});
+		}
+	} else if (type == "ssaoi"){
+		var result = db.query("SELECT ssaoi.name AS `ssaoi_name`, ssaoi.sub_sub_area_of_interest_id AS `ssaoi_id`, COUNT(DISTINCT psaoi.person_person_id) AS `people_count` FROM sub_sub_area_of_interest AS ssaoi LEFT JOIN person_area_of_interest AS psaoi ON ssaoi.sub_sub_area_of_interest_id = psaoi.sub_sub_area_of_interest_id WHERE ssaoi.sub_area_of_interest_id = '" + parseInt(id) + "' GROUP BY ssaoi.sub_sub_area_of_interest_id"); 
+		for(var i = 0; i < result.length; i++){
+			dbdt.push({"name": result[i].ssaoi_name.trim(), "value": result[i].people_count, "id": result[i].saoi_id, "type": "ssaoi"});
+		}
+	}
+	return {people_count_data: dbdt};
+}
+print(getDBData());
+
+%>
