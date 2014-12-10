@@ -1,0 +1,14 @@
+<%
+include("db.jag");
+var username=session.get("LOGGED_IN_USER")+"";
+var person_id=db.query("SELECT person_id FROM person WHERE email='"+""+username.replace("_","@")+"'")[0].person_id;
+var person=db.query("SELECT * FROM person WHERE person_id='"+person_id+"'");
+
+function getPeronName(){
+	if(person.length>0){
+		return person[0].first_name;
+	}else{
+		return username;
+	}
+}
+%>
