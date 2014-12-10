@@ -167,28 +167,31 @@ function setGeoLocations(orgData){
 	for(var i = 0; i < orgData.length; i++){
 		var orgName = orgData[i].name;
 		var orgImage = orgData[i].image;
-		console.log("ori|"+orgImage+"|");
 		setLocationTimeout(i, orgName, orgImage)
 	}
 }
 
 function setLocationTimeout(i, orgName, orgImage){
-	console.log("|"+orgImage+"|");
+	var modOrgName = orgName + ", Sri Lanka";
 	setTimeout(function(){
-		geocoder.geocode( { 'address': orgName}, function(results, status) {
+		geocoder.geocode( { 'address': modOrgName}, function(results, status) {
 			if (status == google.maps.GeocoderStatus.OK) {
-				//if(orgImage === null || orgImage === ""){
+				var orgMark = "org.png";
+				if(orgImage === null || orgImage === ""){
 					orgImage = "org.png";
-				//}
+				}
 				var image = {
-					url: '../../innodb-image-test/images/organizations/' + orgImage,
+					url: '../../images/organizations/' + orgMark,
 					scaledSize: new google.maps.Size(24, 24),
 					origin: new google.maps.Point(0, 0),
 					anchor: new google.maps.Point(12, 12)
 				};
 				
-				var contentString = '<div style="width: 200px; height: 100px;">'+
-					'<h4>' + orgName + '</h4>'+
+				var contentString = '<div style="width: 280px; height: 120px;">'+
+					'<table style="width: 100%;"><tr>'+
+					'<td><img style="padding: 5px;" src="../../images/organizations/'+ orgImage +'" /></td>'+
+					'<td><h4>'+ orgName +'</h4></td>'+
+					'</tr></table>'+
 				'</div>';
 				
 				var infowindow = new google.maps.InfoWindow({
