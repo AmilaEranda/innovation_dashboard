@@ -5541,3 +5541,155 @@ TID: [0] [] [2014-12-10 16:20:50,116]  INFO {org.wso2.carbon.core.init.CarbonSer
 TID: [0] [] [2014-12-10 16:20:50,134]  INFO {org.wso2.carbon.tomcat.ext.internal.CarbonTomcatServiceComponent} -  Stopping the carbon web-app registered under : /admin {org.wso2.carbon.tomcat.ext.internal.CarbonTomcatServiceComponent}
 TID: [0] [] [2014-12-10 16:20:52,914]  INFO {org.wso2.carbon.core.init.CarbonServerManager} -  Shutdown complete {org.wso2.carbon.core.init.CarbonServerManager}
 TID: [0] [] [2014-12-10 16:20:52,915]  INFO {org.wso2.carbon.core.init.CarbonServerManager} -  Halting JVM {org.wso2.carbon.core.init.CarbonServerManager}
+TID: [0] [] [2014-12-10 17:41:39,454]  INFO {org.wso2.carbon.core.internal.CarbonCoreActivator} -  Starting WSO2 Carbon... {org.wso2.carbon.core.internal.CarbonCoreActivator}
+TID: [0] [] [2014-12-10 17:41:39,470]  INFO {org.wso2.carbon.core.internal.CarbonCoreActivator} -  Operating System : Windows 8 6.2, amd64 {org.wso2.carbon.core.internal.CarbonCoreActivator}
+TID: [0] [] [2014-12-10 17:41:39,470]  INFO {org.wso2.carbon.core.internal.CarbonCoreActivator} -  Java Home        : C:\Program Files\Java\jdk1.7.0_51\jre {org.wso2.carbon.core.internal.CarbonCoreActivator}
+TID: [0] [] [2014-12-10 17:41:39,470]  INFO {org.wso2.carbon.core.internal.CarbonCoreActivator} -  Java Version     : 1.7.0_51 {org.wso2.carbon.core.internal.CarbonCoreActivator}
+TID: [0] [] [2014-12-10 17:41:39,470]  INFO {org.wso2.carbon.core.internal.CarbonCoreActivator} -  Java VM          : Java HotSpot(TM) 64-Bit Server VM 24.51-b03,Oracle Corporation {org.wso2.carbon.core.internal.CarbonCoreActivator}
+TID: [0] [] [2014-12-10 17:41:39,470]  INFO {org.wso2.carbon.core.internal.CarbonCoreActivator} -  Carbon Home      : D:\MyGitHub\innovationdashboard\innovation_dashboard\wso2ues-1.0.0\bin\.. {org.wso2.carbon.core.internal.CarbonCoreActivator}
+TID: [0] [] [2014-12-10 17:41:39,470]  INFO {org.wso2.carbon.core.internal.CarbonCoreActivator} -  Java Temp Dir    : D:\MyGitHub\innovationdashboard\innovation_dashboard\wso2ues-1.0.0\bin\..\tmp {org.wso2.carbon.core.internal.CarbonCoreActivator}
+TID: [0] [] [2014-12-10 17:41:39,470]  INFO {org.wso2.carbon.core.internal.CarbonCoreActivator} -  User             : User, en-US, Asia/Colombo {org.wso2.carbon.core.internal.CarbonCoreActivator}
+TID: [0] [] [2014-12-10 17:41:39,579]  WARN {org.wso2.carbon.core.bootup.validator.util.ValidationResultPrinter} -  The running OS : Windows 8 is not a tested Operating System for running WSO2 Carbon {org.wso2.carbon.core.bootup.validator.util.ValidationResultPrinter}
+TID: [0] [] [2014-12-10 17:41:42,840]  INFO {org.wso2.carbon.registry.core.jdbc.EmbeddedRegistryService} -  Configured Registry in 51ms {org.wso2.carbon.registry.core.jdbc.EmbeddedRegistryService}
+TID: [0] [] [2014-12-10 17:41:42,934]  INFO {org.wso2.carbon.registry.core.internal.RegistryCoreServiceComponent} -  Registry Mode    : READ-WRITE {org.wso2.carbon.registry.core.internal.RegistryCoreServiceComponent}
+TID: [0] [] [2014-12-10 17:41:53,155]  INFO {org.apache.axis2.deployment.ClusterBuilder} -  Clustering has been disabled {org.apache.axis2.deployment.ClusterBuilder}
+TID: [0] [] [2014-12-10 17:41:53,155]  INFO {org.apache.axis2.deployment.ClusterBuilder} -  Clustering has been disabled {org.apache.axis2.deployment.ClusterBuilder}
+TID: [0] [] [2014-12-10 17:41:53,248] ERROR {org.wso2.carbon.utils.CarbonUtils} -  Error while creating directory at : D:\MyGitHub\innovationdashboard\innovation_dashboard\wso2ues-1.0.0\bin\..\repository\carbonapps\0 {org.wso2.carbon.utils.CarbonUtils}
+TID: [0] [] [2014-12-10 17:41:53,248] ERROR {org.apache.axis2.deployment.DeploymentEngine} -  Failed to add Deployer org.wso2.carbon.application.deployer.CappAxis2Deployer: missing 'directory' attribute {org.apache.axis2.deployment.DeploymentEngine}
+TID: [0] [] [2014-12-10 17:41:53,248] ERROR {org.apache.axis2.deployment.DeploymentEngine} -  Failed to add Deployer org.wso2.carbon.application.deployer.CappAxis2Deployer: missing 'directory' attribute {org.apache.axis2.deployment.DeploymentEngine}
+TID: [0] [] [2014-12-10 17:41:53,248] ERROR {org.wso2.carbon.utils.CarbonUtils} -  Error while creating directory at : D:\MyGitHub\innovationdashboard\innovation_dashboard\wso2ues-1.0.0\bin\..\repository\carbonapps\0 {org.wso2.carbon.utils.CarbonUtils}
+TID: [0] [] [2014-12-10 17:41:53,264] ERROR {org.apache.axis2.deployment.DeploymentEngine} -  Failed to add Deployer org.wso2.carbon.application.deployer.CappAxis2Deployer: missing 'directory' attribute {org.apache.axis2.deployment.DeploymentEngine}
+TID: [0] [] [2014-12-10 17:41:53,264] ERROR {org.apache.axis2.deployment.DeploymentEngine} -  Failed to add Deployer org.wso2.carbon.application.deployer.CappAxis2Deployer: missing 'directory' attribute {org.apache.axis2.deployment.DeploymentEngine}
+TID: [0] [] [2014-12-10 17:41:53,264] ERROR {org.wso2.carbon.utils.CarbonUtils} -  Error while creating directory at : D:\MyGitHub\innovationdashboard\innovation_dashboard\wso2ues-1.0.0\bin\..\repository\carbonapps\0 {org.wso2.carbon.utils.CarbonUtils}
+TID: [0] [] [2014-12-10 17:41:53,264] ERROR {org.apache.axis2.deployment.DeploymentEngine} -  Failed to add Deployer org.wso2.carbon.application.deployer.CappAxis2Deployer: missing 'directory' attribute {org.apache.axis2.deployment.DeploymentEngine}
+TID: [0] [] [2014-12-10 17:41:53,264] ERROR {org.apache.axis2.deployment.DeploymentEngine} -  Failed to add Deployer org.wso2.carbon.application.deployer.CappAxis2Deployer: missing 'directory' attribute {org.apache.axis2.deployment.DeploymentEngine}
+TID: [0] [] [2014-12-10 17:41:53,264] ERROR {org.wso2.carbon.utils.CarbonUtils} -  Error while creating directory at : D:\MyGitHub\innovationdashboard\innovation_dashboard\wso2ues-1.0.0\bin\..\repository\carbonapps\0 {org.wso2.carbon.utils.CarbonUtils}
+TID: [0] [] [2014-12-10 17:41:53,280] ERROR {org.apache.axis2.deployment.DeploymentEngine} -  Failed to add Deployer org.wso2.carbon.application.deployer.CappAxis2Deployer: missing 'directory' attribute {org.apache.axis2.deployment.DeploymentEngine}
+TID: [0] [] [2014-12-10 17:41:53,280] ERROR {org.apache.axis2.deployment.DeploymentEngine} -  Failed to add Deployer org.wso2.carbon.application.deployer.CappAxis2Deployer: missing 'directory' attribute {org.apache.axis2.deployment.DeploymentEngine}
+TID: [0] [] [2014-12-10 17:41:53,514]  INFO {org.apache.axis2.transport.tcp.TCPTransportSender} -  TCP Sender started {org.apache.axis2.transport.tcp.TCPTransportSender}
+TID: [0] [] [2014-12-10 17:41:53,514]  INFO {org.apache.axis2.transport.tcp.TCPTransportSender} -  TCP Sender started {org.apache.axis2.transport.tcp.TCPTransportSender}
+TID: [0] [] [2014-12-10 17:41:54,155]  INFO {org.wso2.carbon.core.deployment.DeploymentInterceptor} -  Deploying Axis2 service: echo {super-tenant} {org.wso2.carbon.core.deployment.DeploymentInterceptor}
+TID: [0] [] [2014-12-10 17:41:54,483]  INFO {org.apache.axis2.deployment.DeploymentEngine} -  Deploying Web service: Echo.aar - file:/D:/MyGitHub/innovationdashboard/innovation_dashboard/wso2ues-1.0.0/bin/../repository/deployment/server/axis2services/Echo.aar {org.apache.axis2.deployment.DeploymentEngine}
+TID: [0] [] [2014-12-10 17:41:54,483]  INFO {org.apache.axis2.deployment.DeploymentEngine} -  Deploying Web service: Echo.aar - file:/D:/MyGitHub/innovationdashboard/innovation_dashboard/wso2ues-1.0.0/bin/../repository/deployment/server/axis2services/Echo.aar {org.apache.axis2.deployment.DeploymentEngine}
+TID: [0] [] [2014-12-10 17:41:54,608]  INFO {org.wso2.carbon.core.deployment.DeploymentInterceptor} -  Deploying Axis2 service: Version {super-tenant} {org.wso2.carbon.core.deployment.DeploymentInterceptor}
+TID: [0] [] [2014-12-10 17:41:54,748]  INFO {org.apache.axis2.deployment.DeploymentEngine} -  Deploying Web service: Version.aar - file:/D:/MyGitHub/innovationdashboard/innovation_dashboard/wso2ues-1.0.0/bin/../repository/deployment/server/axis2services/Version.aar {org.apache.axis2.deployment.DeploymentEngine}
+TID: [0] [] [2014-12-10 17:41:54,748]  INFO {org.apache.axis2.deployment.DeploymentEngine} -  Deploying Web service: Version.aar - file:/D:/MyGitHub/innovationdashboard/innovation_dashboard/wso2ues-1.0.0/bin/../repository/deployment/server/axis2services/Version.aar {org.apache.axis2.deployment.DeploymentEngine}
+TID: [0] [] [2014-12-10 17:42:01,067]  INFO {org.apache.shiro.config.IniSecurityManagerFactory} -  Realms have been explicitly set on the SecurityManager instance - auto-setting of realms will not occur. {org.apache.shiro.config.IniSecurityManagerFactory}
+TID: [0] [] [2014-12-10 17:42:01,067]  INFO {org.apache.shiro.config.IniSecurityManagerFactory} -  Realms have been explicitly set on the SecurityManager instance - auto-setting of realms will not occur. {org.apache.shiro.config.IniSecurityManagerFactory}
+TID: [0] [] [2014-12-10 17:42:01,067]  INFO {org.apache.shiro.realm.AuthorizingRealm} -  No cache or cacheManager properties have been set.  Authorization cache cannot be obtained. {org.apache.shiro.realm.AuthorizingRealm}
+TID: [0] [] [2014-12-10 17:42:01,067]  INFO {org.apache.shiro.realm.AuthorizingRealm} -  No cache or cacheManager properties have been set.  Authorization cache cannot be obtained. {org.apache.shiro.realm.AuthorizingRealm}
+TID: [0] [] [2014-12-10 17:42:01,083]  INFO {org.wso2.carbon.webapp.mgt.TomcatGenericWebappsDeployer} -  Deployed webapp: StandardEngine[Catalina].StandardHost[localhost].StandardContext[/].File[D:\MyGitHub\innovationdashboard\innovation_dashboard\wso2ues-1.0.0\bin\..\repository\deployment\server\webapps\ROOT] {org.wso2.carbon.webapp.mgt.TomcatGenericWebappsDeployer}
+TID: [0] [] [2014-12-10 17:42:02,434]  INFO {org.jaggeryjs.jaggery.app.mgt.TomcatJaggeryWebappsDeployer} -  Deployed webapp: StandardEngine[Catalina].StandardHost[localhost].StandardContext[/dashboard].File[D:\MyGitHub\innovationdashboard\innovation_dashboard\wso2ues-1.0.0\bin\..\repository\deployment\server\jaggeryapps\dashboard] {org.jaggeryjs.jaggery.app.mgt.TomcatJaggeryWebappsDeployer}
+TID: [0] [] [2014-12-10 17:42:02,481]  INFO {org.jaggeryjs.jaggery.app.mgt.TomcatJaggeryWebappsDeployer} -  Deployed webapp: StandardEngine[Catalina].StandardHost[localhost].StandardContext[/help].File[D:\MyGitHub\innovationdashboard\innovation_dashboard\wso2ues-1.0.0\bin\..\repository\deployment\server\jaggeryapps\help] {org.jaggeryjs.jaggery.app.mgt.TomcatJaggeryWebappsDeployer}
+TID: [0] [] [2014-12-10 17:42:02,512]  INFO {org.jaggeryjs.jaggery.app.mgt.TomcatJaggeryWebappsDeployer} -  Deployed webapp: StandardEngine[Catalina].StandardHost[localhost].StandardContext[/home].File[D:\MyGitHub\innovationdashboard\innovation_dashboard\wso2ues-1.0.0\bin\..\repository\deployment\server\jaggeryapps\home] {org.jaggeryjs.jaggery.app.mgt.TomcatJaggeryWebappsDeployer}
+TID: [0] [] [2014-12-10 17:42:02,543]  INFO {org.jaggeryjs.jaggery.app.mgt.TomcatJaggeryWebappsDeployer} -  Deployed webapp: StandardEngine[Catalina].StandardHost[localhost].StandardContext[/images].File[D:\MyGitHub\innovationdashboard\innovation_dashboard\wso2ues-1.0.0\bin\..\repository\deployment\server\jaggeryapps\images] {org.jaggeryjs.jaggery.app.mgt.TomcatJaggeryWebappsDeployer}
+TID: [0] [] [2014-12-10 17:42:03,559]  INFO {portal.deployer} -  Default gadgets deployed {portal.deployer}
+TID: [0] [] [2014-12-10 17:42:03,653]  INFO {portal.site.deployer} -  Default sites deployed {portal.site.deployer}
+TID: [0] [] [2014-12-10 17:42:03,653]  INFO {org.jaggeryjs.jaggery.app.mgt.TomcatJaggeryWebappsDeployer} -  Deployed webapp: StandardEngine[Catalina].StandardHost[localhost].StandardContext[/portal].File[D:\MyGitHub\innovationdashboard\innovation_dashboard\wso2ues-1.0.0\bin\..\repository\deployment\server\jaggeryapps\portal] {org.jaggeryjs.jaggery.app.mgt.TomcatJaggeryWebappsDeployer}
+TID: [0] [] [2014-12-10 17:42:03,809]  INFO {org.jaggeryjs.jaggery.app.mgt.TomcatJaggeryWebappsDeployer} -  Deployed webapp: StandardEngine[Catalina].StandardHost[localhost].StandardContext[/sso].File[D:\MyGitHub\innovationdashboard\innovation_dashboard\wso2ues-1.0.0\bin\..\repository\deployment\server\jaggeryapps\sso] {org.jaggeryjs.jaggery.app.mgt.TomcatJaggeryWebappsDeployer}
+TID: [0] [] [2014-12-10 17:42:04,028]  INFO {org.jaggeryjs.jaggery.app.mgt.TomcatJaggeryWebappsDeployer} -  Deployed webapp: StandardEngine[Catalina].StandardHost[localhost].StandardContext[/store].File[D:\MyGitHub\innovationdashboard\innovation_dashboard\wso2ues-1.0.0\bin\..\repository\deployment\server\jaggeryapps\store] {org.jaggeryjs.jaggery.app.mgt.TomcatJaggeryWebappsDeployer}
+TID: [0] [] [2014-12-10 17:42:04,137]  INFO {org.jaggeryjs.jaggery.app.mgt.TomcatJaggeryWebappsDeployer} -  Deployed webapp: StandardEngine[Catalina].StandardHost[localhost].StandardContext[/user].File[D:\MyGitHub\innovationdashboard\innovation_dashboard\wso2ues-1.0.0\bin\..\repository\deployment\server\jaggeryapps\user] {org.jaggeryjs.jaggery.app.mgt.TomcatJaggeryWebappsDeployer}
+TID: [0] [] [2014-12-10 17:42:04,215]  INFO {org.jaggeryjs.jaggery.app.mgt.TomcatJaggeryWebappsDeployer} -  Deployed webapp: StandardEngine[Catalina].StandardHost[localhost].StandardContext[/userdashboard].File[D:\MyGitHub\innovationdashboard\innovation_dashboard\wso2ues-1.0.0\bin\..\repository\deployment\server\jaggeryapps\userdashboard] {org.jaggeryjs.jaggery.app.mgt.TomcatJaggeryWebappsDeployer}
+TID: [0] [] [2014-12-10 17:42:04,403]  INFO {org.wso2.carbon.core.deployment.DeploymentInterceptor} -  Deploying Axis2 service: echo {super-tenant} {org.wso2.carbon.core.deployment.DeploymentInterceptor}
+TID: [0] [] [2014-12-10 17:42:04,653]  INFO {org.wso2.carbon.core.deployment.DeploymentInterceptor} -  Deploying Axis2 service: Version {super-tenant} {org.wso2.carbon.core.deployment.DeploymentInterceptor}
+TID: [0] [] [2014-12-10 17:42:04,950]  INFO {org.apache.axis2.deployment.DeploymentEngine} -  No services directory was found under D:\MyGitHub\innovationdashboard\innovation_dashboard\wso2ues-1.0.0\repository\deployment\client. {org.apache.axis2.deployment.DeploymentEngine}
+TID: [0] [] [2014-12-10 17:42:04,950]  INFO {org.apache.axis2.deployment.DeploymentEngine} -  No services directory was found under D:\MyGitHub\innovationdashboard\innovation_dashboard\wso2ues-1.0.0\repository\deployment\client. {org.apache.axis2.deployment.DeploymentEngine}
+TID: [0] [] [2014-12-10 17:42:04,965]  INFO {org.apache.axis2.deployment.ModuleDeployer} -  Deploying module: addressing-1.6.1-wso2v9 - file:/D:/MyGitHub/innovationdashboard/innovation_dashboard/wso2ues-1.0.0/bin/../repository/deployment/client/modules/addressing-1.6.1-wso2v9.mar {org.apache.axis2.deployment.ModuleDeployer}
+TID: [0] [] [2014-12-10 17:42:04,965]  INFO {org.apache.axis2.deployment.ModuleDeployer} -  Deploying module: addressing-1.6.1-wso2v9 - file:/D:/MyGitHub/innovationdashboard/innovation_dashboard/wso2ues-1.0.0/bin/../repository/deployment/client/modules/addressing-1.6.1-wso2v9.mar {org.apache.axis2.deployment.ModuleDeployer}
+TID: [0] [] [2014-12-10 17:42:04,981]  INFO {org.apache.axis2.transport.tcp.TCPTransportSender} -  TCP Sender started {org.apache.axis2.transport.tcp.TCPTransportSender}
+TID: [0] [] [2014-12-10 17:42:04,981]  INFO {org.apache.axis2.transport.tcp.TCPTransportSender} -  TCP Sender started {org.apache.axis2.transport.tcp.TCPTransportSender}
+TID: [0] [] [2014-12-10 17:42:06,251]  INFO {org.wso2.carbon.core.init.CarbonServerManager} -  Repository       : D:\MyGitHub\innovationdashboard\innovation_dashboard\wso2ues-1.0.0\bin\../repository/deployment/server/ {org.wso2.carbon.core.init.CarbonServerManager}
+TID: [0] [] [2014-12-10 17:42:06,282]  INFO {org.wso2.carbon.core.internal.permission.update.PermissionUpdater} -  Permission cache updated for tenant -1234 {org.wso2.carbon.core.internal.permission.update.PermissionUpdater}
+TID: [0] [] [2014-12-10 17:42:06,647]  INFO {org.wso2.carbon.core.transports.http.HttpsTransportListener} -  HTTPS port       : 9443 {org.wso2.carbon.core.transports.http.HttpsTransportListener}
+TID: [0] [] [2014-12-10 17:42:06,647]  INFO {org.wso2.carbon.core.transports.http.HttpTransportListener} -  HTTP port        : 9763 {org.wso2.carbon.core.transports.http.HttpTransportListener}
+TID: [0] [] [2014-12-10 17:42:06,865]  INFO {org.wso2.carbon.registry.eventing.internal.RegistryEventingServiceComponent} -  Successfully Initialized Eventing on Registry {org.wso2.carbon.registry.eventing.internal.RegistryEventingServiceComponent}
+TID: [0] [] [2014-12-10 17:42:07,522]  INFO {org.wso2.carbon.core.init.JMXServerManager} -  JMX Service URL  : service:jmx:rmi://localhost:11111/jndi/rmi://localhost:9999/jmxrmi {org.wso2.carbon.core.init.JMXServerManager}
+TID: [0] [] [2014-12-10 17:42:07,522]  INFO {org.wso2.carbon.core.internal.StartupFinalizerServiceComponent} -  Server           :  WSO2 User Engagement Server-1.0.0 {org.wso2.carbon.core.internal.StartupFinalizerServiceComponent}
+TID: [0] [] [2014-12-10 17:42:07,522]  INFO {org.wso2.carbon.core.internal.StartupFinalizerServiceComponent} -  WSO2 Carbon started in 33 sec {org.wso2.carbon.core.internal.StartupFinalizerServiceComponent}
+TID: [0] [] [2014-12-10 17:42:07,818]  INFO {org.wso2.carbon.ui.internal.CarbonUIServiceComponent} -  Mgt Console URL  : https://10.22.196.13:9443/admin/carbon/ {org.wso2.carbon.ui.internal.CarbonUIServiceComponent}
+TID: [0] [] [2014-12-10 17:42:08,600]  INFO {portal.site.deployer} -  UES Portal URL : http://localhost:9763/portal {portal.site.deployer}
+TID: [0] [] [2014-12-10 17:43:27,750]  INFO {org.wso2.carbon.identity.sso.saml.ui.logout.LogoutRequestSender} -  single logout request is sent to : https://localhost:9443/portal/sso.jag is returned with OK {org.wso2.carbon.identity.sso.saml.ui.logout.LogoutRequestSender}
+TID: [0] [] [2014-12-10 17:43:30,496] ERROR {org.jaggeryjs.scriptengine.engine.RhinoEngine} -  org.mozilla.javascript.WrappedException: Wrapped java.lang.NullPointerException (/portal//logout.jag#11) {org.jaggeryjs.scriptengine.engine.RhinoEngine}
+TID: [0] [] [2014-12-10 17:43:30,499] ERROR {org.jaggeryjs.jaggery.core.manager.WebAppManager} -  org.mozilla.javascript.WrappedException: Wrapped java.lang.NullPointerException (/portal//logout.jag#11) {org.jaggeryjs.jaggery.core.manager.WebAppManager}
+org.jaggeryjs.scriptengine.exceptions.ScriptException: org.mozilla.javascript.WrappedException: Wrapped java.lang.NullPointerException (/portal//logout.jag#11)
+	at org.jaggeryjs.scriptengine.engine.RhinoEngine.execScript(RhinoEngine.java:582)
+	at org.jaggeryjs.scriptengine.engine.RhinoEngine.exec(RhinoEngine.java:280)
+	at org.jaggeryjs.jaggery.core.manager.WebAppManager.execute(WebAppManager.java:432)
+	at org.jaggeryjs.jaggery.core.JaggeryServlet.doGet(JaggeryServlet.java:24)
+	at javax.servlet.http.HttpServlet.service(HttpServlet.java:735)
+	at javax.servlet.http.HttpServlet.service(HttpServlet.java:848)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:305)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:210)
+	at org.apache.catalina.core.ApplicationDispatcher.invoke(ApplicationDispatcher.java:749)
+	at org.apache.catalina.core.ApplicationDispatcher.processRequest(ApplicationDispatcher.java:487)
+	at org.apache.catalina.core.ApplicationDispatcher.doForward(ApplicationDispatcher.java:379)
+	at org.apache.catalina.core.ApplicationDispatcher.forward(ApplicationDispatcher.java:339)
+	at org.jaggeryjs.jaggery.core.JaggeryFilter.doFilter(JaggeryFilter.java:21)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:243)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:210)
+	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:222)
+	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:123)
+	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:472)
+	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:171)
+	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:99)
+	at org.wso2.carbon.tomcat.ext.valves.CompositeValve.invoke(CompositeValve.java:177)
+	at org.wso2.carbon.tomcat.ext.valves.CarbonStuckThreadDetectionValve.invoke(CarbonStuckThreadDetectionValve.java:161)
+	at org.apache.catalina.valves.AccessLogValve.invoke(AccessLogValve.java:936)
+	at org.wso2.carbon.tomcat.ext.valves.CarbonContextCreatorValve.invoke(CarbonContextCreatorValve.java:57)
+	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:118)
+	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:407)
+	at org.apache.coyote.http11.AbstractHttp11Processor.process(AbstractHttp11Processor.java:1004)
+	at org.apache.coyote.AbstractProtocol$AbstractConnectionHandler.process(AbstractProtocol.java:589)
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.run(NioEndpoint.java:1653)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1145)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:615)
+	at java.lang.Thread.run(Thread.java:744)
+Caused by: org.mozilla.javascript.WrappedException: Wrapped java.lang.NullPointerException (/portal//logout.jag#11)
+	at org.mozilla.javascript.Context.throwAsScriptRuntimeEx(Context.java:1754)
+	at org.mozilla.javascript.MemberBox.invoke(MemberBox.java:148)
+	at org.mozilla.javascript.FunctionObject.call(FunctionObject.java:386)
+	at org.mozilla.javascript.optimizer.OptRuntime.call2(OptRuntime.java:42)
+	at org.jaggeryjs.rhino.portal.c5._c_script_0(/portal//logout.jag:11)
+	at org.jaggeryjs.rhino.portal.c5.call(/portal//logout.jag)
+	at org.mozilla.javascript.ContextFactory.doTopCall(ContextFactory.java:394)
+	at org.mozilla.javascript.ScriptRuntime.doTopCall(ScriptRuntime.java:3091)
+	at org.jaggeryjs.rhino.portal.c5.call(/portal//logout.jag)
+	at org.jaggeryjs.rhino.portal.c5.exec(/portal//logout.jag)
+	at org.jaggeryjs.scriptengine.engine.RhinoEngine.execScript(RhinoEngine.java:577)
+	... 31 more
+Caused by: java.lang.NullPointerException
+	at org.wso2.carbon.hostobjects.sso.SAMLSSORelyingPartyObject.jsFunction_getSAMLLogoutRequest(SAMLSSORelyingPartyObject.java:305)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:57)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:606)
+	at org.mozilla.javascript.MemberBox.invoke(MemberBox.java:126)
+	... 40 more
+TID: [0] [] [2014-12-10 17:43:48,443]  INFO {org.wso2.carbon.core.init.CarbonServerManager} -  Shutdown hook triggered.... {org.wso2.carbon.core.init.CarbonServerManager}
+TID: [0] [] [2014-12-10 17:43:48,448]  INFO {org.wso2.carbon.core.init.CarbonServerManager} -  Gracefully shutting down WSO2 User Engagement Server... {org.wso2.carbon.core.init.CarbonServerManager}
+TID: [0] [] [2014-12-10 17:43:48,452]  INFO {org.wso2.carbon.core.ServerManagement} -  Starting to switch to maintenance mode... {org.wso2.carbon.core.ServerManagement}
+TID: [0] [] [2014-12-10 17:43:50,692]  INFO {org.wso2.carbon.core.ServerManagement} -  Stopped all transport listeners {org.wso2.carbon.core.ServerManagement}
+TID: [0] [] [2014-12-10 17:43:50,693]  INFO {org.wso2.carbon.core.ServerManagement} -  Waiting for request service completion... {org.wso2.carbon.core.ServerManagement}
+TID: [0] [] [2014-12-10 17:43:50,701]  INFO {org.wso2.carbon.core.ServerManagement} -  All requests have been served. {org.wso2.carbon.core.ServerManagement}
+TID: [0] [] [2014-12-10 17:43:50,702]  INFO {org.wso2.carbon.core.ServerManagement} -  Waiting for deployment completion... {org.wso2.carbon.core.ServerManagement}
+TID: [0] [] [2014-12-10 17:43:50,769]  INFO {org.wso2.carbon.webapp.mgt.WebApplication} -  Unloaded webapp: StandardEngine[Catalina].StandardHost[localhost].StandardContext[/] {org.wso2.carbon.webapp.mgt.WebApplication}
+TID: [0] [] [2014-12-10 17:43:50,779]  INFO {org.wso2.carbon.webapp.mgt.WebApplication} -  Unloaded webapp: StandardEngine[Catalina].StandardHost[localhost].StandardContext[/userdashboard] {org.wso2.carbon.webapp.mgt.WebApplication}
+TID: [0] [] [2014-12-10 17:43:50,786]  INFO {org.wso2.carbon.webapp.mgt.WebApplication} -  Unloaded webapp: StandardEngine[Catalina].StandardHost[localhost].StandardContext[/user] {org.wso2.carbon.webapp.mgt.WebApplication}
+TID: [0] [] [2014-12-10 17:43:50,793]  INFO {org.wso2.carbon.webapp.mgt.WebApplication} -  Unloaded webapp: StandardEngine[Catalina].StandardHost[localhost].StandardContext[/help] {org.wso2.carbon.webapp.mgt.WebApplication}
+TID: [0] [] [2014-12-10 17:43:50,803]  INFO {org.wso2.carbon.webapp.mgt.WebApplication} -  Unloaded webapp: StandardEngine[Catalina].StandardHost[localhost].StandardContext[/dashboard] {org.wso2.carbon.webapp.mgt.WebApplication}
+TID: [0] [] [2014-12-10 17:43:50,827]  INFO {org.wso2.carbon.webapp.mgt.WebApplication} -  Unloaded webapp: StandardEngine[Catalina].StandardHost[localhost].StandardContext[/sso] {org.wso2.carbon.webapp.mgt.WebApplication}
+TID: [0] [] [2014-12-10 17:43:50,848]  INFO {org.wso2.carbon.webapp.mgt.WebApplication} -  Unloaded webapp: StandardEngine[Catalina].StandardHost[localhost].StandardContext[/portal] {org.wso2.carbon.webapp.mgt.WebApplication}
+TID: [0] [] [2014-12-10 17:43:50,856]  INFO {org.wso2.carbon.webapp.mgt.WebApplication} -  Unloaded webapp: StandardEngine[Catalina].StandardHost[localhost].StandardContext[/home] {org.wso2.carbon.webapp.mgt.WebApplication}
+TID: [0] [] [2014-12-10 17:43:50,865]  INFO {org.wso2.carbon.webapp.mgt.WebApplication} -  Unloaded webapp: StandardEngine[Catalina].StandardHost[localhost].StandardContext[/store] {org.wso2.carbon.webapp.mgt.WebApplication}
+TID: [0] [] [2014-12-10 17:43:50,873]  INFO {org.wso2.carbon.webapp.mgt.WebApplication} -  Unloaded webapp: StandardEngine[Catalina].StandardHost[localhost].StandardContext[/images] {org.wso2.carbon.webapp.mgt.WebApplication}
+TID: [0] [] [2014-12-10 17:43:50,873]  INFO {org.wso2.carbon.core.ServerManagement} -  All deployment tasks have been completed. {org.wso2.carbon.core.ServerManagement}
+TID: [0] [] [2014-12-10 17:43:50,873]  INFO {org.wso2.carbon.core.ServerManagement} -  Waiting for server task completion... {org.wso2.carbon.core.ServerManagement}
+TID: [0] [] [2014-12-10 17:43:51,031]  INFO {org.wso2.carbon.core.ServerManagement} -  All server tasks have been completed. {org.wso2.carbon.core.ServerManagement}
+TID: [0] [] [2014-12-10 17:43:51,031]  INFO {org.wso2.carbon.core.init.CarbonServerManager} -  Shutting down WSO2 User Engagement Server... {org.wso2.carbon.core.init.CarbonServerManager}
+TID: [0] [] [2014-12-10 17:43:51,032]  INFO {org.apache.axis2.transport.tcp.TCPTransportSender} -  TCP Sender Shutdown {org.apache.axis2.transport.tcp.TCPTransportSender}
+TID: [0] [] [2014-12-10 17:43:51,032]  INFO {org.apache.axis2.transport.tcp.TCPTransportSender} -  TCP Sender Shutdown {org.apache.axis2.transport.tcp.TCPTransportSender}
+TID: [0] [] [2014-12-10 17:43:51,035]  INFO {org.wso2.carbon.core.init.CarbonServerManager} -  Shutting down OSGi framework... {org.wso2.carbon.core.init.CarbonServerManager}
+TID: [0] [] [2014-12-10 17:43:51,096]  INFO {org.wso2.carbon.core.init.CarbonServerManager} -  Stopping CarbonServerManager... {org.wso2.carbon.core.init.CarbonServerManager}
+TID: [0] [] [2014-12-10 17:43:51,122]  INFO {org.wso2.carbon.tomcat.ext.internal.CarbonTomcatServiceComponent} -  Stopping the carbon web-app registered under : /admin {org.wso2.carbon.tomcat.ext.internal.CarbonTomcatServiceComponent}
+TID: [0] [] [2014-12-10 17:43:52,160]  INFO {org.wso2.carbon.core.init.CarbonServerManager} -  Shutdown complete {org.wso2.carbon.core.init.CarbonServerManager}
+TID: [0] [] [2014-12-10 17:43:52,160]  INFO {org.wso2.carbon.core.init.CarbonServerManager} -  Halting JVM {org.wso2.carbon.core.init.CarbonServerManager}
