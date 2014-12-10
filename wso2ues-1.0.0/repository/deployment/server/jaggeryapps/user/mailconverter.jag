@@ -1,0 +1,9 @@
+<%
+function makeForUES(email){
+	return email.replace(/@/g,"_");
+}
+
+function remakeEmail(uesVal){
+	return uesVal.substring(0,uesVal.lastIndexOf("_"))+"@"+uesVal.substring(uesVal.lastIndexOf("_")+1);
+}
+%>
