@@ -1,0 +1,247 @@
+<%var user = require('/modules/user.js').current();
+if (!user) {
+    response.sendRedirect('/userforms/login');
+}else{%>
+<%include("db.jag");%>
+<%include("mailconverter.jag");%>
+<%var username=session.get("LOGGED_IN_USER")+"";%>
+<%var person=db.query("SELECT * FROM person WHERE email='"+""+remakeEmail(username)+"'");%>
+<%
+	var year=null;
+	var personid=null;
+	var person;
+	if(request.getParameter("uid")!=null){
+		personid=request.getParameter("uid");
+	}else{
+		personid=person[0].person_id;
+	}
+	if(request.getParameter("year")!=null){
+		year=request.getParameter("year");
+	}
+	if(personid!=null){
+	//var person_publication=db.query("SELECT * FROM `publication` WHERE publication_id= ANY (SELECT publication_id FROM `person_publication` WHERE person_id=2)");
+	var person_publication="";
+	if(year==null){
+		person_publication=db.query("SELECT * FROM `publication` WHERE publication_id= ANY (SELECT publication_id FROM `person_publication` WHERE person_id='"+personid+"')");
+	}else{
+		person_publication=db.query("SELECT * FROM `publication` WHERE year='"+year+"' AND publication_id= ANY (SELECT publication_id FROM `person_publication` WHERE person_id='"+personid+"')");
+	}
+%>
+<html>
+	<head>
+		<link href="css1/jquerymessagebox/msgBoxLight.css" rel="stylesheet" type="text/css">
+		<style>
+			.CSSTableGenerator {
+				margin:0px;padding:0px;
+				width:100%;
+				box-shadow: 10px 10px 5px #888888;
+				border:1px solid #000000;
+				
+				-moz-border-radius-bottomleft:0px;
+				-webkit-border-bottom-left-radius:0px;
+				border-bottom-left-radius:0px;
+				
+				-moz-border-radius-bottomright:0px;
+				-webkit-border-bottom-right-radius:0px;
+				border-bottom-right-radius:0px;
+				
+				-moz-border-radius-topright:0px;
+				-webkit-border-top-right-radius:0px;
+				border-top-right-radius:0px;
+				
+				-moz-border-radius-topleft:0px;
+				-webkit-border-top-left-radius:0px;
+				border-top-left-radius:0px;
+			}.CSSTableGenerator table{
+			    border-collapse: collapse;
+			        border-spacing: 0;
+				width:100%;
+				margin:0px;padding:0px;
+			}.CSSTableGenerator tr:last-child td:last-child {
+				-moz-border-radius-bottomright:0px;
+				-webkit-border-bottom-right-radius:0px;
+				border-bottom-right-radius:0px;
+			}
+			.CSSTableGenerator table tr:first-child td:first-child {
+				-moz-border-radius-topleft:0px;
+				-webkit-border-top-left-radius:0px;
+				border-top-left-radius:0px;
+			}
+			.CSSTableGenerator table tr:first-child td:last-child {
+				-moz-border-radius-topright:0px;
+				-webkit-border-top-right-radius:0px;
+				border-top-right-radius:0px;
+			}.CSSTableGenerator tr:last-child td:first-child{
+				-moz-border-radius-bottomleft:0px;
+				-webkit-border-bottom-left-radius:0px;
+				border-bottom-left-radius:0px;
+			}.CSSTableGenerator tr:hover td{
+				
+			}
+			.CSSTableGenerator tr:nth-child(odd){ background-color:#aad4ff; }
+			.CSSTableGenerator tr:nth-child(even)    { background-color:#ffffff; }.CSSTableGenerator td{
+				vertical-align:middle;
+				
+				
+				border:1px solid #000000;
+				border-width:0px 1px 1px 0px;
+				text-align:left;
+				padding:7px;
+				font-size:10px;
+				font-family:Arial;
+				font-weight:normal;
+				color:#000000;
+			}.CSSTableGenerator tr:last-child td{
+				border-width:0px 1px 0px 0px;
+			}.CSSTableGenerator tr td:last-child{
+				border-width:0px 0px 1px 0px;
+			}.CSSTableGenerator tr:last-child td:last-child{
+				border-width:0px 0px 0px 0px;
+			}
+			.CSSTableGenerator tr:first-child td{
+					background:-o-linear-gradient(bottom, #005fbf 5%, #003f7f 100%);	background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #005fbf), color-stop(1, #003f7f) );
+				background:-moz-linear-gradient( center top, #005fbf 5%, #003f7f 100% );
+				filter:progid:DXImageTransform.Microsoft.gradient(startColorstr="#005fbf", endColorstr="#003f7f");	background: -o-linear-gradient(top,#005fbf,003f7f);
+
+				background-color:#005fbf;
+				border:0px solid #000000;
+				text-align:center;
+				border-width:0px 0px 1px 1px;
+				font-size:14px;
+				font-family:Arial;
+				font-weight:bold;
+				color:#ffffff;
+			}
+			.CSSTableGenerator tr:first-child:hover td{
+				background:-o-linear-gradient(bottom, #005fbf 5%, #003f7f 100%);	background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #005fbf), color-stop(1, #003f7f) );
+				background:-moz-linear-gradient( center top, #005fbf 5%, #003f7f 100% );
+				filter:progid:DXImageTransform.Microsoft.gradient(startColorstr="#005fbf", endColorstr="#003f7f");	background: -o-linear-gradient(top,#005fbf,003f7f);
+
+				background-color:#005fbf;
+			}
+			.CSSTableGenerator tr:first-child td:first-child{
+				border-width:0px 0px 1px 0px;
+			}
+			.CSSTableGenerator tr:first-child td:last-child{
+				border-width:0px 0px 1px 1px;
+			}
+		</style>
+		<script>
+			function confirmFunction(pubid){
+				var r = confirm("This action will remove this publication from you and other authors.");
+				if (r == true) {
+				    sendDeleteUnfollow(pubid,"delete");
+				}
+			}
+			function confirmUnfollow(pubid){
+				var r = confirm("This action will remove you as one of the authors of this publication.");
+				if (r == true) {
+				    sendDeleteUnfollow(pubid,"unfollow");
+				}
+			}
+			function sendDeleteUnfollow(id,process){
+				 $.ajax({
+		           url :"personpaperdelete.jag",
+		           type:'POST',
+		           data:{pubid:id,type:process},
+		           success:function(datas){
+		                if ($.trim(datas) == 'true') {
+                            successMessage("Done", (process=="delete")?"delete":"unfollowed"+" Successfully");
+                            window.setTimeout(function() {
+                                parent.document.location.href="/userforms/";
+                            }, 1000);
+                        }else{
+                            errorMessage("Error",datas);
+                        }
+		           }
+		      });
+				/*$.ajax({
+                    type: "POST",
+                    contentType: false,
+                    cache: false,
+                    processData:false,
+                    url: 'personpaperdelete.jag',
+                    data: {pubid:id,type:process},
+                    success: function(datas)
+                    {
+                       if ($.trim(datas) == 'true') {
+                            successMessage("Done", process+" Successfully");
+                            window.setTimeout(function() {
+                                parent.document.location.href="/userforms/";
+                            }, 1000);
+                        }else{
+                            errorMessage("Error",datas);
+                        }
+                    }
+                });*/
+			}
+		</script>
+		<script src="js1/jquery/jquery-1.9.1.js"></script>
+        <script src="js1/jquerymessagebox/jquery.msgBox.js" type="text/javascript"></script>
+        <script type="text/javascript">
+        	function errorMessage(title, error) {
+                $.msgBox({
+                    title: title,
+                    content: error
+                });
+            }
+            function successMessage(title, content) {
+                $.msgBox({
+                    title: title,
+                    content: content,
+                    type: "info"
+                });
+            }
+        </script>
+	</head>
+	<body>
+		<div class="CSSTableGenerator" style="margin-top:65px;">
+            <table>
+                <tr>
+                    <td>
+                        Title/Name
+                    </td>
+                    <td >
+                        Type
+                    </td>
+                    <td>
+                    	
+                    </td>
+                </tr>
+                <%if(person_publication.length<1){%>
+                <tr>
+                    <td >
+                        No Data
+                    </td>
+                    <td>
+                        No Data
+                    </td>
+                    <td>
+                        No Data
+                    </td>
+                </tr>
+                <%}%><%else{%>
+                <%for(var i=0;i<person_publication.length;i++){%>
+                <tr>
+                    <td ><%var url="?pub_id="+person_publication[i].publication_id;if(year!=null){url+="&year="+year;}%>
+                        <a href="personpapersmore.jag<%=url%>"><%=(person_publication[i].publication_type==2)?person_publication[i].name:person_publication[i].title%></a>
+                    </td>
+                    <td>
+                        <%=(person_publication[i].publication_type==1)?"Journal Article":(person_publication[i].publication_type==2)?"Research Book":(person_publication[i].publication_type==3)?"Technical Report":"Conference Paper"%>
+                    </td>
+                    <td>
+                	<%if(person_publication[i].person_id==person[0].person_id){%>
+                		<a href="#" id="confirm" onclick="confirmFunction(<%=person_publication[i].publication_id%>);">Delete</a>
+                		<!--<a href="personpaperdelete.jag?pubid=<%=person_publication[i].publication_id%>" id="hiddenurl"></a>-->
+                	<%}else{%>
+                		<a href="#" id="confirm" onclick="confirmUnfollow(<%=person_publication[i].publication_id%>);">Remove me</a>
+                	<%}%>
+                    </td>
+                </tr>
+                <%}%>
+                <%}%>
+            </table>
+        </div>              
+	</body>	
+</html>
+<%}}%>

@@ -1,0 +1,10 @@
+<%
+function escape(value){
+	value=value.replace(/\'/g,"\\'").trim();
+	return value;
+}
+function unescape(value){
+	value=value.replace("\\'","'");
+	return value;
+}
+%>

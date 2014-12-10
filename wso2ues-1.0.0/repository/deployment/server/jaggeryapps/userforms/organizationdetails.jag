@@ -1,0 +1,205 @@
+<%include('db.jag');%>
+<%include("mailconverter.jag");%>
+<%
+var oper=request.getParameter("oper");
+<%var username=session.get("LOGGED_IN_USER")+"";%>
+<%var person=db.query("SELECT * FROM person WHERE email='"+""+remakeEmail(username)+"'");%>
+<%var person_id=person[0].person_id;%>
+
+<%
+if(oper=='get'){
+	getOrganizationDetails();
+}else if(oper=='edit'){
+	editOrganizationDetails();
+}else if(oper=='del'){
+	deleteOrganizationDetails();
+}else if(oper=='addform'){
+	addOrganizationDetailsForm();
+}
+
+function getOrganizationDetails(){
+	var result=db.query("SELECT * FROM person_organization WHERE person_id='"+person_id+"'");
+	for(var i=0;i<result.length;i++){
+		var organizationname=getorganizationname(result[i].organization_id);
+		result[i].startyear = (result[i].startyear==null)?"":result[i].startyear.toString().substring(0,4);
+		result[i].startmonth = (result[i].startmonth==null)?"":getMonthForPrint(result[i].startmonth);
+		result[i].endyear = (result[i].endyear==null)?"":(result[i].endyear.toString().substring(0,4)=="1901")?"":result[i].endyear.toString().substring(0,4);
+		result[i].endmonth = (result[i].endmonth==null)?"":(result[i].endmonth==0)?"":getMonthForPrint(result[i].endmonth);
+		result[i].name = organizationname[0].name;
+		result[i].last_uni=(result[i].his_default=="2")?"Yes":"No";
+		result[i].his_default = (result[i].his_default=="1"|result[i].his_default=="2")?"Yes":"No";		
+		if(result[i].his_default=="Yes"){
+			var departmentANDdivision=db.query("SELECT division_id,department_id FROM person WHERE person_id='"+person_id+"'");
+			if(departmentANDdivision[0].division_id!=""&&departmentANDdivision[0].department_id!=""&&departmentANDdivision[0].division_id!=null&&departmentANDdivision[0].department_id!=null){
+				var temp=result[i].name;
+				result[i].name="";
+				result[i].name+=(db.query("SELECT discription FROM division WHERE division_id='"+departmentANDdivision[0].division_id+"'")[0].discription+", "+db.query("SELECT description FROM department WHERE department_id='"+departmentANDdivision[0].department_id+"'")[0].description+", "+temp);
+			}else if(departmentANDdivision[0].division_id!=null){
+				var temp=result[i].name;
+				result[i].name="";
+				result[i].name+=""+(db.query("SELECT discription FROM division WHERE division_id='"+departmentANDdivision[0].division_id+"'")[0].discription)+", "+temp;
+			}else if(departmentANDdivision[0].department_id!=null){
+				var temp=result[i].name;
+				result[i].name="";
+				result[i].name+=""+(db.query("SELECT description FROM department WHERE department_id='"+departmentANDdivision[0].department_id+"'")[0].description)+", "+temp;
+			}
+		}
+	}
+	print(result);
+}
+
+function editOrganizationDetails(){
+	var printValue='true';
+	var id=request.getParameter("id");
+	var startyear=parseInt(request.getParameter("startyear"));
+	var startmonth=parseInt(request.getParameter("startmonth"));
+	var name=request.getParameter("name");
+	var endyear=1901;
+	var endmonth=0;
+	var his_default=(request.getParameter("his_default")=="Yes")?"1":"0";
+	var last_uni=(request.getParameter("last_uni")=="Yes")?"2":"0";
+	var his_default_db=(last_uni=="2")?last_uni:his_default;
+
+	var change_his_default=db.query("SELECT * FROM person_organization WHERE person_id='"+person_id+"' AND (his_default='1' OR his_default='2');");
+
+	if(request.getParameter("endyear")!=0){
+		endyear=parseInt(request.getParameter("endyear"));
+		endmonth=parseInt(request.getParameter("endmonth"));
+		if(startyear>endyear){
+            printValue='Start year cannot greater than end year.';
+        }else if(endyear!=0&&startyear==endyear&&startmonth>endmonth){
+            printValue='Start year month cannot greater than end year month.';
+        }
+	}
+	if(printValue=="true"&&id==change_his_default[0].person_organization_id&&his_default=="0"&&(change_his_default[0].his_default=="1"|change_his_default[0].his_default=="2")){
+		printValue="You can't remove your current university.You can chage it.";
+	}else if(printValue=="true"&&(his_default=="1"|last_uni=="2")&&id!=change_his_default[0].person_organization_id){
+		db.query("UPDATE person_organization SET his_default='0' WHERE person_organization_id='"+change_his_default[0].person_organization_id+"' ");
+		db.query("UPDATE person SET division_id=null,department_id=null WHERE person_id='"+person_id+"'");
+		db.query("UPDATE person_organization SET startyear='"+startyear+"',startmonth='"+startmonth+"',endyear='"+endyear+"',endmonth='"+endmonth+"',his_default='"+his_default_db+"' WHERE person_organization_id='"+id+"'");
+	}else if(printValue=="true"){
+		db.query("UPDATE person_organization SET startyear='"+startyear+"',startmonth='"+startmonth+"',endyear='"+endyear+"',endmonth='"+endmonth+"',his_default='"+his_default_db+"' WHERE person_organization_id='"+id+"'");
+	}
+	print(printValue);
+}
+
+function deleteOrganizationDetails(){
+	var id=request.getParameter("id");
+	var change_his_default=db.query("SELECT * FROM person_organization WHERE person_id='"+person_id+"' AND (his_default='1' OR his_default='2');");
+	if(id==change_his_default[0].person_organization_id&&change_his_default[0].his_default=="1"){
+		print("You can't delete your current university.");
+	}else if(id==change_his_default[0].person_organization_id&&change_his_default[0].his_default=="2"){
+		print("You can't delete your last university.");
+	}else{
+		db.query("DELETE FROM person_organization WHERE person_organization_id='"+id+"' AND person_id='"+person_id+"';");
+		print("true");
+	}
+}
+
+function getorganizationname(id){
+	var organizationname=db.query("SELECT name FROM organization WHERE organization_id="+id);
+	return organizationname;
+}
+
+function addOrganizationDetailsForm(){
+	var organizationform=request.getParameter("organizationform");
+	var startyearform=parseInt(request.getParameter("startyearform"));
+	var startmonthform=request.getParameter("startmonthform");
+	var endyearform=1901;
+	var endmonthform=0;
+	var his_default=(request.getParameter("his_default_form")=="on")?"1":"0";
+	var last_working_place=(request.getParameter("last_working_place")=="on")?"2":"0";
+	var division=request.getParameter("division");
+	var department=request.getParameter("department");	
+
+	if(request.getParameter("endyearform")!=0){
+		endyearform=request.getParameter("endyearform");
+		endmonthform=request.getParameter("endmonthform");
+	}
+
+	var change_his_default=db.query("SELECT * FROM person_organization WHERE person_id='"+person_id+"' AND (his_default='1' OR his_default='2');");
+
+	if((his_default=="1"&&change_his_default.length>0)|(last_working_place=="2"&&change_his_default.length>0)){
+		db.query("UPDATE person_organization SET his_default='0' WHERE person_organization_id='"+change_his_default[0].person_organization_id+"'");
+	}else if(change_his_default.length==0){
+		his_default="1";
+	}
+
+	var his_default_db=(last_working_place=="2")?last_working_place:his_default;//This variable must be here otherwise in first attempt ir will not work correctly.Don't move this to top
+
+	db.query("INSERT INTO person_organization(person_id,organization_id,startyear,endyear,startmonth,endmonth,his_default,record_status) VALUES('"+person_id+"','"+organizationform+"','"+startyearform+"','"+endyearform+"','"+startmonthform+"','"+endmonthform+"','"+his_default_db+"','1');");
+
+	if(his_default=="1"|last_working_place=="2"){
+		db.query("UPDATE person SET division_id=null,department_id=null WHERE person_id='"+person_id+"'");
+	}
+
+	if((division!="-1"&&his_default=="1")|(division!="-1"&&last_working_place=="2")){
+		db.query("UPDATE person SET division_id='"+division+"' WHERE person_id='"+person_id+"'");
+	}
+
+	if((department!="-1"&&his_default=="1")|(department!="-1"&&last_working_place=="2")){
+		db.query("UPDATE person SET department_id='"+department+"' WHERE person_id='"+person_id+"'");
+	}
+
+	print("true");
+
+}
+
+function getMonthForPrint(value){
+	switch(value){
+		case 1:
+			return 'January';
+		case 2:
+			return 'February';
+		case 3:
+			return 'March';
+		case 4:
+			return 'April';
+		case 5:
+			return 'May';
+		case 6:
+			return 'June';
+		case 7:
+			return 'July';
+		case 8:
+			return 'August';
+		case 9:
+			return 'September';
+		case 10:
+			return 'October';
+		case 11:
+			return 'November';
+		case 12:
+			return 'December';
+	}
+}
+
+function getMonthForSave(value){
+	switch(value){
+		case 'January':
+			return '1';
+		case 'February':
+			return '2';
+		case 'March':
+			return '3';
+		case 'April':
+			return '4';
+		case 'May':
+			return '5';
+		case 'June':
+			return '6';
+		case 'July':
+			return '7';
+		case 'August':
+			return '8';
+		case 'September':
+			return '9';
+		case 'October':
+			return '10';
+		case 'November':
+			return '11';
+		case 'December':
+			return '12';
+	}
+}
+%>

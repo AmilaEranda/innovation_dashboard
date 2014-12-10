@@ -1,0 +1,28 @@
+<%include('db.jag');%>
+<%
+	var person_id=request.getParameter("person_id_for_organization");
+        print(getOrganizationsOfPerson(person_id));
+	function getOrganizationsOfPerson(person_id){
+		var organization_values=[];
+                var organizations=db.query("SELECT organization_id FROM person_organization WHERE person_id='"+person_id+"'");
+
+                var organizationsfiltered=[];
+                var organizationsfilteredindex=0;
+
+                for(var i=0;i<organizations.length;i++){
+                	if(i!=0){
+                		for(var j=0;j<organizationsfiltered.length;j++){
+                			if(organizations[i].organization_id==organizationsfiltered[j]){break;}
+                			else if(organizations[i].organization_id!=organizationsfiltered[organizationsfilteredindex]){organizationsfiltered[organizationsfilteredindex++]=organizations[i].organization_id;}
+        	        	}
+                	}else{
+                		organizationsfiltered[organizationsfilteredindex++]=organizations[i].organization_id;
+                	}        	
+                }
+                for(var i=0;i<organizationsfiltered.length;i++){
+                	var org=db.query("SELECT organization_id,name FROM organization WHERE organization_id='"+organizationsfiltered[i]+"'");
+                	organization_values.push(org[0]);
+                }
+                return organization_values;
+	}
+%>

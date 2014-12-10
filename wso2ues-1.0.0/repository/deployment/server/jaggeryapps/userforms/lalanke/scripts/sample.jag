@@ -1,0 +1,16 @@
+<%
+var word = request.getParameter("q");
+
+function getDBData() {
+    var db = new Database("jdbc:mysql://localhost:3306/select2_db", "root", "123");
+	var dbdt = [];
+	
+	var result = db.query("SELECT id, name, image FROM person WHERE name LIKE '%" + word + "%'");
+	for(var i = 0; i < result.length; i++){
+		dbdt.push({"id": result[i].id, "name": result[i].name});
+	}
+	return {person_data:dbdt};
+}
+print(getDBData());
+
+%>

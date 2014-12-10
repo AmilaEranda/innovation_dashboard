@@ -1,0 +1,187 @@
+<html>
+<%
+var user = require('/modules/user.js').current();
+if (!user) {
+    response.sendRedirect('/userforms/login');
+}else{%>
+<%include('db.jag');%>
+<%include("mailconverter.jag");%>
+<%var username=session.get("LOGGED_IN_USER")+"";%>
+<%var person=db.query("SELECT * FROM person WHERE email='"+""+remakeEmail(username)+"'");%>
+<%var person_id=person[0].person_id;%>
+<%var url="images/users/";url+=(person[0].image_name==""|person[0].image_name==null)?"profile.jpg": person[0].person_id+"/"+person[0].image_name;%>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>Innovation | Dashboard</title>
+        <meta content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no' name='viewport'>
+        <link href="css1/bootstrap.min.css" rel="stylesheet" type="text/css" />
+        <link href="css1/font-awesome.min.css" rel="stylesheet" type="text/css" />
+        <link href="css1/panel.css" rel="stylesheet" type="text/css" />
+        <link type="text/css" rel="stylesheet" href="css1/forms/basicdetails.css" />
+        <link href="css1/jquerymessagebox/msgBoxLight.css" rel="stylesheet" type="text/css">
+        <script src="js1/jquery/jquery-1.9.1.js"></script>
+        <script src="js1/bootstrap/bootstrap.min.js" type="text/javascript"></script>
+        <script src="js1/home/forms.js" type="text/javascript"></script>
+        <script src="js1/jquerymessagebox/jquery.msgBox.js" type="text/javascript"></script>
+        <script type="text/javascript">
+            $(function(){
+                $('#contactdetailsform').submit(function(){
+                    if($("#additional_email").val().length>0){
+                        if(isEmail($("#additional_email").val())){
+                            submitData();
+                        }else{
+                            errorMessage("Error","Invalid Other E-Mail Address");
+                        }
+                    }else{
+                        submitData();
+                    }                                        
+                    return false;
+                });
+            });
+            function submitData(){
+                var url = "contactdetails.jag";
+                $.ajax({
+                   type: "POST",
+                   url: url,
+                   data: $("#contactdetailsform").serialize(),
+                   success: function(data)
+                   {
+                       if ($.trim(data) == 'true') {
+                            successMessage("Done", "Update Successfully");
+                        } else {
+                            errorMessage("Error",data);
+                        }
+                   }
+                });
+            }
+            function errorMessage(title,error){$.msgBox({title: title,content: error});}function successMessage(title,content){$.msgBox({title:title,content:content,type: "info"});}
+            function isEmail(email){var regex = /^([a-zA-Z0-9.+-])+\@(([a-zA-Z0-9-])+\.)+([a-zA-Z0-9]{2,4})+$/;return regex.test(email);}
+        </script>
+    </head>
+    <body class="skin-blue">        
+        <div class="wrapper row-offcanvas row-offcanvas-left">
+            <aside class="left-side sidebar-offcanvas" style="margin-top:-50px;">
+                <section class="sidebar">
+                    <div class="user-panel" style="height: 51px;">
+                        <div class="pull-left image">
+                            <img src="<%=url%>" class="img-circle" style="margin-top: -5px;" alt="User Image" />
+                        </div>
+                        <div class="pull-left info">
+                            <p><%=(person[0].first_name.length>26)?person[0].first_name.substring(0,25):person[0].first_name%></p>
+                        </div>
+                    </div>
+                    <ul class="sidebar-menu">
+                        <li class="active">
+                            <a href="mainprofile.jag">
+                                <i class="fa fa-group"></i><span>Profile</span>
+                            </a>
+                        </li>
+                        <li class="active">
+                            <a href="mainprofilebasicdetails.jag">
+                                <i class="fa fa-user"></i><span>Basic Details</span>
+                            </a>
+                        </li>
+                        <li  class="active">
+                            <a href="mainprofilepasswordreset.jag">
+                                <i class="fa fa-lock"></i><span>Password Reset</span>
+                            </a>
+                        </li>
+                        <li  class="active">
+                            <a href="mainprofilecontactdetails.jag">
+                                <i class="fa fa-phone"></i><span>Contact Details</span>
+                            </a>
+                        </li>
+                        <li  class="active">
+                            <a href="mainprofileorganizationdetails.jag">
+                                <i class="fa fa-home"></i><span>Organization details</span>
+                            </a>
+                        </li>
+                        <li class="treeview">
+                            <a href="#">
+                                <i class="fa fa-laptop"></i>
+                                <span>Publications</span>
+                                <i class="fa fa-angle-left pull-right"></i>
+                            </a>
+                            <ul class="treeview-menu">
+                                <li><a href="mainprofilepublications.jag?formtype=jour" style="margin-left: 10px;"><i class="fa fa-angle-double-right"></i>Journal Article</a></li>
+                                <li><a href="mainprofilepublications.jag?formtype=book" style="margin-left: 10px;"><i class="fa fa-angle-double-right"></i>Book</a></li>
+                                <li><a href="mainprofilepublications.jag?formtype=tech" style="margin-left: 10px;"><i class="fa fa-angle-double-right"></i>Technical Report</a></li>
+                                <li><a href="mainprofilepublications.jag?formtype=conf" style="margin-left: 10px;"><i class="fa fa-angle-double-right"></i>Conference</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </section>
+            </aside>
+            <aside class="right-side">
+                <section class="content">
+                    <div id="formWrapper" class="container roundCorner textColor">
+                        <form class="form-horizontal" id="contactdetailsform">
+                            <fieldset>
+                                <legend style="margin-left:20px;">Telephone Details</legend>
+                                <div class="form-group">
+                                    <label class="control-label col-xs-3">Telephone No.</label>
+                                    <div class="col-xs-5">
+                                        <input id="telephoneform" name="telephoneform" type="text" placeholder="Telephone Number" class="form-control1 input-md" value="<%=(person[0].telephone==null)?"":person[0].telephone%>">
+                                    </div>
+                                    <label class="control-label col-xs-1">Extention</label>
+                                    <div class="col-xs-3">
+                                        <input id="extention" name="extention" type="text" placeholder="Extention Number" class="form-control1 input-md" value="<%=(person[0].extention==null)?"":person[0].extention%>">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label col-xs-3">Mobile No.</label>
+                                    <div class="col-xs-9">
+                                        <input id="mobileform" name="mobileform" type="text" placeholder="Mobile Number" class="form-control1 input-md" value="<%=(person[0].mobile==null)?"":person[0].mobile%>">
+                                    </div>
+                                </div>
+                                <legend style="margin-left:20px;">Fax</legend>
+                                <div class="form-group">
+                                    <label class="control-label col-xs-3">Fax No.</label>
+                                    <div class="col-xs-9">
+                                        <input id="fax" name="fax" type="text" placeholder="Fax Number" class="form-control1 input-md" value="<%=(person[0].fax==null)?"":person[0].fax%>">
+                                    </div>
+                                </div>
+                                <legend style="margin-left:20px;">E-Mail</legend>
+                                <div class="form-group">
+                                    <label class="control-label col-xs-3">Primary E-mail</label>
+                                    <div class="col-xs-9">
+                                        <input id="email" name="email" type="text" placeholder="E-Mail" class="form-control1 input-md" value="<%=(person[0].email==null)?"":person[0].email%>" disabled="">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label col-xs-3">Other E-Mail</label>
+                                    <div class="col-xs-9">
+                                        <input id="additional_email" name="additional_email" type="text" placeholder="Additional Email" class="form-control1 input-md" value="<%=(person[0].additional_email==null)?"":person[0].additional_email%>">
+                                    </div>
+                                </div>
+                                <legend style="margin-left:20px;">Address Details</legend>
+                                <div class="form-group">
+                                    <label class="control-label col-xs-3">Home Address</label>
+                                    <div class="col-xs-9">
+                                        <textarea id="homeform" name="homeform" rows="4" cols="50" placeholder="Home Address" class="form-control1 input-md" style="width: 100%;height: 100px;resize: none;"><%=(person[0].address_home==null)?"":person[0].address_home%></textarea>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label col-xs-3">Office Address</label>
+                                    <div class="col-xs-9">
+                                        <textarea id="officeform" name="officeform" rows="4" cols="50" placeholder="Office Address" class="form-control1 input-md" style="width: 100%;height: 100px;resize: none;"><%=(person[0].address_office==null)?"":person[0].address_office%></textarea>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label col-xs-3"></label>
+                                    <div class="col-xs-5"></div>
+                                    <div class="col-xs-2"></div>
+                                    <div class="col-xs-2">
+                                        <button id="register" name="register" class="btn btn-primary">Save</button>
+                                    </div>
+                                </div>
+                            </fieldset>
+                            <input type="hidden" name="type" value="edi"/>
+                        </form>
+                    </div>
+                </section>
+            </aside>
+        </div><br><br><br><br>
+    </body>
+</html><%}%>

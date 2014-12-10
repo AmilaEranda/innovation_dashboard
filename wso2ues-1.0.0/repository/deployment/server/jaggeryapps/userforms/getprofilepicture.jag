@@ -1,0 +1,14 @@
+<%
+var user = require('/modules/user.js').current();
+if (!user) {
+    response.sendRedirect('/userforms/login');
+}else{
+	include("db.jag");
+	include("mailconverter.jag");
+	var username=session.get("LOGGED_IN_USER")+"";
+	var person=db.query("SELECT * FROM person WHERE email='"+""+remakeEmail(username)+"'");
+	var url="images/users/";
+	url+=(person[0].image_name==""|person[0].image_name==null)?"profile.jpg":""+person[0].person_id+"/"+person[0].image_name;
+	print("userforms/"+url);
+}
+%>

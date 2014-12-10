@@ -1,0 +1,404 @@
+<%var user = require('/modules/user.js').current();
+if (!user) {
+    response.sendRedirect('/userforms/login');
+}else{%>
+<%include("db.jag");%>
+<%include("mailconverter.jag");%>
+<%var username=session.get("LOGGED_IN_USER")+"";%>
+<%var person=db.query("SELECT * FROM person WHERE email='"+""+remakeEmail(username)+"'");%>
+<%
+	var publication=db.query("SELECT * FROM publication WHERE publication_id='"+request.getParameter("pub_id")+"'");
+	var person_publication=db.query("SELECT * FROM person_publication WHERE publication_id='"+request.getParameter("pub_id")+"'");
+	var journalname=db.query("SELECT journal_title FROM journal WHERE journal_id='"+publication[0].journal_id+"'");
+    //var organizations=db.query("SELECT * FROM organization_person_publication WHERE ");
+    var coauthors=db.query("SELECT full_name FROM person WHERE person_id=ANY(SELECT person_id FROM person_publication WHERE publication_id='"+request.getParameter("pub_id")+"')");
+    var sub_sub_area_of_interest=db.query("SELECT name FROM sub_sub_area_of_interest WHERE sub_sub_area_of_interest_id=ANY(SELECT sub_sub_area_of_interest_id FROM publication_area_of_interest WHERE publication_publication_id='"+request.getParameter("pub_id")+"')");
+    var subareaofinterests=db.query("SELECT a.name FROM sub_area_of_interest a RIGHT JOIN publication_area_of_interest b ON a.sub_area_of_interest_id=b.sub_area_of_interest_id WHERE b.publication_publication_id='"+request.getParameter("pub_id")+"';");
+    var areaofinterest=db.query("SELECT a.name FROM area_of_interest a RIGHT JOIN publication_area_of_interest b ON a.area_of_interest_id=b.area_of_interest_id WHERE b.publication_publication_id='"+request.getParameter("pub_id")+"';");
+    var organizations=db.query("SELECT name FROM organization WHERE organization_id=ANY(SELECT distinct organization_id FROM organization_person_publication WHERE person_publication_id=ANY(SELECT person_publication_id FROM person_publication WHERE publication_id='"+request.getParameter("pub_id")+"'))");
+	var url="";
+
+	if(request.getParameter("year")==null){
+		url+="personpapers.jag";
+	}else{
+		url+="personpapers.jag?year="+request.getParameter("year");
+	}
+
+	function getMonthForDisplay(monthno){
+		switch(monthno) {
+		    case 1:
+		        return "January";
+		    case 2:
+		        return "February";
+		    case 3:
+		       return "March";
+		    case 4:
+		        return "April";
+		    case 5:
+		       return "May";
+		    case 6:
+		        return "June";
+		    case 7:
+		        return "July";
+		    case 8:
+		        return "August";
+		    case 9:
+		       return "September";
+		    case 10:
+		        return "October";
+		    case 11:
+		       return "November";
+		    case 12:
+		        return "December";
+		    case 0:
+		        return "";
+		}
+	}
+%>
+<html>
+	<head>
+        <script src="js1/jquery/jquery-1.9.1.js"></script>
+        <link href="css1/bootstrap.min.css" rel="stylesheet" type="text/css" />
+        <style>
+            label { display: inline-block; width: 20%; }
+            .realperson-challenge { display: inline-block }
+        </style>
+        <style>
+			.CSSTableGenerator {
+				margin:0px;padding:0px;
+				width:100%;
+				box-shadow: 10px 10px 5px #888888;
+				border:1px solid #000000;
+				
+				-moz-border-radius-bottomleft:0px;
+				-webkit-border-bottom-left-radius:0px;
+				border-bottom-left-radius:0px;
+				
+				-moz-border-radius-bottomright:0px;
+				-webkit-border-bottom-right-radius:0px;
+				border-bottom-right-radius:0px;
+				
+				-moz-border-radius-topright:0px;
+				-webkit-border-top-right-radius:0px;
+				border-top-right-radius:0px;
+				
+				-moz-border-radius-topleft:0px;
+				-webkit-border-top-left-radius:0px;
+				border-top-left-radius:0px;
+			}.CSSTableGenerator table{
+			    border-collapse: collapse;
+			        border-spacing: 0;
+				width:100%;
+				margin:0px;padding:0px;
+			}.CSSTableGenerator tr:last-child td:last-child {
+				-moz-border-radius-bottomright:0px;
+				-webkit-border-bottom-right-radius:0px;
+				border-bottom-right-radius:0px;
+			}
+			.CSSTableGenerator table tr:first-child td:first-child {
+				-moz-border-radius-topleft:0px;
+				-webkit-border-top-left-radius:0px;
+				border-top-left-radius:0px;
+			}
+			.CSSTableGenerator table tr:first-child td:last-child {
+				-moz-border-radius-topright:0px;
+				-webkit-border-top-right-radius:0px;
+				border-top-right-radius:0px;
+			}.CSSTableGenerator tr:last-child td:first-child{
+				-moz-border-radius-bottomleft:0px;
+				-webkit-border-bottom-left-radius:0px;
+				border-bottom-left-radius:0px;
+			}.CSSTableGenerator tr:hover td{
+				
+			}
+			.CSSTableGenerator tr:nth-child(odd){ background-color:#aad4ff; }
+			.CSSTableGenerator tr:nth-child(even)    { background-color:#ffffff; }.CSSTableGenerator td{
+				vertical-align:middle;
+				
+				
+				border:1px solid #000000;
+				border-width:0px 1px 1px 0px;
+				text-align:left;
+				padding:7px;
+				font-size:10px;
+				font-family:Arial;
+				font-weight:normal;
+				color:#000000;
+			}.CSSTableGenerator tr:last-child td{
+				border-width:0px 1px 0px 0px;
+			}.CSSTableGenerator tr td:last-child{
+				border-width:0px 0px 1px 0px;
+			}.CSSTableGenerator tr:last-child td:last-child{
+				border-width:0px 0px 0px 0px;
+			}
+			.CSSTableGenerator tr:first-child td{
+					background:-o-linear-gradient(bottom, #005fbf 5%, #003f7f 100%);	background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #005fbf), color-stop(1, #003f7f) );
+				background:-moz-linear-gradient( center top, #005fbf 5%, #003f7f 100% );
+				filter:progid:DXImageTransform.Microsoft.gradient(startColorstr="#005fbf", endColorstr="#003f7f");	background: -o-linear-gradient(top,#005fbf,003f7f);
+
+				background-color:#005fbf;
+				border:0px solid #000000;
+				text-align:center;
+				border-width:0px 0px 1px 1px;
+				font-size:14px;
+				font-family:Arial;
+				font-weight:bold;
+				color:#ffffff;
+			}
+			.CSSTableGenerator tr:first-child:hover td{
+				background:-o-linear-gradient(bottom, #005fbf 5%, #003f7f 100%);	background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #005fbf), color-stop(1, #003f7f) );
+				background:-moz-linear-gradient( center top, #005fbf 5%, #003f7f 100% );
+				filter:progid:DXImageTransform.Microsoft.gradient(startColorstr="#005fbf", endColorstr="#003f7f");	background: -o-linear-gradient(top,#005fbf,003f7f);
+
+				background-color:#005fbf;
+			}
+			.CSSTableGenerator tr:first-child td:first-child{
+				border-width:0px 0px 1px 0px;
+			}
+			.CSSTableGenerator tr:first-child td:last-child{
+				border-width:0px 0px 1px 1px;
+			}
+		</style>
+    </head>
+	<body>
+		<div class="modal-header">
+            <a href="<%=url%>"><h4 class="modal-title" id="myModalLabel">Back</h4></a>
+        </div>
+        <div class="modal-body">
+        	<%if(publication[0].publication_type=="1"){%>
+        		<div class="CSSTableGenerator">
+		            <table>
+		                <tr>
+		                    <td width="20%"></td>
+		                    <td></td>
+		                </tr>
+		                <tr>
+		                    <td>Journal</td>
+		                    <td><%=journalname[0].journal_title%></td>
+		                </tr>
+		                <tr>
+		                    <td>Article title</td>
+		                    <td><%=publication[0].title%></td>
+		                </tr>
+		                <tr>
+		                    <td>Volume No.</td>
+		                    <td><%=(publication[0].volume_number==null)?"":publication[0].volume_number%></td>
+		                </tr>
+		                <tr>
+		                    <td>Issue No.</td>
+		                    <td><%=(publication[0].issue_number==null)?"":publication[0].issue_number%></td>
+		                </tr>
+		                <tr>
+		                    <td>Editions</td>
+		                    <td><%=(publication[0].editions==null)?"":publication[0].editions%></td>
+		                </tr>
+		                <tr>
+		                    <td>Pages</td>
+		                    <td><%=(publication[0].pages==null)?"":publication[0].pages%></td>
+		                </tr>
+		                <tr>
+		                    <td>Year</td>
+		                    <td><%=publication[0].year.toString().substring(0,4)%></td>
+		                </tr>
+		                <tr>
+		                    <td>Month</td>
+		                    <td><%=getMonthForDisplay(publication[0].month)%></td>
+		                </tr>
+		                <tr>
+		                    <td>Co-Authors</td>
+		                    <td><%for(var i=0;i<coauthors.length;i++){
+		                    		if(i==0){print(coauthors[i].full_name);}
+		                    		else{print(", "+coauthors[i].full_name);}
+		                    	}%>
+		                    </td>
+		                </tr>
+		                <tr>
+		                    <td>Area of interests</td>
+		                    <td><%for(var i=0;i<sub_sub_area_of_interest.length;i++){
+		                    		if(i==0){print(areaofinterest[i].name+" > "+subareaofinterests[i].name+" > "+sub_sub_area_of_interest[i].name);}
+		                    		else{print("<br>"+areaofinterest[i].name+" > "+subareaofinterests[i].name+" > "+sub_sub_area_of_interest[i].name);}
+		                    	}%><%//=areaofinterest.length%>
+		                    </td>
+		                </tr>
+		                <tr>
+		                    <td>Collaboration Universities/Institutes</td>
+		                    <td>
+		                    	<%for(var i=0;i<organizations.length;i++){
+		                    		if(i==0){print(organizations[i].name);}
+		                    		else{print(", "+organizations[i].name);}
+		                    	}%>
+		                    </td>
+		                </tr>
+		            </table>
+		        </div>
+        	<%}%><%else if(publication[0].publication_type=="2"){%>
+        		<div class="CSSTableGenerator">
+		            <table>
+		                <tr>
+		                    <td width="20%"></td>
+		                    <td></td>
+		                </tr>
+		                <tr>
+		                    <td>Book Name</td>
+		                    <td><%=(publication[0].name==null)?"":publication[0].name%></td>
+		                </tr>
+		                <tr>
+		                    <td>Publisher</td>
+		                    <td><%=(publication[0].publisher==null)?"":publication[0].publisher%></td>
+		                </tr>
+		                <tr>
+		                    <td>Editions</td>
+		                    <td><%=(publication[0].editions==null)?"":publication[0].editions%></td>
+		                </tr>
+		                <tr>
+		                    <td>ISBN No.</td>
+		                    <td><%=(publication[0].isbn_no==null)?"":publication[0].isbn_no%></td>
+		                </tr>
+		                <tr>
+		                    <td>Year</td>
+		                    <td><%=publication[0].year.toString().substring(0,4)%></td>
+		                </tr>
+		                <tr>
+		                    <td>Co-Authors</td>
+		                    <td><%for(var i=0;i<coauthors.length;i++){
+		                    		if(i==0){print(coauthors[i].full_name);}
+		                    		else{print(", "+coauthors[i].full_name);}
+		                    	}%>
+		                    </td>
+		                </tr>
+		                <tr>
+		                    <td>Area of interests</td>
+		                    <td><%for(var i=0;i<sub_sub_area_of_interest.length;i++){
+		                    		if(i==0){print(areaofinterest[i].name+" > "+subareaofinterests[i].name+" > "+sub_sub_area_of_interest[i].name);}
+		                    		else{print("<br>"+areaofinterest[i].name+" > "+subareaofinterests[i].name+" > "+sub_sub_area_of_interest[i].name);}
+		                    	}%><%//=areaofinterest.length%>
+		                    </td>
+		                </tr>
+		                <tr>
+		                    <td>Collaboration Universities/Institutes</td>
+		                    <td>
+		                    	<%for(var i=0;i<organizations.length;i++){
+		                    		if(i==0){print(organizations[i].name);}
+		                    		else{print(", "+organizations[i].name);}
+		                    	}%>
+		                    </td>
+		                </tr>
+		            </table>
+		        </div>
+        	<%}%><%else if(publication[0].publication_type=="3"){%>
+        		<div class="CSSTableGenerator">
+		            <table>
+		                <tr>
+		                    <td width="20%"></td>
+		                    <td></td>
+		                </tr>
+		                <tr>
+		                    <td>Series Name</td>
+		                    <td><%=publication[0].name%></td>
+		                </tr>
+		                <tr>
+		                    <td>Document Title</td>
+		                    <td><%=publication[0].title%></td>
+		                </tr>
+		                <tr>
+		                    <td>Editions</td>
+		                    <td><%=(publication[0].editions==null)?"":publication[0].editions%></td>
+		                </tr>
+		                <tr>
+		                    <td>Year</td>
+		                    <td><%=publication[0].year.toString().substring(0,4)%></td>
+		                </tr>
+		                <tr>
+		                    <td>Month</td>
+		                    <td><%=getMonthForDisplay(publication[0].month)%></td>
+		                </tr>
+		                <tr>
+		                    <td>Co-Authors</td>
+		                    <td><%for(var i=0;i<coauthors.length;i++){
+		                    		if(i==0){print(coauthors[i].full_name);}
+		                    		else{print(", "+coauthors[i].full_name);}
+		                    	}%>
+		                    </td>
+		                </tr>
+		                <tr>
+		                    <td>Area of interests</td>
+		                    <td><%for(var i=0;i<sub_sub_area_of_interest.length;i++){
+		                    		if(i==0){print(areaofinterest[i].name+" > "+subareaofinterests[i].name+" > "+sub_sub_area_of_interest[i].name);}
+		                    		else{print("<br>"+areaofinterest[i].name+" > "+subareaofinterests[i].name+" > "+sub_sub_area_of_interest[i].name);}
+		                    	}%><%//=areaofinterest.length%>
+		                    </td>
+		                </tr>
+		                <tr>
+		                    <td>Collaboration Universities/Institutes</td>
+		                    <td>
+		                    	<%for(var i=0;i<organizations.length;i++){
+		                    		if(i==0){print(organizations[i].name);}
+		                    		else{print(", "+organizations[i].name);}
+		                    	}%>
+		                    </td>
+		                </tr>
+		            </table>
+		        </div>
+        	<%}%><%else if(publication[0].publication_type=="4"){%>
+        		<div class="CSSTableGenerator">
+		            <table>
+		                <tr>
+		                    <td width="20%"></td>
+		                    <td></td>
+		                </tr>
+		                <tr>
+		                    <td>Proceeding Name</td>
+		                    <td><%=publication[0].name%></td>
+		                </tr>
+		                <tr>
+		                    <td>Article title</td>
+		                    <td><%=publication[0].title%></td>
+		                </tr>
+		                <tr>
+		                    <td>Editions</td>
+		                    <td><%=(publication[0].editions==null)?"":publication[0].editions%></td>
+		                </tr>
+		                <tr>
+		                    <td>Pages</td>
+		                    <td><%=(publication[0].pages==null)?"":publication[0].pages%></td>
+		                </tr>
+		                <tr>
+		                    <td>Year</td>
+		                    <td><%=publication[0].year.toString().substring(0,4)%></td>
+		                </tr>
+		                <tr>
+		                    <td>Month</td>
+		                    <td><%=getMonthForDisplay(publication[0].month)%></td>
+		                </tr>
+		                <tr>
+		                    <td>Co-Authors</td>
+		                    <td><%for(var i=0;i<coauthors.length;i++){
+		                    		if(i==0){print(coauthors[i].full_name);}
+		                    		else{print(", "+coauthors[i].full_name);}
+		                    	}%>
+		                    </td>
+		                </tr>
+		                <tr>
+		                    <td>Area of interests</td>
+		                    <td><%for(var i=0;i<sub_sub_area_of_interest.length;i++){
+		                    		if(i==0){print(areaofinterest[i].name+" > "+subareaofinterests[i].name+" > "+sub_sub_area_of_interest[i].name);}
+		                    		else{print("<br>"+areaofinterest[i].name+" > "+subareaofinterests[i].name+" > "+sub_sub_area_of_interest[i].name);}
+		                    	}%><%//=areaofinterest.length%>
+		                    </td>
+		                </tr>
+		                <tr>
+		                    <td>Collaboration Universities/Institutes</td>
+		                    <td>
+		                    	<%for(var i=0;i<organizations.length;i++){
+		                    		if(i==0){print(organizations[i].name);}
+		                    		else{print(", "+organizations[i].name);}
+		                    	}%>
+		                    </td>
+		                </tr>
+		            </table>
+		        </div>
+        	<%}%>	    	
+	    </div>
+	</body>
+</html>
+<%}%>

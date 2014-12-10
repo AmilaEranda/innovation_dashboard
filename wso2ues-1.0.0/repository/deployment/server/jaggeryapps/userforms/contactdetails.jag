@@ -1,0 +1,21 @@
+<%include('db.jag');%>
+<%include("mailconverter.jag");%>
+<%var username=session.get("LOGGED_IN_USER")+"";%>
+<%var person=db.query("SELECT * FROM person WHERE email='"+""+remakeEmail(username)+"'");%>
+<%var person_id=person[0].person_id;%>
+<%include('escaper.jag');%>
+<%
+	try{
+		var telephoneform=escape(request.getParameter("telephoneform"));
+		var mobileform=escape(request.getParameter("mobileform"));
+		var homeform=escape(request.getParameter("homeform"));
+		var officeform=escape(request.getParameter("officeform"));
+		var additional_email=escape(request.getParameter("additional_email"));
+		var extention=escape(request.getParameter("extention"));
+		var fax=escape(request.getParameter("fax"));
+		db.query("UPDATE person SET telephone='"+telephoneform+"',mobile='"+mobileform+"',address_home='"+homeform+"',address_office='"+officeform+"',additional_email='"+additional_email+"',extention='"+extention+"',fax='"+fax+"' WHERE person_id='"+person_id+"';");
+		print('true');
+	}catch(e){
+		print("Error while updating contact details.Please contact support team.Thank you.");
+	}
+%>

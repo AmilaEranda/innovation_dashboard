@@ -1,0 +1,19 @@
+<%include("db.jag");%>
+<%include("mailconverter.jag");%>
+<%var username=session.get("LOGGED_IN_USER")+"";%>
+<%var person=db.query("SELECT * FROM person WHERE email='"+""+remakeEmail(username)+"'");%>
+<%
+	if(request.getParameter("pubid")==null|request.getParameter("pubid")==""){
+		response.sendRedirect("personpapers.jag");
+	}else{%>
+			<%var publication=db.query("SELECT * FROM publication WHERE publication_id='"+request.getParameter("pubid")+"'");%>
+			<%if(publication.length>0&&publication[0].person_id==person[0].person_id){%>
+				<%if(request.getParameter("type")=="delete"){%>
+					<%db.query("DELETE FROM publication WHERE publication_id='"+request.getParameter("pubid")+"'");print("true");%>
+				<%}%>
+			<%}else if(person.length>0&&request.getParameter("type")=="unfollow"){%>
+				<%db.query("DELETE FROM person_publication WHERE publication_id='"+request.getParameter("pubid")+"' AND person_id='"+person[0].person_id+"' ");print("true");%>
+			<%}else{%>
+				print("Authentication fail.");
+			<%}%>			
+<%}%>

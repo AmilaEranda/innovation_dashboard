@@ -1,0 +1,77 @@
+<!DOCTYPE HTML>
+<html lang="en">
+    <head>
+        <link href="css1/bootstrap.min.css" rel="stylesheet" type="text/css" />
+        <link href="css1/fileupload/styles.css" rel="stylesheet">
+        <link href="css1/jquerymessagebox/msgBoxLight.css" rel="stylesheet" type="text/css">
+    </head>
+    <body>
+        <div class="control-group" style="margin-left:auto;margin-right:auto;">
+            <div class="controls full-width">
+                <form class="form-horizontal" enctype="multipart/form-data" id="profilepictureform" name="profilepictureform">
+                    <div class="fileupload fileupload-new" data-provides="fileupload">
+                        <div class="fileupload-new thumbnail" style="width: 200px; height: 150px;">
+                            <img src="http://www.placehold.it/200x150/EFEFEF/AAAAAA&amp;text=no+image"/>
+                        </div>
+                        <div class="fileupload-preview fileupload-exists thumbnail"></div>
+                        <div>
+                            <span class="btn btn-info btn-file">
+                                <span class="fileupload-new">Select image</span>
+                                <span class="fileupload-exists">Change</span>
+                                <input type="file" name="file" id="file"/>
+                            </span>
+                            <a href="#" class="btn btn-danger fileupload-exists" data-dismiss="fileupload">Remove</a>
+                        </div>
+                    </div>
+                    <input type="submit" value="Upload" class="btn btn-info">
+                </form>
+            </div>
+        </div>
+        <script src="js1/jquery/jquery-1.9.1.js"></script>
+        <script src="js1/fileupload/bootstrap-fileupload.js"></script>
+        <script src="js1/jquerymessagebox/jquery.msgBox.js" type="text/javascript"></script>
+        <script type="text/javascript">
+            $("#profilepictureform").submit(function(eventObj){
+                if($("#file").val()==""){
+                    errorMessage("Error","Please select an image.");
+                }else{
+                    $.ajax({
+                        type: "POST",
+                        mimeType:"multipart/form-data",
+                        contentType: false,
+                        cache: false,
+                        processData:false,
+                        url: 'mainprofilephotoupload.jag',
+                        data: new FormData(document.getElementById("profilepictureform")),
+                        success: function(datas)
+                        {
+                           if ($.trim(datas) == 'true') {
+                                successMessage("Done", "Save Successfully");
+                                window.setTimeout(function() {
+                                    window.top.location.href="/user/";
+                                }, 1000);
+                            }else{
+                                //$("#register").attr('disabled',false);
+                                errorMessage("Error",datas);
+                            }
+                        }
+                    });
+                }
+                return false;
+            });
+            function errorMessage(title, error) {
+                $.msgBox({
+                    title: title,
+                    content: error
+                });
+            }
+            function successMessage(title, content) {
+                $.msgBox({
+                    title: title,
+                    content: content,
+                    type: "info"
+                });
+            }
+        </script>
+    </body>
+</html>

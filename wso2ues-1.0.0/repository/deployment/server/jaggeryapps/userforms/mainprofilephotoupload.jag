@@ -1,0 +1,32 @@
+<%include('db.jag');%>
+<%include("mailconverter.jag");%>
+<%
+var username=session.get("LOGGED_IN_USER")+"";
+var person=db.query("SELECT * FROM person WHERE email='"+""+remakeEmail(username)+"'");
+var person_id=person[0].person_id;
+var file = request.getFile("file");
+var file_extension=file.getName().split('.').pop();
+var folderpath="images/users/"+person_id+"/";
+var folder=new File(folderpath);
+if(!folder.isDirectory()){
+	folder.mkdir();
+}else{
+	folder.del();
+	folder=new File(folderpath);
+	folder.mkdir();
+}
+file.move(folderpath+person_id+"."+file_extension);
+db.query("UPDATE person SET image_name='"+person_id+"."+file_extension+"' WHERE person_id='"+person_id+"'");
+print("true");
+/*function uploadFile(file){
+	var file = request.getFile("file");
+	var folderpath="images/users/"+person_id;
+	var folder=new File(folderpath);
+	var fileindir=new File("images/users/"+person_id+"/"+file.getName());
+	if(!folder.isDirectory()){
+		folder.mkdir();
+	}
+	file.move("images/users/"+person_id+"/"+file.getName());
+	return true;
+}*/
+%>

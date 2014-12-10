@@ -1,0 +1,16 @@
+<%
+
+	var word = request.getParameter("q");
+
+function getDBData() {
+    var db = new Database("jdbc:mysql://localhost:3306/innovation_db", "root", "123");
+	var dbdt = [];
+	
+	var result = db.query("SELECT person_id, full_name FROM person WHERE full_name LIKE '%" + word + "%'");
+	for(var i = 0; i < result.length; i++){
+		dbdt.push({"person_id": result[i].person_id, "full_name": result[i].full_name});
+	}
+	return {person_data:dbdt};
+}
+print(getDBData());
+%>

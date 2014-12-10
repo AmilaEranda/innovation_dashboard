@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<%
+var user = require('/modules/user.js').current();
+if (!user) {
+    response.sendRedirect('/userforms/login');
+}else{%>
+<%include('db.jag');%>
+<%include("mailconverter.jag");%>
+<%var year=new Date().getFullYear();%>
+<%var username=session.get("LOGGED_IN_USER")+"";%>
+<%var person=db.query("SELECT * FROM person WHERE email='"+""+remakeEmail(username)+"'");%>
+<%var person_id=person[0].person_id;%>
+<%var url="images/users/";url+=(person[0].image_name==""|person[0].image_name==null)?"profile.jpg": person[0].person_id+"/"+person[0].image_name;%>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>Innovation | Dashboard</title>
+        <meta content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no' name='viewport'>
+        <link href="css1/bootstrap.min.css" rel="stylesheet" type="text/css" />
+        <link href="css1/font-awesome.min.css" rel="stylesheet" type="text/css" />
+        <link href="css1/panel.css" rel="stylesheet" type="text/css" />
+        <link type="text/css" rel="stylesheet" href="css1/forms/organizationdetails.css" />
+        <link rel="stylesheet" type="text/css" media="screen" href="js1/plugins/jqgrid/css/themes/ui-lightness/jquery-ui-1.10.4.min.css" />
+        <link rel="stylesheet" type="text/css" media="screen" href="js1/plugins/jqgrid/css/ui.jqgrid.css" />
+        <link href="css1/jquerymessagebox/msgBoxLight.css" rel="stylesheet" type="text/css">
+        <link rel="stylesheet" type="text/css" href="css1/select2/css/select2.css"/>
+        <link rel="stylesheet" type="text/css" href="css1/select2/select2-bootstrap.css"/>
+        <style type="text/css">
+            #jQGrid{margin-right: auto;margin-left: auto;width: 770px;}
+        </style>
+        <script type="text/javascript">
+            var divisions=<%=db.query("SELECT division_id,discription,organization_id FROM division")%>;var faculty=<%=db.query("SELECT faculty_id,description,organization_id FROM faculty")%>;var department=<%=db.query("SELECT department_id,description,faculty_id FROM department")%>;
+        </script>
+    </head>
+    <body class="skin-blue">        
+        <div class="wrapper row-offcanvas row-offcanvas-left">
+            <aside class="left-side sidebar-offcanvas" style="margin-top:-50px;">
+                <section class="sidebar">
+                    <div class="user-panel" style="height: 51px;">
+                        <div class="pull-left image">
+                            <img src="<%=url%>" class="img-circle" style="margin-top: -5px;" alt="User Image" />
+                        </div>
+                        <div class="pull-left info">
+                            <p><%=(person[0].first_name.length>26)?person[0].first_name.substring(0,25):person[0].first_name%></p>
+                        </div>
+                    </div>
+                    <ul class="sidebar-menu">
+                        <li class="active">
+                            <a href="mainprofile.jag">
+                                <i class="fa fa-group"></i><span>Profile</span>
+                            </a>
+                        </li>
+                        <li class="active">
+                            <a href="mainprofilebasicdetails.jag">
+                                <i class="fa fa-user"></i><span>Basic Details</span>
+                            </a>
+                        </li>
+                        <li  class="active">
+                            <a href="mainprofilepasswordreset.jag">
+                                <i class="fa fa-lock"></i><span>Password Reset</span>
+                            </a>
+                        </li>
+                        <li  class="active">
+                            <a href="mainprofilecontactdetails.jag">
+                                <i class="fa fa-phone"></i><span>Contact Details</span>
+                            </a>
+                        </li>
+                        <li  class="active">
+                            <a href="mainprofileorganizationdetails.jag">
+                                <i class="fa fa-home"></i><span>Organization details</span>
+                            </a>
+                        </li>
+                        <li class="treeview">
+                            <a href="#">
+                                <i class="fa fa-laptop"></i>
+                                <span>Publications</span>
+                                <i class="fa fa-angle-left pull-right"></i>
+                            </a>
+                            <ul class="treeview-menu">
+                                <li><a href="mainprofilepublications.jag?formtype=jour" style="margin-left: 10px;"><i class="fa fa-angle-double-right"></i>Journal Article</a></li>
+                                <li><a href="mainprofilepublications.jag?formtype=book" style="margin-left: 10px;"><i class="fa fa-angle-double-right"></i>Book</a></li>
+                                <li><a href="mainprofilepublications.jag?formtype=tech" style="margin-left: 10px;"><i class="fa fa-angle-double-right"></i>Technical Report</a></li>
+                                <li><a href="mainprofilepublications.jag?formtype=conf" style="margin-left: 10px;"><i class="fa fa-angle-double-right"></i>Conference</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </section>
+            </aside>
+            <aside class="right-side">
+                <section class="content">
+                    <div id="content">
+                        <div id="jQGrid"></div> 
+                    </div>
+                    <div id="formWrapper" class="container roundCorner textColor">
+                        <form class="form-horizontal" method="post" action="organizationdetails.jag" id="orgdetailsform">
+                            <fieldset>
+                                <legend style="margin-left:20px;">Add Working Details of Organizations</legend>
+                                <div class="form-group">
+                                    <label class="control-label col-xs-2" for="organizationform">Organization(*)</label>
+                                    <div class="col-xs-9">
+                                        <select id="organizationform" name="organizationform" class="select2 input-default" style="width:460px;">
+                                            <option value="-1">Select</option>
+                                            <%var organizations=db.query("SELECT * FROM organization");%>
+                                            <%for(var i=0;i<organizations.length;i++){%>
+                                            <option value="<%=organizations[i].organization_id%>"><%=organizations[i].name%></option>
+                                            <%}%>
+                                        </select>
+                                    </div>
+                                </div>                                
+                                <legend style="margin-left:20px;">Select Your Department</legend>
+                                <div class="form-group">
+                                    <label class="control-label col-xs-2" for="faculty">Faculty</label>
+                                    <div class="col-xs-3">
+                                        <select id="faculty" name="faculty" class="select2 input-default" style="width:170px;">
+                                            <option value="-1">Select</option>
+                                        </select>
+                                    </div>
+                                    <label class="control-label col-xs-3" for="department">Department</label>
+                                    <div class="col-xs-3">
+                                        <select id="department" name="department" class="select2 input-default" style="width:170px;">
+                                            <option value="-1">Select</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <legend style="margin-left:20px;">Select Your Division</legend>
+                                <div class="form-group">
+                                    <label class="control-label col-xs-2" for="division">Division</label>
+                                    <div class="col-xs-9">
+                                        <select id="division" name="division" class="select2 input-default" style="width:460px;">
+                                            <option value="-1">Select</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <legend style="margin-left:20px;">Working Period</legend>
+                                <div class="form-group">
+                                    <label class="control-label col-xs-2" for="startyearform">Start Year(*)</label>
+                                    <div class="col-xs-3">
+                                        <select id="startyearform" name="startyearform" class="select2" style="width:100%;">
+                                            <%                                            
+                                            for (var i=year; i>=1950; i--) {
+                                            %>
+                                                <option value="<%=(i)+""%>"><%=i+""%></option>
+                                            <%}%>
+                                        </select>
+                                    </div>
+                                    <label class="control-label col-xs-3" for="startmonthform">Start Month</label>
+                                    <div class="col-xs-3">
+                                        <select id="startmonthform" name="startmonthform" class="select2" style="width:100%;">
+                                            <option value="0">Select</option>
+                                            <option value="1">January</option>
+                                            <option value="2">February</option>
+                                            <option value="3">March</option>
+                                            <option value="4">April</option>
+                                            <option value="5">May</option>
+                                            <option value="6">June</option>
+                                            <option value="7">July</option>
+                                            <option value="8">August</option>
+                                            <option value="9">September</option>
+                                            <option value="10">October</option>
+                                            <option value="11">November</option>
+                                            <option value="12">December</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label col-xs-2" for="endyearform">End Year</label>
+                                    <div class="col-xs-3">
+                                        <select id="endyearform" name="endyearform" class="select2 input-default" style="width:100%;">
+                                            <option value="0">Select</option>
+                                            <%
+                                            for (var i=year; i>=1950; i--) {
+                                            %>
+                                                <option value="<%=(i)+""%>"><%=i+""%></option>
+                                            <%}%>
+                                        </select>
+                                    </div>
+                                    <label class="control-label col-xs-3" for="endmonthform">End Month</label>
+                                    <div class="col-xs-3">
+                                        <select id="endmonthform" name="endmonthform" class="select2 input-default" style="width:100%;">
+                                            <option value="0">Select</option>
+                                            <option value="1">January</option>
+                                            <option value="2">February</option>
+                                            <option value="3">March</option>
+                                            <option value="4">April</option>
+                                            <option value="5">May</option>
+                                            <option value="6">June</option>
+                                            <option value="7">July</option>
+                                            <option value="8">August</option>
+                                            <option value="9">September</option>
+                                            <option value="10">October</option>
+                                            <option value="11">November</option>
+                                            <option value="12">December</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <legend style="margin-left:20px;">Change as Your Current/Last Organization</legend>
+                                <div class="form-group">
+                                    <label class="control-label col-xs-5" for="his_default_form">Set as my current working place</label>
+                                    <div class="col-xs-1">
+                                        <input type="checkbox" name="his_default_form" id="his_default_form" checked="checked" style="margin-top:10px;">
+                                    </div>
+                                    <label class="control-label col-xs-4" for="last_working_place">Set as my last working place</label>
+                                    <div class="col-xs-2">
+                                        <input type="checkbox" name="last_working_place" id="last_working_place" style="margin-top:10px;">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label col-xs-10" for="register"></label>
+                                    <div class="col-xs-2">
+                                        <button id="register" name="register" class="btn btn-primary">Save</button>
+                                    </div>
+                                </div>
+                            </fieldset>
+                            <input type="hidden" name="oper" value="addform">
+                        </form>
+                    </div>
+                </section>
+            </aside>
+        </div>
+        <script src="js1/jquery/jquery-1.9.1.js"></script>
+        <script src="js1/jquerymessagebox/jquery.msgBox.js" type="text/javascript"></script>
+        <script src="js1/bootstrap/bootstrap.min.js" type="text/javascript"></script>
+        <script src="js1/home/forms.js" type="text/javascript"></script>
+        <script src="js1/plugins/jqgrid/js/i18n/grid.locale-en.js" type="text/javascript"></script>
+        <script src="js1/plugins/jqgrid/js/jquery.jqGrid.min.js" type="text/javascript"></script>
+        <script src="js1/select2/select2.js"></script>
+        <script type="text/javascript">        
+        function fillGrid() {
+            $("#jQGrid").html("<table id=\"table1\" style=\"font-size:14px\"><div id=\"footer1\">");
+            jQuery("#table1").jqGrid(
+                    {
+                        url: 'organizationdetails.jag?oper=get',
+                        datatype: "JSON",
+                        mtype: 'POST',
+                        width: 770,
+                        height: 222,
+                        colNames: ['ID', 'Start Year(*)','Start Month', 'End Year','End Month','Organization(*)','Current Uni.','Last Uni.'],
+                        colModel: [
+                            {name: 'person_organization_id', index: 'person_organization_id', width: 0, sortable: false, editable: false, hidden: true,key:true},
+                            {name: 'startyear', index: 'startyear', width: 101, sortable: false, editable: true, sortable:false, editrules: {required: true}, edittype: "select",
+                                editoptions: {value: {
+                                        <%
+                                            for (var i=year; i>=1950; i--) {
+                                        %>
+                                            <%=(i)+""+": '"+(i)+""+"',"%>
+                                        <%}%>
+                                    }}
+                            },
+                            {name: 'startmonth', index: 'startmonth', width: 113, sortable: false, editable: true, sortable:false, editrules: {required: true}, edittype: "select",
+                                editoptions: {value: {
+                                    0:'Select',1:'January',2:'February',3:'March',4:'April',5:'May',6:'June',7:'July',8:'August',9:'September',10:'October',11:'November',12:'December'
+                                }}
+                            },
+                            {name: 'endyear', index: 'endyear', width: 74, sortable: false, editable: true, sortable:false, editrules: {required: true}, edittype: "select",
+                                editoptions: {value: {
+                                        0:'Select',
+                                        <%
+                                            for (var i=year; i>=1950; i--) {
+                                        %>
+                                            <%=(i)+""+": '"+(i)+""+"',"%>
+                                        <%}%>
+                                    }}
+                            },
+                            {name: 'endmonth', index: 'endmonth', width: 84, sortable: false, editable: true, sortable:false, editrules: {required: true}, edittype: "select",
+                                editoptions: {value: {
+                                    0:'Select',1:'January',2:'February',3:'March',4:'April',5:'May',6:'June',7:'July',8:'August',9:'September',10:'October',11:'November',12:'December'
+                                }}
+                            },
+                            {name: 'name', index: 'name', width: 540, sortable: false, editable: false, sortable:false, editrules: {required: true}, edittype: "select",
+                                editoptions: {value: {
+                                        <%for(var i=0;i<organizations.length;i++){%>
+                                        <%=organizations[i].organization_id+":"+"'"+organizations[i].name+"'"+","%>
+                                        <%}%>
+                                    }}
+                            },
+                            {name: 'his_default', index: 'his_default', width: 104, sortable: false, editable: true,editrules: {required: true}, edittype: "checkbox",
+                                editoptions: {value:"Yes:No"}
+                            },
+                            {name: 'last_uni', index: 'last_uni', width: 94, sortable: false, editable: true,editrules: {required: true}, edittype: "checkbox",
+                                editoptions: {value:"Yes:No"}
+                            }
+                        ],
+                        multiselect: false,
+                        paging: true,
+                        rowNum: 10,
+                        pager: $("#footer1"),
+                        loadonce: true,
+                        viewrecords: true,
+                        caption: "Organization Details"
+                    }
+            );
+            jQuery("#table1").jqGrid('navGrid', '#footer1',
+                {
+                    cloneToTop: true,
+                    view: true,
+                    edittext: "Edit",
+                    addtext: "Add",
+                    deltext: "Delete",
+                    searchtext: "Search",
+                    viewtext: "View",
+                    edittitle: "Edit selected row",
+                    addtitle: "Add new row",
+                    deltitle: "Delete selected row",
+                    searchtitle: "Find records",
+                    refreshtitle: "Reload Grid",
+                    viewtitle: "View selected row",
+                    alertcap: "Warning",
+                    alerttext: "Please, select a row",
+                }, // **********options
+                {
+                    closeOnEscape: true,
+                    width: 650,
+                    url: 'organizationdetails.jag',
+                    closeAfterEdit: false,
+                    afterComplete: function(response, postdata) {
+                        var res = response.responseText;
+                        if ($.trim(res) == 'true') {
+                            successMessage("Done", "Edit Successfully");
+                            fillGrid();
+                        } else {
+                            errorMessage("Error",res);
+                            fillGrid();
+                        }
+                    }
+                }, //edit
+                {
+                    url: 'organizationdetails.jag',
+                    closeAfterAdd: false,
+                    width:600,
+                    afterComplete: function(response, postdata) {
+                        var res = response.responseText;
+                        if ($.trim(res) == 'true') {
+                            successMessage("Done", "Save Successfully");
+                            fillGrid();
+                        } else {
+                            errorMessage("Error", res);
+                            fillGrid();
+                        }
+                    },
+                    jqModal: true,
+                    checkOnUpdate: true,
+                    savekey: [true, 13],
+                    navkeys: [true, 38, 40],
+                    checkOnSubmit: true,
+                    reloadAfterSubmit: false,
+                    closeOnEscape: true,
+                    bottominfo: "Fields marked with (*) are required"
+                }, //add
+                {
+                    closeOnEscape: true,
+                    url: 'organizationdetails.jag',
+                    closeAfterEdit: true,
+                    afterComplete: function(response, postdata) {
+                        var res = response.responseText;
+                        if ($.trim(res) == 'true') {
+                            successMessage("Done", "Delete Successfully");
+                        } else {
+                            errorMessage("Error", res);
+                            fillGrid();
+                        }
+                    }
+                }, //del
+                {
+                    multipleSearch: true, 
+                    closeOnEscape: true
+                }, //search
+                {
+                    closeOnEscape: true,
+                    width: 500
+                } //view
+                );
+                var topPagerDiv = $("#list_toppager")[0];
+                $("#refresh_table1_top", topPagerDiv).remove();
+                $("#table1_toppager_center", topPagerDiv).remove();
+                $("#table1_toppager_right", topPagerDiv).remove();
+                var bottomPagerDiv = $("div#pager")[0];
+                $("#refresh_table1", bottomPagerDiv).remove();
+                $("#add_table1").remove();
+                jQuery("#table1").jqGrid({}).navButtonAdd("#footer1_left",
+                        {
+                            caption: "Refresh",
+                            buttonicon: "ui-icon-refresh",
+                            onClickButton: function() {
+                                fillGrid();
+                            },
+                            position: "last",
+                            title: "Refresh Data"
+                        }
+                );
+                jQuery("#table1").jqGrid({}).navButtonAdd("#table1_toppager_left",
+                        {
+                            caption: "Refresh",
+                            buttonicon: "ui-icon-refresh",
+                            onClickButton: function() {
+                                fillGrid();
+                            },
+                            position: "last",
+                            title: "Refresh This Page"
+                        }
+                );
+                $("#table1").jqGrid('navGrid', '#TblGrid_table1', {}, {width: 500});
+            }
+            function errorMessage(title, error) {
+                    $.msgBox({
+                        title: title,
+                        content: error
+                    });
+            }
+            function successMessage(title, content) {
+                $.msgBox({
+                    title: title,
+                    content: content,
+                    type: "info"
+                });
+            }
+            $("#orgdetailsform").submit(function(){
+                if(validateForm()){
+                    var url = "organizationdetails.jag";
+                    $.ajax({
+                       type: "POST",
+                       url: url,
+                       data: $("#orgdetailsform").serialize(),
+                       success: function(data)
+                       {
+                           if ($.trim(data) == 'true') {
+                                successMessage("Done", "Save Successfully");
+                                fillGrid();
+                            } else {
+                                errorMessage("Error", data);
+                                fillGrid();
+                            }
+                       }
+                     });
+                    fillGrid();
+                }
+                return false;
+            });
+            function validateForm(){
+                var organizationval=$('#organizationform').val();
+                var startyearformVal=parseInt($('#startyearform').val());
+                var startmonthformVal=parseInt($('#startmonthform').val());
+                var endyearformVal=parseInt($('#endyearform').val());
+                var endmonthformVal=parseInt($('#endmonthform').val());
+                if(organizationval==-1){
+                    errorMessage('Error','Please select your organization.');
+                    return false;
+                }else if(endyearformVal!=0){
+                    if(startyearformVal>endyearformVal){
+                        errorMessage('Error','Start year cannot greater than end year.');
+                        return false;
+                    }else if(endyearformVal!=0&&startyearformVal==endyearformVal&&startmonthformVal>endmonthformVal){
+                        errorMessage('Error','Start year month cannot greater than end year month.');
+                        return false;
+                    }
+                }
+                return true;
+            }
+            function setDivisions(){
+                $('#division').empty();
+                $('#division').append($("<option></option>").attr("value","-1").text("Select"));
+                $("#s2id_division span").text("Select");
+                var organization_id=$("#organizationform").val();
+                for(var i=0;i<divisions.length;i++){
+                    if(divisions[i].organization_id==organization_id){
+                        $('#division').append($("<option></option>").attr("value",divisions[i].division_id).text(divisions[i].discription));
+                    }
+                }
+                setFaculties();
+            }
+            function setFaculties(){
+                $('#faculty').empty();
+                $('#faculty').append($("<option></option>").attr("value","-1").text("Select"));
+                $("#s2id_faculty span").text("Select");
+                var organization_id=$("#organizationform").val();
+                for(var i=0;i<faculty.length;i++){
+                    if(faculty[i].organization_id==organization_id){
+                        $('#faculty').append($("<option></option>").attr("value",faculty[i].faculty_id).text(faculty[i].description));
+                    }
+                }
+                setDepartments();
+            }
+            function setDepartments(){
+                $('#department').empty();
+                $('#department').append($("<option></option>").attr("value","-1").text("Select"));
+                $("#s2id_department span").text("Select");
+                var faculty_id=$("#faculty").val();
+                for(var i=0;i<department.length;i++){
+                    if(department[i].faculty_id==faculty_id){
+                        $('#department').append($("<option></option>").attr("value",department[i].department_id).text(department[i].description));
+                    }
+                }
+            }
+            $("#organizationform").on('change', function() {
+                setDivisions();
+            });
+            $("#faculty").on('change', function() {
+                setDepartments();
+            });            
+            $(function(){
+                $("#his_default_form").css({opacity: 1});
+                $("#last_working_place").css({opacity: 1});
+                fillGrid();
+            });
+            $('.select2').select2({ placeholder : '' });
+            $('.select2-remote').select2({ data: [{id:'A', text:'A'}]});
+            $('button[data-select2-open]').click(function(){
+            $('#' + $(this).data('select2-open')).select2('open');
+            });
+            setDivisions();
+        </script><br><br><br><br>
+    </body>
+</html><%}%>

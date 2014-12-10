@@ -1,0 +1,54 @@
+<%	
+	include('db.jag');
+	include("mailconverter.jag");
+	var username=session.get("LOGGED_IN_USER")+"";
+	var person=db.query("SELECT * FROM person WHERE email='"+""+remakeEmail(username)+"'");
+	var person_id=person[0].person_id;
+	if(person_id==null){
+		print("Please login.");
+	}else{
+		if(request.getParameter("persondataget")!=null&&request.getParameter("persondataget").length>1){
+			print(printPersons());
+		}else if(request.getParameter("titledataget")!=null&&request.getParameter("titledataget").length>1){
+			print(printPublicationTitles());
+		}
+	}
+
+	//Function for search persons
+	function printPersons(){
+		var dbdt = [];
+		var result = db.query("SELECT person_id,full_name,image_name FROM person WHERE full_name LIKE '%"+request.getParameter("persondataget")+"%' AND person_id!='"+person_id+"' AND record_status='1'");
+		for(var i = 0; i < result.length; i++){
+			var url="images/users/";
+			url+=(result[i].image_name==""|result[i].image_name==null)?"profile.jpg": result[i].person_id+"/"+result[i].image_name;
+			var organizationperson=db.query("SELECT name As name FROM `organization` WHERE organization_id=(SELECT organization_id FROM person_organization WHERE (his_default=1 OR his_default=2) AND person_id='"+result[i].person_id+"')");
+			var organizationtoprint="";
+			if(organizationperson.length>0){organizationtoprint=organizationperson[0].name;}
+			dbdt.push({"id":result[i].person_id,"name":result[i].person_id, "text":result[i].full_name,organization:organizationtoprint,image:url});
+		}
+		return {person_data:dbdt};
+	}
+
+	//Function for search publication titles
+	function printPublicationTitles(){
+		var dbdt = [];
+		var pub_type=request.getParameter("pub_type");
+		var result;
+		if(pub_type=="2"){
+			result = db.query("SELECT publication_id,title,journal_id,publisher,name FROM publication WHERE name LIKE '%"+request.getParameter("titledataget")+"%' AND publication_type='"+pub_type+"'");
+		}else{
+			result = db.query("SELECT publication_id,title,journal_id,publisher,name FROM publication WHERE title LIKE '%"+request.getParameter("titledataget")+"%' AND publication_type='"+pub_type+"'");
+		}
+		for(var i = 0; i < result.length; i++){
+			if(pub_type=="1"){
+				dbdt.push({"id":result[i].publication_id,"name":result[i].publication_id,"text":result[i].title,"value":result[i].journal_id});
+			}else if(pub_type=="2"){
+				dbdt.push({"id":result[i].publication_id,"name":result[i].publication_id,"text":result[i].name,"value":result[i].publisher});
+			}else{
+				dbdt.push({"id":result[i].publication_id,"name":result[i].publication_id,"text":result[i].title,"value":result[i].name});
+			}			
+		}
+		dbdt.push({"id":"-1","name":"-1","text":request.getParameter("titledataget")});
+		return {titleformdata:dbdt};
+	}
+%>

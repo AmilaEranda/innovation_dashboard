@@ -1,0 +1,64 @@
+<%include('db.jag');%>
+<%include("mailconverter.jag");%>
+<%var username=session.get("LOGGED_IN_USER")+"";%>
+<%var person=db.query("SELECT * FROM person WHERE email='"+""+remakeEmail(username)+"'");%>
+<%var person_id=person[0].person_id;%>
+<%include('escaper.jag');%>
+<%
+	try{
+		var validate=validateData();
+		if(validate==true){
+			//Get basic Details
+			var title=request.getParameter("title");
+			var country=request.getParameter("country");
+			var firstname=escape(request.getParameter("firstname"));
+			var lastname=escape(request.getParameter("lastname"));
+			var initials=escape(request.getParameter("initials"));
+			var nic=escape(request.getParameter("nic"));
+			var bdy=(request.getParameter("bdy")=="")?"":("'"+request.getParameter("bdy")+"'");
+			var gender=request.getParameter("gender");
+			var civilstatus=request.getParameter("civilstatus");
+			var profession=escape(request.getParameter("profession"));
+			var designation=escape(request.getParameter("designation"));
+			var tabledata=request.getParameter("tabledata");
+			tabledata = JSON.parse(tabledata);
+			//Get other details
+			var academic_qualification=escape(request.getParameter("academic_qualification"));
+			var expertise=escape(request.getParameter("expertise"));
+			var other_information=escape(request.getParameter("other_information"));
+			var overseascountry=(request.getParameter("overseascountry")=="on")?"1":"0";
+			var overseascountry_reason=escape(request.getParameter("overseascountry_reason"));
+			var deactivater=request.getParameter("deactivater");
+
+			//Update person data
+			db.query("UPDATE person SET title_id='"+title+"',country_id='"+country+"',first_name='"+firstname+"',last_name='"+lastname+"',initials='"+initials+"',nic='"+nic+"',dob="+((bdy=="")?null:bdy)+",gender='"+gender+"',civilstatus='"+civilstatus+"',profession='"+profession+"',designation='"+designation+"',academic_qualification='"+academic_qualification+"',expertise='"+expertise+"',other_information='"+other_information+"',in_out_country='"+overseascountry+"',reason_out='"+((overseascountry=="1")?overseascountry_reason:"")+"',record_status='"+((deactivater=="on")?"3":"1")+"' WHERE person_id='"+person_id+"';");
+			//Update person area of interest
+			db.query("DELETE FROM person_area_of_interest WHERE person_person_id='"+person_id+"'");
+			for(var i=0;i<tabledata.length;i++){
+				db.query("INSERT INTO person_area_of_interest(person_person_id,area_of_interest_id,sub_area_of_interest_id,sub_sub_area_of_interest_id) VALUES ('"+person_id+"','"+tabledata[i].matrix[0]+"','"+tabledata[i].matrix[1]+"','"+tabledata[i].matrix[2]+"')");
+			}
+		}
+		print(validate);//Print output
+	}catch(e){
+		//print(e);
+		print("Error while updating your basic details.Please contact support team.Thank You.");
+	}
+
+	//Validate person data
+	function validateData(){
+		if(username==null){
+			return "Please login.";
+		}else if(request.getParameter("firstname").length<1){
+			return "Please enter first name.";
+		}else if(request.getParameter("lastname").length<1){
+			return "Please enter last name.";
+		}else if(request.getParameter("initials").length<1){
+			return "Please enter initials.";
+		}else if(JSON.parse(request.getParameter("tabledata")).length<1){
+			return "Please enter your area of interest.";
+		}else if(request.getParameter("overseascountry")=="on"&&request.getParameter("overseascountry_reason").length<1){
+			return "Please enter reason for relocating overseas.";
+		}
+		return true;
+	}
+%>

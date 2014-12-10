@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>select 2 test</title>
+        <link rel="stylesheet" href="css/bootstrap/Flatly/bootstrap.min.css" type="text/css" />
+        <link rel="stylesheet" href="css/select2/select2.css" type="text/css" />
+        <link rel="stylesheet" href="css/select2/select2-bootstrap.css" type="text/css" />
+
+        <script type="text/javascript" src="js/jquery/jquery-1.11.1.min.js"></script>
+        <script type="text/javascript" src="js/bootstrap/bootstrap.min.js"></script>
+        <script type="text/javascript" src="js/select2/select2.min.js"></script>
+        <script type="text/javascript">
+            $(document).ready(function () {
+                $("#e6").select2({
+                    placeholder: "Select an option",
+                    minimumInputLength: 0,
+                    allowClear: true,
+                    //formatNoMatches: function (term) {
+                    //    return "<input class='form-control' id='newTerm' value='" + term + "'><a href='#' id='addNew' class='btn btn-default'>Create</a>";
+                    //},
+                    ajax: {// instead of writing the function to execute the request we use Select2's convenient helper
+                        url: "searchpublication.jag",
+                        type: "GET",
+                        dataType: 'json',
+                        data: function (term, page) {
+                            return {
+                                q: term, // search term
+                                page_limit: 10
+                            };
+                        },
+                        results: function (data, page) {
+                            //var retData = JSON.parse(data);
+                            return {results: data.person_data};
+                        }
+                    },
+                    formatResult: formatResult,
+                    formatSelection: formatSelection,
+                    escapeMarkup: function (m) {
+                        return m;
+                    }
+                });
+
+            });
+
+            function formatResult(state) {
+            	console.log(state);
+                return state.full_name;
+            }
+
+            function formatSelection(state) {
+            	console.log(state);
+                return state.person_id;
+            }
+
+        </script>
+    </head>
+    <body>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <input type="hidden" id="e6" class="form-control">
+                </div>
+                <div class="col-md-6">
+                    
+                </div>
+            </div>
+        </div>
+
+    </body>
+</html>
