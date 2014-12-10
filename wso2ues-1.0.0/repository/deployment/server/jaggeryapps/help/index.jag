@@ -76,10 +76,13 @@ var user = require('/modules/user.js').current();
 					<div class="nav-collapse collapse">
 						<ul class="nav pull-right">
 							<li class="nav-separator">
-								<a href="/user"><i class="icon-dashboard"></i>&nbsp; My Dashboard</a>
-							</li>
+		                        <a href="/user/"><i class="icon-user"></i> MyProfile</a>
+		                    </li>   
+							<li class="nav-separator">
+		                        <a href="/userdashboard/"><i class="icon-user"></i><i class="icon-dashboard"></i> MyDashboard</a>
+		                    </li>
 							<li>
-								<a href="/common"><i class="icon-dashboard"></i>&nbsp; Common Dashboard</a>
+								<a href="/dashboard/"><i class="icon-dashboard"></i>&nbsp; CommonDashboard</a>
 							</li>
 						</ul>
 					</div>
