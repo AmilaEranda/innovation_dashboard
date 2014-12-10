@@ -395,6 +395,12 @@ a:hover {
 .social a:hover i {
   background: #333333;
 }
+.social a.slideshare i {
+  background: #1e78ae;
+}
+.social a.wordpress i {
+  background: #2d93cf;
+}
 /****************/
 /* Page CSS */
 /****************/

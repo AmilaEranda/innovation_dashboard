@@ -30,7 +30,7 @@
 		<!-- Portfolio CSS -->
 		<link href="css/prettyPhoto.css" rel="stylesheet">
 		<!-- Font awesome CSS -->
-		<link href="css/font-awesome.min.css" rel="stylesheet">	
+		<link href="css/font-awesome.css" rel="stylesheet">	
 		<!-- Custom Less -->
 		<link href="css/less-style.css" rel="stylesheet">	
 		<!-- Custom CSS -->
@@ -39,6 +39,28 @@
 		
 		<!-- Favicon -->
 		<link rel="shortcut icon" href="#">
+		<style type="text/css">
+			#costi_logo {
+			    border: none !important;
+			    border-radius: 0px !important;
+			    box-shadow: none !important;
+			    margin: 3px auto 12px !important;
+			    max-width: 150px !important;
+			    max-height: 80px !important;
+			    height: 60px;
+			    width:150px;
+			}
+			#dashboard_logo {
+			    border: 2px solid #fff !important;
+			    border-radius: 30px !important;
+			    box-shadow: 5 0 5px rgba(143, 173, 217, 0.25) !important;
+			    margin: 0 auto 12px !important;
+			    max-width: 60px !important;
+			    max-height: 80px !important;
+			    height: 60px;
+			    width: 60px;
+			}
+		</style>
 	</head>
 	
 	<body>
@@ -53,17 +75,14 @@
 					<!-- Header top area content -->
 					<div class="row">
 						<div class="col-md-8 col-sm-5">
-							<!-- Link -->
-							<a href="index-2.html">
-								<!-- Logo area -->
-								<div class="logo">
-									<img class="img-responsive" src="img/gov_logo.jpg" alt="" />
-									<!-- Heading -->
-									<h1>Sri Lanka Innovation Dashboard</h1>
-									<!-- Paragraph -->
-									<p>For Science, Technology and Innovation</p>
-								</div>
-							</a>
+							<!-- Logo area -->
+							<div class="logo">
+								<img class="img-responsive" src="img/gov_logo.jpg" alt="" />
+								<!-- Heading -->
+								<h1>Sri Lanka Innovation Dashboard</h1>
+								<!-- Paragraph -->
+								<p>For Science, Technology and Innovation</p>
+							</div>
 						</div>
 						<div class="col-md-4 col-sm-7">
 							<!-- Navigation -->
@@ -82,8 +101,10 @@
 									<!-- Collect the nav links, forms, and other content for toggling -->
 									<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 										<ul class="nav navbar-nav">
-											<li><a href="/dashboard/"><img src="img/dashboard4.png" class="img-responsive" alt="" /> Dashboard</a></li>
-											<li><a href="http://www.costi.gov.lk" target="_blank"><img src="img/costi_logo.png" class="img-responsive" alt="" style="border:5px solid #fff"/> COSTI</a></li>
+											<li><a href="//www.costi.gov.lk" target="_blank"><img src="img/costi_logo.jpg" id="costi_logo" alt="" /></a>
+											</li>
+											<li><a href="https://localhost:9443/dashboard" style="width:80px;"><img src="img/srilanka4.png" id="dashboard_logo" alt="" /> Dashboard</a>
+											</li>
 										</ul>
 									</div><!-- /.navbar-collapse -->
 								</div><!-- /.container-fluid -->
@@ -103,28 +124,28 @@
 			<div class="tp-banner-container">
 				<div class="tp-banner" >
 					<ul>	<!-- SLIDE  -->
-						<li data-transition="fade" data-slotamount="7" data-masterspeed="1500" >
+						<li data-transition="fade" data-slotamount="7" data-masterspeed="1000" >
 							<!-- MAIN IMAGE -->
-							<img src="img/a.png"  alt=""  data-bgfit="cover" data-bgposition="center bottom" data-bgrepeat="no-repeat">
+							<img src="img/i.jpg"  alt=""  data-bgfit="cover" data-bgposition="center bottom" data-bgrepeat="no-repeat">
 							
 							<!-- LAYERS -->
 							<!-- LAYER NR. 1 -->
-							<div class="tp-caption lfl largeblackbg br-red"
+							<div class="tp-caption lfr largepinkbg br-red heading white"
 								data-x="20" 
-								data-y="100"
-								data-speed="1500"
-								data-start="1200"
+								data-y="20"
+								data-speed="1000"
+								data-start="2000"
 								data-easing="Power4.easeOut"
 								data-endspeed="500"
 								data-endeasing="Power4.easeIn"
-								style="z-index: 3">Innovation...
+								style="z-index: 3;">Innovation
 							</div>
 							<!-- LAYER NR. 2.0 -->
 							<div class="tp-caption lfl medium_bg_darkblue br-green"
 								data-x="20"
-								data-y="200"
+								data-y="100"
 								data-speed="1500"
-								data-start="1800"
+								data-start="3000"
 								data-easing="Power4.easeOut"
 								data-endspeed="300"
 								data-endeasing="Power4.easeIn"
@@ -133,9 +154,9 @@
 							<!-- LAYER NR. 2.1 -->
 							<div class="tp-caption lfl medium_bg_darkblue br-lblue"
 								data-x="20" 
-								data-y="250"
+								data-y="150"
 								data-speed="1500"
-								data-start="2100"
+								data-start="4000"
 								data-easing="Power4.easeOut"
 								data-endspeed="500"
 								data-endeasing="Power4.easeIn"
@@ -144,9 +165,9 @@
 							<!-- LAYER NR. 2.2 -->
 							<div class="tp-caption lfl medium_bg_darkblue br-purple"
 								data-x="20" 
-								data-y="300"
+								data-y="200"
 								data-speed="1500"
-								data-start="2400"
+								data-start="5000"
 								data-easing="Power4.easeOut"
 								data-endspeed="500"
 								data-endeasing="Power4.easeIn"
@@ -164,7 +185,7 @@
 								style="z-index: 3">Collaboration
 							</div> -->
 							<!-- LAYER NR. 3.0 -->
-							<div class="tp-caption customin customout"
+							<!-- <div class="tp-caption customin customout"
 								data-x="right" data-hoffset="-10"
 								data-y="35"
 								data-customin="x:0;y:0;z:0;rotationX:0;rotationY:0;rotationZ:0;scaleX:0;scaleY:0;skewX:0;skewY:0;opacity:0;transformPerspective:600;transformOrigin:50% 50%;"
@@ -173,44 +194,41 @@
 								data-start="3600"
 								data-easing="Power3.easeInOut"
 								data-endspeed="600"
-								style="z-index: 5"><img class="slide-img img-responsive" src="img/innovators/5.jpg" alt="" />
+								style="z-index: 5"><img class="slide-img img-responsive" src="img/innovation/1.png" alt="" />
 							</div>
-							<!-- LAYER NR. 3.1 -->
 							<div class="tp-caption customin customout"
-								data-x="right" data-hoffset="-280"
-								data-y="200"
+								data-x="right" data-hoffset="-230"
+								data-y="250"
 								data-customin="x:0;y:0;z:0;rotationX:0;rotationY:0;rotationZ:0;scaleX:0;scaleY:0;skewX:0;skewY:0;opacity:0;transformPerspective:600;transformOrigin:50% 50%;"
 								data-customout="x:0;y:0;z:0;rotationX:0;rotationY:0;rotationZ:0;scaleX:0.75;scaleY:0.75;skewX:0;skewY:0;opacity:0;transformPerspective:600;transformOrigin:50% 50%;"
 								data-speed="1000"
 								data-start="4500"
 								data-easing="Power3.easeInOut"
 								data-endspeed="600"
-								style="z-index: 6"><img class="slide-img img-responsive" src="img/innovators/7.jpg" alt="" />
+								style="z-index: 6"><img class="slide-img img-responsive" src="img/innovation/5.jpg" alt="" />
 							</div>
-							<!-- LAYER NR. 3.2 -->
 							<div class="tp-caption customin customout"
-								data-x="right" data-hoffset="-30"
-								data-y="230"
+								data-x="right" data-hoffset="-10"
+								data-y="250"
 								data-customin="x:0;y:0;z:0;rotationX:0;rotationY:0;rotationZ:0;scaleX:0;scaleY:0;skewX:0;skewY:0;opacity:0;transformPerspective:600;transformOrigin:50% 50%;"
 								data-customout="x:0;y:0;z:0;rotationX:0;rotationY:0;rotationZ:0;scaleX:0.75;scaleY:0.75;skewX:0;skewY:0;opacity:0;transformPerspective:600;transformOrigin:50% 50%;"
 								data-speed="1000"
 								data-start="5100"
 								data-easing="Power3.easeInOut"
 								data-endspeed="600"
-								style="z-index: 7"><img class="slide-img img-responsive" src="img/innovators/6.jpg" alt="" />
+								style="z-index: 7"><img class="slide-img img-responsive" src="img/innovation/4.jpg" alt="" />
 							</div>
-							<!-- LAYER NR. 3.3 -->
 							<div class="tp-caption customin customout"
-								data-x="right" data-hoffset="-200"
-								data-y="15"
+								data-x="right" data-hoffset="-230"
+								data-y="35"
 								data-customin="x:0;y:0;z:0;rotationX:0;rotationY:0;rotationZ:0;scaleX:0;scaleY:0;skewX:0;skewY:0;opacity:0;transformPerspective:600;transformOrigin:50% 50%;"
 								data-customout="x:0;y:0;z:0;rotationX:0;rotationY:0;rotationZ:0;scaleX:0.75;scaleY:0.75;skewX:0;skewY:0;opacity:0;transformPerspective:600;transformOrigin:50% 50%;"
 								data-speed="1000"
 								data-start="5700"
 								data-easing="Power3.easeInOut"
 								data-endspeed="600"
-								style="z-index: 8"><img class="slide-img img-responsive" src="img/innovators/8.jpg" alt="" />
-							</div>
+								style="z-index: 8"><img class="slide-img img-responsive" src="img/innovation/3.jpg" alt="" />
+							</div> -->
 						</li>
 						<li data-transition="slidehorizontal" data-slotamount="1" data-masterspeed="600" >
 							<!-- MAIN IMAGE -->
@@ -227,20 +245,21 @@
 								data-captionhidden="off"><img class="img-responsive" src="img/slider/s35.png" alt="" />
 							</div> -->
 							<!-- LAYERS NR. 2 -->
-							<div class="tp-caption lfr large_bold_grey heading white"
+							<div class="tp-caption lfr largepinkbg br-green heading white"
 								data-x="right" data-hoffset="-10"
-								data-y="120"
+								data-y="50"
 								data-speed="800"
 								data-start="2000"
 								data-easing="Power4.easeOut"
 								data-endspeed="300"
 								data-endeasing="Linear.easeNone"
-								data-captionhidden="off">People
+								data-captionhidden="off"
+								style="background: none !important;">People
 							</div>
 							<!-- LAYER NR. 3 -->
 							<div class="tp-caption whitedivider3px customin customout tp-resizeme"
 								data-x="right" data-hoffset="-20"
-								data-y="210" data-voffset="0"
+								data-y="140" data-voffset="0"
 								data-customin="x:0;y:0;z:0;rotationX:0;rotationY:0;rotationZ:0;scaleX:0;scaleY:0;skewX:0;skewY:0;opacity:0;transformPerspective:600;transformOrigin:50% 50%;"
 								data-customout="x:0;y:0;z:0;rotationX:0;rotationY:0;rotationZ:0;scaleX:0;scaleY:0;skewX:0;skewY:0;opacity:0;transformPerspective:600;transformOrigin:50% 50%;"
 								data-speed="700"
@@ -256,7 +275,7 @@
 							<!-- LAYER NR. 4 -->
 							<div class="tp-caption finewide_small_white randomrotate customout tp-resizeme"
 								data-x="right" data-hoffset="-10"
-								data-y="245" data-voffset="0"
+								data-y="175" data-voffset="0"
 								data-customout="x:0;y:0;z:0;rotationX:0;rotationY:0;rotationZ:0;scaleX:0;scaleY:0;skewX:0;skewY:0;opacity:0;transformPerspective:600;transformOrigin:50% 50%;"
 								data-speed="1000"
 								data-start="2700"
@@ -271,7 +290,7 @@
 							<!-- LAYER NR. 5 -->
 							<div class="tp-caption finewide_verysmall_white_mw white customin customout tp-resizeme text-right paragraph"
 								data-x="right" data-hoffset="-10"
-								data-y="300" 
+								data-y="230" 
 								data-customin="x:0;y:50;z:0;rotationX:-120;rotationY:0;rotationZ:0;scaleX:1;scaleY:1;skewX:0;skewY:0;opacity:0;transformPerspective:600;transformOrigin:50% 0%;"
 								data-customout="x:0;y:0;z:0;rotationX:0;rotationY:0;rotationZ:0;scaleX:0;scaleY:0;skewX:0;skewY:0;opacity:0;transformPerspective:600;transformOrigin:50% 50%;"
 								data-speed="1000"
@@ -284,54 +303,55 @@
 								data-endspeed="300"
 								style="z-index: 10; max-width: auto; max-height: auto; white-space: nowrap;">Include researchers in universities, research institutes and independent researchers.<br/> People will be linked to their publications, patents and institutions
 							</div>
+							<!-- LAYER NR. 3.0 -->
+							<div class="tp-caption customin customout"
+								data-x="right" data-hoffset="-445"
+								data-y="330"
+								data-customin="x:0;y:0;z:0;rotationX:0;rotationY:0;rotationZ:0;scaleX:0;scaleY:0;skewX:0;skewY:0;opacity:0;transformPerspective:600;transformOrigin:50% 50%;"
+								data-customout="x:0;y:0;z:0;rotationX:0;rotationY:0;rotationZ:0;scaleX:0.75;scaleY:0.75;skewX:0;skewY:0;opacity:0;transformPerspective:600;transformOrigin:50% 50%;"
+								data-speed="1000"
+								data-start="4600"
+								data-easing="Power3.easeInOut"
+								data-endspeed="600"
+								style="z-index: 5"><img class="slide-img img-responsive" src="img/innovation/3.jpg" alt="" />
+							</div>
+							<div class="tp-caption customin customout"
+								data-x="right" data-hoffset="-295"
+								data-y="330"
+								data-customin="x:0;y:0;z:0;rotationX:0;rotationY:0;rotationZ:0;scaleX:0;scaleY:0;skewX:0;skewY:0;opacity:0;transformPerspective:600;transformOrigin:50% 50%;"
+								data-customout="x:0;y:0;z:0;rotationX:0;rotationY:0;rotationZ:0;scaleX:0.75;scaleY:0.75;skewX:0;skewY:0;opacity:0;transformPerspective:600;transformOrigin:50% 50%;"
+								data-speed="1000"
+								data-start="5500"
+								data-easing="Power3.easeInOut"
+								data-endspeed="600"
+								style="z-index: 6"><img class="slide-img img-responsive" src="img/innovators/6.jpg" alt="" />
+							</div>
+							<div class="tp-caption customin customout"
+								data-x="right" data-hoffset="-145"
+								data-y="330"
+								data-customin="x:0;y:0;z:0;rotationX:0;rotationY:0;rotationZ:0;scaleX:0;scaleY:0;skewX:0;skewY:0;opacity:0;transformPerspective:600;transformOrigin:50% 50%;"
+								data-customout="x:0;y:0;z:0;rotationX:0;rotationY:0;rotationZ:0;scaleX:0.75;scaleY:0.75;skewX:0;skewY:0;opacity:0;transformPerspective:600;transformOrigin:50% 50%;"
+								data-speed="1000"
+								data-start="6100"
+								data-easing="Power3.easeInOut"
+								data-endspeed="600"
+								style="z-index: 7"><img class="slide-img img-responsive" src="img/innovators/2.jpg" alt="" />
+							</div>
+							<div class="tp-caption customin customout"
+								data-x="right" data-hoffset="-5"
+								data-y="330"
+								data-customin="x:0;y:0;z:0;rotationX:0;rotationY:0;rotationZ:0;scaleX:0;scaleY:0;skewX:0;skewY:0;opacity:0;transformPerspective:600;transformOrigin:50% 50%;"
+								data-customout="x:0;y:0;z:0;rotationX:0;rotationY:0;rotationZ:0;scaleX:0.75;scaleY:0.75;skewX:0;skewY:0;opacity:0;transformPerspective:600;transformOrigin:50% 50%;"
+								data-speed="1000"
+								data-start="6700"
+								data-easing="Power3.easeInOut"
+								data-endspeed="600"
+								style="z-index: 8"><img class="slide-img img-responsive" src="img/innovators/5.jpg" alt="" />
+							</div>
 						</li>
 						<li data-transition="slidevertical" data-slotamount="7" data-masterspeed="600" >
 							<!-- MAIN IMAGE -->
 							<img src="img/h.jpg"  alt=""  data-bgfit="cover" data-bgposition="center bottom" data-bgrepeat="no-repeat">
-							<!-- LAYERS NR. 1 -->
-							<!-- <div class="tp-caption lfl"
-								data-x="110"
-								data-y="130"
-								data-speed="800"
-								data-start="1500"
-								data-easing="Power4.easeOut"
-								data-endspeed="300"
-								data-endeasing="Power4.easeIn"
-								data-captionhidden="off"><img src="img/slider/s31.png" class="img-responsive" alt="" />
-							</div> -->
-							<!-- LAYERS NR. 2 -->
-							<!-- <div class="tp-caption lfl"
-								data-x="80"
-								data-y="265"
-								data-speed="800"
-								data-start="2200"
-								data-easing="Power4.easeOut"
-								data-endspeed="300"
-								data-endeasing="Power4.easeIn"
-								data-captionhidden="off"><img src="img/slider/s33.png" class="img-responsive" alt="" />
-							</div> -->
-							<!-- LAYERS NR. 3 -->
-							<!-- <div class="tp-caption lfl"
-								data-x="450"
-								data-y="312"
-								data-speed="800"
-								data-start="2700"
-								data-easing="Power4.easeOut"
-								data-endspeed="300"
-								data-endeasing="Power4.easeIn"
-								data-captionhidden="off"><img src="img/slider/s34.png" class="img-responsive" alt="" />
-							</div> -->
-							<!-- LAYERS NR. 4 -->
-							<!-- <div class="tp-caption sfr  thinheadline_dark white"
-								data-x="right" data-hoffset="-10" 
-								data-y="90"
-								data-speed="800"
-								data-start="3200"
-								data-easing="Power4.easeOut"
-								data-endspeed="500"
-								data-endeasing="Power4.easeIn"
-								style="z-index: 3">Online
-							</div> -->
 							<!-- LAYERS NR. 4.1 -->
 							<div class="tp-caption lfr largepinkbg br-green heading white"
 								data-x="right" data-hoffset="-10"
@@ -354,49 +374,15 @@
 								data-endeasing="Power4.easeOut"
 								data-captionhidden="off" style="font-weight:bold;">Relates to the physical institutions <br/>involved in Science and Technology Innovation<br/> such as universities and research institutes
 							</div>
-							<!-- LAYERS NR. 6 // -->
-							<!-- <div class="tp-caption lfr modern_big_redbg br-red"
-								data-x="right"
-								data-hoffset="-10"
-								data-y="315"
-								data-speed="1500"
-								data-start="4100"
-								data-easing="Power4.easeOut"
-								data-endspeed="300"
-								data-endeasing="Linear.easeNone"
-								data-captionhidden="off">Desktop or Laptop
-							</div> -->	
-							<!-- LAYERS NR. 6.1 // -->
-							<!-- <div class="tp-caption lfr modern_big_redbg br-yellow"
-								data-x="right"
-								data-hoffset="-10"
-								data-y="375"
-								data-speed="1500"
-								data-start="4400"
-								data-easing="Power4.easeOut"
-								data-endspeed="300"
-								data-endeasing="Linear.easeNone"
-								data-captionhidden="off">Tablet or Phone
-							</div> -->
+							
 						</li>
 						<li data-transition="zoomin" data-slotamount="6" data-masterspeed="400" >
 							<!-- MAIN IMAGE -->
 							<img src="img/b.jpg" style="background-color:#fff" alt=""  data-bgfit="cover" data-bgposition="center bottom" data-bgrepeat="no-repeat">
 							
-							<!-- LAYERS -->
-							<!-- LAYER NR. 1 -->
-							<!-- <div class="tp-caption sfl modern_medium_light"
-								data-x="20" 
-								data-y="90"
-								data-speed="800"
-								data-start="1000"
-								data-easing="Power4.easeOut"
-								data-endspeed="500"
-								data-endeasing="Power4.easeIn"
-								style="z-index: 3">The New
-							</div> -->
+							
 							<!-- LAYER NR. 1.1 -->
-							<div class="tp-caption large_bold_grey heading white"
+							<div class="tp-caption largepinkbg br-orange heading white"
 								data-x="10"
 								data-y="125"
 								data-splitin="chars"
@@ -408,22 +394,9 @@
 								data-endspeed="500"
 								data-endeasing="Power3.easeInOut"
 								data-captionhidden="on"
-								style="z-index:5">Position
+								style="z-index:5;background: none !important;">Position
 							</div>
-							<!-- <div class="tp-caption finewide_small_white randomrotate customout tp-resizeme"
-								data-x="20"
-								data-y="200" data-voffset="0"
-								data-customout="x:0;y:0;z:0;rotationX:0;rotationY:0;rotationZ:0;scaleX:0;scaleY:0;skewX:0;skewY:0;opacity:0;transformPerspective:600;transformOrigin:50% 50%;"
-								data-speed="1000"
-								data-start="2700"
-								data-easing="Power3.easeInOut"
-								data-splitin="chars"
-								data-splitout="chars"
-								data-elementdelay="0.08"
-								data-endelementdelay="0.08"
-								data-endspeed="500"
-								style="z-index: 4; max-width: auto; max-height: auto; white-space: nowrap;font-weight:bold;">Global Innovation Index
-							</div> -->
+							
 							<!-- LAYER NR. 2 -->
 							<div class="tp-caption customin customout"
 								data-x="right" 
@@ -437,43 +410,7 @@
 								data-endeasing="Power4.easeIn"
 								style="z-index: 3"><img class="img-responsive" src="img/GII/1.jpg" alt="" />
 							</div>
-							<!-- LAYER NR. 2.1 -->
-							<!-- <div class="tp-caption customin customout"
-								data-x="right" 
-								data-y="100"
-								data-customin="x:50;y:150;z:0;rotationX:0;rotationY:0;rotationZ:0;scaleX:0.5;scaleY:0.5;skewX:0;skewY:0;opacity:0;transformPerspective:0;transformOrigin:50% 50%;"
-								data-customout="x:0;y:0;z:0;rotationX:0;rotationY:0;rotationZ:0;scaleX:0.75;scaleY:0.75;skewX:0;skewY:0;opacity:0;transformPerspective:600;transformOrigin:50% 50%;"
-								data-speed="800"
-								data-start="2300"
-								data-easing="Power4.easeOut"
-								data-endspeed="500"
-								data-endeasing="Power4.easeIn"
-								style="z-index: 3"><img class="img-responsive" src="img/GII/2.jpg" alt="" />
-							</div> -->
-							<!-- LAYER NR. 2.2 -->
-							<!-- <div class="tp-caption customin customout"
-								data-x="right" 
-								data-y="100"
-								data-customin="x:50;y:150;z:0;rotationX:0;rotationY:0;rotationZ:0;scaleX:0.5;scaleY:0.5;skewX:0;skewY:0;opacity:0;transformPerspective:0;transformOrigin:50% 50%;"
-								data-customout="x:0;y:0;z:0;rotationX:0;rotationY:0;rotationZ:0;scaleX:0.75;scaleY:0.75;skewX:0;skewY:0;opacity:0;transformPerspective:600;transformOrigin:50% 50%;"
-								data-speed="800"
-								data-start="2600"
-								data-easing="Power4.easeOut"
-								data-endspeed="500"
-								data-endeasing="Power4.easeIn"
-								style="z-index: 3"><img class="img-responsive" src="img/slider/s13.png" alt="" />
-							</div> -->
-							<!-- LAYER NR. 2.3 -->
-							<!-- <div class="tp-caption sft"
-								data-x="right" data-hoffset="-400"
-								data-y="80"
-								data-speed="1000"
-								data-start="3000"
-								data-easing="Power4.easeOut"
-								data-endspeed="500"
-								data-endeasing="Power4.easeIn"
-								style="z-index: 10"><span class="price-tag br-white">30%<br />Off</span>
-							</div> -->
+							
 							<!-- LAYER NR. 3 -->
 							<div class="tp-caption finewide_verysmall_white_mw white paragraph customin customout tp-resizeme"
 								data-x="20"
@@ -529,13 +466,12 @@
 									<!-- Heading -->
 									<h3></h3>
 									<!-- Paragraph -->
-									<p>One of the major output of COSTI is the Sri Lanka
-                                Innovation Dashboard. A system that can be provided information
-                                about current status of the country, with regard to Science,
-                                Technology and Innovation. System will be also facilitates with
-                                status of a particular research in a given time and a one click
-                                view of Research and Development indicators of the entire country
-                                in a given time.</p>
+									<p>A major creation of COSTI is the Sri Lanka
+                                Innovation Dashboard. A system that can provide information
+                                about the current status of the country, with regard to Science,
+                                Technology and Innovation.The system will also facilitate the
+                                status of a particular research at a given time and provide a one click
+                                view of Research and Development indicators of the entire country.</p>
 									<div class="clearfix"></div>
 								</div>
 							</div>
@@ -546,97 +482,6 @@
 				
 				<!-- Showcase End -->
 				
-				<!-- Dishes Start -->
-					
-				<div class="dishes padd">
-					<div class="container">
-						<!-- Default Heading -->
-						<div class="default-heading">
-							<!-- Crown image -->
-							<img class="img-responsive" src="img/crown.png" alt="" />
-							<!-- Heading -->
-							<h2></h2>
-							<!-- Paragraph -->
-							<p></p>
-							<!-- Border -->
-							<div class="border"></div>
-						</div>
-						<div class="row">
-							<div class="col-md-4 col-sm-6">	
-								<div class="dishes-item-container">
-									<!-- Image Frame -->
-									<div class="img-frame">
-										<!-- Image -->
-										<img src="img/people.jpg" class="img-responsive" alt="" />
-										<!-- Block for on hover effect to image -->
-										<div class="img-frame-hover">
-											<!-- Hover Icon -->
-											<a href="#"><i class="fa fa-users"></i></a>
-										</div>
-									</div>
-									<!-- Dish Details -->
-									<div class="dish-details">
-										<!-- Heading -->
-										<h3>People</h3>
-										<!-- Paragraph -->
-										<p>Researchers in universities and independent researchers. People will be linked to their publications, patents and institutions</p>
-										<!-- Button -->
-										<a href="#" class="btn btn-danger btn-sm">Read more</a>
-									</div>
-								</div>
-							</div>
-							<div class="col-md-4 col-sm-6">
-								<div class="dishes-item-container">
-									<!-- Image Frame -->
-									<div class="img-frame">
-										<!-- Image -->
-										<img src="img/places.jpg" class="img-responsive" alt="" />
-										<!-- Block for on hover effect to image -->
-										<div class="img-frame-hover">
-											<!-- Hover Icon -->
-											<a href="#"><i class="fa fa-building-o"></i></a>
-										</div>
-									</div>
-									<!-- Dish Details -->
-									<div class="dish-details">
-										<!-- Heading -->
-										<h3>Places</h3>
-										<!-- Paragraph -->
-										<p>Relates to the physical institutions involved in Science, Technology and Innovation such as universities and research institutes</p>
-										<!-- Button -->
-										<a href="#" class="btn btn-danger btn-sm">Read more</a>
-									</div>
-								</div>
-							</div>
-							<div class="col-md-4 col-sm-6">
-								<div class="dishes-item-container">
-									<!-- Image Frame -->
-									<div class="img-frame">
-										<!-- Image -->
-										<img src="img/position.jpg" class="img-responsive" alt="" />
-										<!-- Block for on hover effect to image -->
-										<div class="img-frame-hover">
-											<!-- Hover Icon -->
-											<a href="#"><i class="fa fa-bar-chart-o"></i></a>
-										</div>
-									</div>
-									<!-- Dish Details -->
-									<div class="dish-details">
-										<!-- Heading -->
-										<h3>Position</h3>
-										<!-- Paragraph -->
-										<p>Sri Lanka’s competitive position in comparison with other South Asian countries and the rest of the world as per the Global Innovation Index.</p>
-										<!-- Button -->
-										<a href="#" class="btn btn-danger btn-sm">Read more</a>
-									</div>
-								</div>
-							</div>
-							
-						</div>
-					</div>					
-				</div>
-				
-				<!-- Dishes End -->
 				
 				<!-- Testimonial Start -->
 				
@@ -662,17 +507,6 @@
 										</li>
 										<li>
 											<!-- Image for background -->
-											<img class="img-responsive" src="img/events/5.jpg" alt="" />
-											<!-- Slide content -->
-											<div class="slider-content">
-												<!-- Heading -->
-												<!-- <h4>Event 2</h4> -->
-												<!-- Paragraph -->
-												<!-- <p>bb  b b bb bbbbbbbbbb bb bb b bbbbbbb b b b b bbbbb b b b bbb bbb bbbb b bbbbb b b bbbbbb b b b b bbbbbbb</p> -->
-											</div>
-										</li>
-										<li>
-											<!-- Image for background -->
 											<img class="img-responsive" src="img/events/6.jpg" alt="" />
 											<!-- Slide content -->
 											<div class="slider-content">
@@ -687,7 +521,7 @@
 							</div>
 							<div class="col-md-6">
 								<!-- BLock heading -->
-								<h3>Comments</h3>
+								<h3>Testimonials</h3>
 								<!-- Flex slider Content -->
 								<div class="flexslider-testimonial">
 									<ul class="slides">
@@ -870,15 +704,17 @@
 									<i class="fa fa-phone br-green"></i> <span>+94 11 3133025 <br /> +94 11 3301992 <br /> +94 11 3133007 <br /> +94 11 2354354 </span>
 									<div class="clearfix"></div>
 									<!-- Email / Icon -->
-									<i class="fa fa-envelope-o br-lblue"></i> <span><a href="info@costi.gov.lk">info@costi.gov.lk</a></span>
+									<i class="fa fa-envelope-o br-lblue"></i> <span><a href="dashboard@costi.gov.lk">dashboard@costi.gov.lk</a></span>
 									<div class="clearfix"></div>
 								</div>
 								<!-- Social media icon -->
 								<div class="social">
 									<a href="//www.facebook.com/STandIcoordinatingsecretariat" class="facebook" target="_blank"><i class="fa fa-facebook"></i></a>
-									<a href="//www.youtube.com/user/costisl" class="google-plus" target="_blank"><i class="fa fa-youtube-play"></i></a>
+									<a href="//www.youtube.com/user/costisl" class="google-plus" target="_blank"><i class="fa fa-youtube"></i></a>
 									<a href="//twitter.com/costi_sl" class="twitter" target="_blank"><i class="fa fa-twitter"></i></a>
-									<a href="//www.linkedin.com/groups/COSTI-Group-Connecting-Science-Technology-4996466?trk=myg_ugrp_ovr" class="linkedin" target="_blank"><i class="fa fa-linkedin"></i></a>
+									<a href="//www.linkedin.com/groups/COSTI-Group-Connecting-Science-Technology-4996466" class="linkedin" target="_blank"><i class="fa fa-linkedin"></i></a>
+									<a href="//costisl.wordpress.com/" class="wordpress" target="_blank"><i class="fa fa-wordpress"></i></a>
+									<a href="//www.slideshare.net/costi2014" class="slideshare" target="_blank"><i class="fa fa-slideshare"></i></a>
 									</div>
 							</div> <!--/ Footer widget end -->
 						</div>
