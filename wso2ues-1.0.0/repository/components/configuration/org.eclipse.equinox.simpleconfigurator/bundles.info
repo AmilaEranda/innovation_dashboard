@@ -49,6 +49,7 @@ jsr107cache,1.1.0.wso2v3,plugins/jsr107cache_1.1.0.wso2v3.jar,4,true
 jstl,1.2.1.wso2v1,plugins/jstl_1.2.1.wso2v1.jar,4,true
 marshalling,1.3.6.wso2v1,plugins/marshalling_1.3.6.wso2v1.jar,4,true
 maven-scm,1.7.0.wso2v2,plugins/maven-scm_1.7.0.wso2v2.jar,4,true
+mysql_connector_java_5.1.13_bin,1.0.0,dropins/mysql_connector_java_5.1.13_bin_1.0.0.jar,4,true
 neethi,2.0.4.wso2v4,plugins/neethi_2.0.4.wso2v4.jar,4,true
 opencsv,1.8.0.wso2v1,plugins/opencsv_1.8.0.wso2v1.jar,4,true
 opensaml2,2.4.1.wso2v1,plugins/opensaml2_2.4.1.wso2v1.jar,4,true
