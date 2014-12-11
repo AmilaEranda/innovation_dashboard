@@ -19,11 +19,11 @@
 		return subsubmainarea;
 	}
 	function getOrganizations(){
-		var organization=db.query("SELECT organization_id,name FROM organization WHERE type='UNI' AND record_status='1'");
+		var organization=db.query("SELECT organization_id,name FROM organization WHERE type='UNI' AND record_status='1' ORDER BY name");
 		return organization;
 	}
 	function getInstitutes(){
-		var institutes=db.query("SELECT organization_id,name FROM organization WHERE type='INS' AND record_status='1'");
+		var institutes=db.query("SELECT organization_id,name FROM organization WHERE type='INS' AND record_status='1' ORDER BY name");
 		return institutes;
 	}
 	function getSubResearchAreas(){

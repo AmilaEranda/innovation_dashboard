@@ -570,21 +570,6 @@
 												<div class="clearfix"></div>
 											</div>
 										</li>
-										<li>
-											<!-- Testimonial Content -->
-											<div class="testimonial-item">
-												<!-- Quote -->
-												<span class="quote lblue">&#8220;</span> 
-												<!-- Your comments -->
-												<blockquote>
-													<!-- Paragraph -->
-													<p>Comment4 Comment4 Comment4 Comment4 Comment4 Comment4 Comment4 Comment4 Comment4 Comment4 Comment4 Comment4 Comment4 Comment4 Comment4 Comment4 Comment4</p>
-												</blockquote>
-												<!-- Heading with image -->
-												<h4><img class="img-responsive img-circle" src="img/comments/4.jpg" alt="" />Dr. Geetha Abeysinghe<span>, Project Manager</span></h4>
-												<div class="clearfix"></div>
-											</div>
-										</li>
 									</ul>
 								</div>
 							</div>

@@ -142,7 +142,7 @@ if (!user) {
                     title: 'Publications contribution in last 8 years',
                     colors: ['#1EB031'],
                     hAxis: {title: 'Year', titleTextStyle: {color: 'black'},viewWindow:{min: 0,max: 8},ticks: [0, 25, 50, 75, 100.125]},
-                    vAxis: {viewWindow:{min: 0,max: <%=count%>}},
+                    vAxis: {viewWindow:{min: 0,max: 10}},
                 };
 
                 var chart = new google.visualization.ColumnChart(document.getElementById('chart_div'));

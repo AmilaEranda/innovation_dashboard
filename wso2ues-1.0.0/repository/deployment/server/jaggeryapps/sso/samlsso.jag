@@ -30,8 +30,8 @@ var SAMLSSOProviderConstants = Packages.org.wso2.carbon.identity.sso.saml.ui.SAM
             userlogin();
         } catch (e) {
             log.debug(e);
-            //session.put('error', {error: true, type: 'regError', msg: e.message});
-            //response.sendRedirect('login.jag');
+            session.put('error', {error: true, type: 'regError', msg: e.message});
+            response.sendRedirect('login.jag');
         }
     };
 
@@ -204,7 +204,7 @@ var SAMLSSOProviderConstants = Packages.org.wso2.carbon.identity.sso.saml.ui.SAM
                 
         var password=request.getParameter("password");
 
-        db.query("INSERT INTO person(title_id,gender,first_name,last_name,initials,email,full_name,record_status,country_id,type,nationalty) "+ "VALUES('" + title + "','" + gender + "','" + firstname + "','" + lastname + "','" + initials + "',"+ "'" + email+ "','" + firstname + " " + lastname + "','" + "1" + "','" + "129" + "','" + "RES" + "','" + "SRI" + "')");
+        db.query("INSERT INTO person(title_id,gender,first_name,last_name,initials,email,full_name,record_status,country_id,type,nationalty) "+ "VALUES('" + title + "','" + gender + "','" + firstname + "','" + lastname + "','" + initials + "',"+ "'" + email+ "','" + firstname + " " + lastname + "','" + "0" + "','" + "129" + "','" + "RES" + "','" + "SRI" + "')");
         var person_id=db.query("SELECT person_id FROM person WHERE email='"+email+"'")[0].person_id;
         var random=makeid();
         db.query("INSERT INTO login_details(email,password,verification_code,person_id,access_group_id) VALUES('"+email+"',SHA1('"+password+"'),'"+random+"','"+person_id+"','2')");
@@ -249,15 +249,15 @@ var SAMLSSOProviderConstants = Packages.org.wso2.carbon.identity.sso.saml.ui.SAM
 
         if (action == 'register') {print("register");
             //registerUser(username, password);
-            var canuseradd=canuseradd();log.info("canuseradd:"+canuseradd);
+            var canuseradd=canuseradd();
             if(canuseradd==9999){
                 //Add user
                 var adduser=addUser();
                 if(adduser+""=="true"){
                     username=makeForUES(username);
                     registerUser(username, password);
-                    session.put('error', {error: true, type: 'regError', msg: 'Please verify your email.'});
-                    response.sendRedirect('login.jag');
+                    //session.put('error', {error: true, type: 'regError', msg: 'Please verify your email.'});
+                    //response.sendRedirect('login.jag');
                 }else{
                     session.put('error', {error: true, type: 'regError', msg: adduser});
                     response.sendRedirect('login.jag');

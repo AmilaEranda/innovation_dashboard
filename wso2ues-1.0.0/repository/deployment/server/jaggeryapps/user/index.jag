@@ -54,7 +54,7 @@ if (!user) {
     			<div class="nav-collapse collapse">
     				<ul class="nav pull-right">
                         <li class="nav-separator">
-                            <a href="/userdashboard/"><i class="icon-user"></i><i class="icon-dashboard"></i> MyDashboard</a>
+                            <a href="/userdashboard/"><i class="icon-dashboard"></i> MyDashboard</a>
                         </li>
                         <li class="nav-separator">
                             <a href="/dashboard/"><i class="icon-dashboard"></i> CommonDashboard</a>

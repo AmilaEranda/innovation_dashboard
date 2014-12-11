@@ -1,1 +1,1 @@
-<%var db = new Database("jdbc:mysql://localhost:3306/innovation_db_costi3", "root", "123");%>
+<%var db = new Database("jdbc:mysql://localhost:3306/innovation_db_a2", "root", "123");%>

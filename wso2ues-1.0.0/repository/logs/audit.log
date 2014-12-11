@@ -1,9 +1,2 @@
-[2014-12-01 10:35:34,303]  INFO -  'admin@carbon.super [-1234]' logged in at [2014-12-01 10:35:34,302+0530] from IP address 10.22.196.11 
-[2014-12-10 15:39:11,394]  INFO -  'admin@carbon.super [-1234]' logged in at [2014-12-10 15:39:11,394+0530] from IP address 10.22.196.13 
-[2014-12-10 15:42:11,282]  INFO -  'admin@carbon.super [-1234]' logged in at [2014-12-10 15:42:11,281+0530] from IP address 10.22.196.13 
-[2014-12-10 16:08:36,308]  INFO -  'admin@carbon.super [-1234]' logged in at [2014-12-10 16:08:36,307+0530] from IP address 10.22.196.13 
-[2014-12-10 16:16:17,171]  INFO -  'admin@carbon.super [-1234]' logged in at [2014-12-10 16:16:17,170+0530] from IP address 10.22.196.13 
-[2014-12-10 16:16:46,335]  INFO -  'admin@carbon.super [-1234]' logged in at [2014-12-10 16:16:46,334+0530] from IP address 10.22.196.13 
-[2014-12-10 18:10:34,163]  INFO -  'admin@carbon.super [-1234]' logged in at [2014-12-10 18:10:34,161+0530] from IP address 10.22.196.11 
-[2014-12-10 18:17:31,071]  INFO -  'admin@carbon.super [-1234]' logged in at [2014-12-10 18:17:31,068+0530] from IP address 10.22.196.11 
-[2014-12-10 18:24:31,617]  INFO -  'admin@carbon.super [-1234]' logged in at [2014-12-10 18:24:31,615+0530] from IP address 10.22.196.11 
+[2014-12-11 08:11:56,808]  INFO -  'admin@carbon.super [-1234]' logged in at [2014-12-11 08:11:56,805+0530] from IP address 127.0.0.1 
+[2014-12-11 09:56:07,209]  INFO -  'admin@carbon.super [-1234]' logged in at [2014-12-11 09:56:07,207+0530] from IP address 10.22.196.11 
