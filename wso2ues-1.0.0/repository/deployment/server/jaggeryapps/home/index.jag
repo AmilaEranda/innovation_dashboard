@@ -45,10 +45,11 @@
 			    border-radius: 0px !important;
 			    box-shadow: none !important;
 			    margin: 3px auto 12px !important;
-			    max-width: 150px !important;
+			    max-width: 140px !important;
 			    max-height: 80px !important;
 			    height: 60px;
-			    width:150px;
+			    width:140px;
+			    padding: 0px;
 			}
 			#dashboard_logo {
 			    border: 2px solid #fff !important;
@@ -101,9 +102,62 @@
 									<!-- Collect the nav links, forms, and other content for toggling -->
 									<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 										<ul class="nav navbar-nav">
-											<li><a href="//www.costi.gov.lk" target="_blank"><img src="img/costi_logo.jpg" id="costi_logo" alt="" /></a>
+											<li><a href="//www.costi.gov.lk" target="_blank" style="padding: 0px;"><img src="img/costi_logo.jpg" id="costi_logo" alt="" /></a>
 											</li>
-											<li><a href="https://localhost:9443/dashboard" style="width:80px;"><img src="img/srilanka4.png" id="dashboard_logo" alt="" /> Dashboard</a>
+											<li>
+												<a href="#" class="dropdown-toggle" data-toggle="dropdown" style="width:120px;">
+													<img src="img/srilanka4.png" id="dashboard_logo" alt="" /> Dashboard<b class="caret"></b>
+												</a>
+												<ul class="dropdown-menu dropdown-md">
+													<li>
+														<div class="row">
+															<div class="col-md-3 col-sm-6">
+																<!-- Menu Item -->
+																<div class="menu-item">
+																	<!-- Heading -->
+																	<h3>Academic</h3>
+																	<!-- Image -->
+																	<img src="img/aca.jpg" class="img-responsive" alt="" />
+																	<!-- Button -->
+																	<a href="/academicDashboard" class="btn btn-danger btn-sm">View</a>
+																</div>
+															</div>
+															<div class="col-md-3">
+																<!-- Menu Item -->
+																<div class="menu-item">
+																	<!-- Heading -->
+																	<h3>Administration</h3>
+																	<!-- Image -->
+																	<img src="img/adm.jpg" class="img-responsive" alt="" />
+																	<!-- Button -->
+																	<a href="/administrationDashboard" class="btn btn-danger btn-sm">View</a>
+																</div>
+															</div>
+															<div class="col-md-3 col-sm-6">
+																<!-- Menu Item -->
+																<div class="menu-item">
+																	<!-- Heading -->
+																	<h3>Business</h3>
+																	<!-- Image -->
+																	<img src="img/bus.jpg" class="img-responsive" alt="" />
+																	<!-- Button -->
+																	<a href="/businessDashboard" class="btn btn-danger btn-sm">View</a>
+																</div>
+															</div>
+															<div class="col-md-3">
+																<!-- Menu Item -->
+																<div class="menu-item">
+																	<!-- Heading -->
+																	<h3>General</h3>
+																	<!-- Image -->
+																	<img src="img/gen.png" class="img-responsive" alt="" />
+																	<!-- Button -->
+																	<a href="/dashboard" class="btn btn-danger btn-sm">View</a>
+																</div>
+															</div>
+														</div>
+													</li>
+												</ul>
 											</li>
 										</ul>
 									</div><!-- /.navbar-collapse -->
@@ -152,11 +206,33 @@
 								data-captionhidden="off">People
 							</div>
 							<!-- LAYER NR. 2.1 -->
+							<div class="tp-caption lfl small_thin_green_new br-lgreen"
+								data-x="110" 
+								data-y="100"
+								data-speed="1500"
+								data-start="4000"
+								data-easing="Power4.easeOut"
+								data-endspeed="500"
+								data-endeasing="Power4.easeIn"
+								style="z-index: 3;">Researchers
+							</div>
+							<!-- LAYER NR. 2.1 -->
+							<div class="tp-caption lfl small_thin_green_new br-lgreen"
+								data-x="110" 
+								data-y="122"
+								data-speed="1500"
+								data-start="5000"
+								data-easing="Power4.easeOut"
+								data-endspeed="500"
+								data-endeasing="Power4.easeIn"
+								style="z-index: 3;">Inventors
+							</div>
+							<!-- LAYER NR. 2.1 -->
 							<div class="tp-caption lfl medium_bg_darkblue br-lblue"
 								data-x="20" 
 								data-y="150"
 								data-speed="1500"
-								data-start="4000"
+								data-start="6000"
 								data-easing="Power4.easeOut"
 								data-endspeed="500"
 								data-endeasing="Power4.easeIn"
@@ -167,84 +243,16 @@
 								data-x="20" 
 								data-y="200"
 								data-speed="1500"
-								data-start="5000"
+								data-start="7000"
 								data-easing="Power4.easeOut"
 								data-endspeed="500"
 								data-endeasing="Power4.easeIn"
 								style="z-index: 3">Position
 							</div>
-							<!-- LAYER NR. 2.3 -->
-							<!-- <div class="tp-caption lfl medium_bg_darkblue br-orange"
-								data-x="20" 
-								data-y="350"
-								data-speed="1500"
-								data-start="2700"
-								data-easing="Power4.easeOut"
-								data-endspeed="500"
-								data-endeasing="Power4.easeIn"
-								style="z-index: 3">Collaboration
-							</div> -->
-							<!-- LAYER NR. 3.0 -->
-							<!-- <div class="tp-caption customin customout"
-								data-x="right" data-hoffset="-10"
-								data-y="35"
-								data-customin="x:0;y:0;z:0;rotationX:0;rotationY:0;rotationZ:0;scaleX:0;scaleY:0;skewX:0;skewY:0;opacity:0;transformPerspective:600;transformOrigin:50% 50%;"
-								data-customout="x:0;y:0;z:0;rotationX:0;rotationY:0;rotationZ:0;scaleX:0.75;scaleY:0.75;skewX:0;skewY:0;opacity:0;transformPerspective:600;transformOrigin:50% 50%;"
-								data-speed="1000"
-								data-start="3600"
-								data-easing="Power3.easeInOut"
-								data-endspeed="600"
-								style="z-index: 5"><img class="slide-img img-responsive" src="img/innovation/1.png" alt="" />
-							</div>
-							<div class="tp-caption customin customout"
-								data-x="right" data-hoffset="-230"
-								data-y="250"
-								data-customin="x:0;y:0;z:0;rotationX:0;rotationY:0;rotationZ:0;scaleX:0;scaleY:0;skewX:0;skewY:0;opacity:0;transformPerspective:600;transformOrigin:50% 50%;"
-								data-customout="x:0;y:0;z:0;rotationX:0;rotationY:0;rotationZ:0;scaleX:0.75;scaleY:0.75;skewX:0;skewY:0;opacity:0;transformPerspective:600;transformOrigin:50% 50%;"
-								data-speed="1000"
-								data-start="4500"
-								data-easing="Power3.easeInOut"
-								data-endspeed="600"
-								style="z-index: 6"><img class="slide-img img-responsive" src="img/innovation/5.jpg" alt="" />
-							</div>
-							<div class="tp-caption customin customout"
-								data-x="right" data-hoffset="-10"
-								data-y="250"
-								data-customin="x:0;y:0;z:0;rotationX:0;rotationY:0;rotationZ:0;scaleX:0;scaleY:0;skewX:0;skewY:0;opacity:0;transformPerspective:600;transformOrigin:50% 50%;"
-								data-customout="x:0;y:0;z:0;rotationX:0;rotationY:0;rotationZ:0;scaleX:0.75;scaleY:0.75;skewX:0;skewY:0;opacity:0;transformPerspective:600;transformOrigin:50% 50%;"
-								data-speed="1000"
-								data-start="5100"
-								data-easing="Power3.easeInOut"
-								data-endspeed="600"
-								style="z-index: 7"><img class="slide-img img-responsive" src="img/innovation/4.jpg" alt="" />
-							</div>
-							<div class="tp-caption customin customout"
-								data-x="right" data-hoffset="-230"
-								data-y="35"
-								data-customin="x:0;y:0;z:0;rotationX:0;rotationY:0;rotationZ:0;scaleX:0;scaleY:0;skewX:0;skewY:0;opacity:0;transformPerspective:600;transformOrigin:50% 50%;"
-								data-customout="x:0;y:0;z:0;rotationX:0;rotationY:0;rotationZ:0;scaleX:0.75;scaleY:0.75;skewX:0;skewY:0;opacity:0;transformPerspective:600;transformOrigin:50% 50%;"
-								data-speed="1000"
-								data-start="5700"
-								data-easing="Power3.easeInOut"
-								data-endspeed="600"
-								style="z-index: 8"><img class="slide-img img-responsive" src="img/innovation/3.jpg" alt="" />
-							</div> -->
 						</li>
 						<li data-transition="slidehorizontal" data-slotamount="1" data-masterspeed="600" >
 							<!-- MAIN IMAGE -->
 							<img src="img/c.jpg" style="background-color:#fea501" alt=""  data-bgfit="cover" data-bgposition="center bottom" data-bgrepeat="no-repeat">
-							<!-- LAYERS NR. 1 -->
-							<!-- <div class="tp-caption lfl"
-								data-x="left"
-								data-y="100"
-								data-speed="800"
-								data-start="1200"
-								data-easing="Power4.easeOut"
-								data-endspeed="300"
-								data-endeasing="Linear.easeNone"
-								data-captionhidden="off"><img class="img-responsive" src="img/slider/s35.png" alt="" />
-							</div> -->
-							<!-- LAYERS NR. 2 -->
 							<div class="tp-caption lfr largepinkbg br-green heading white"
 								data-x="right" data-hoffset="-10"
 								data-y="50"
@@ -285,7 +293,7 @@
 								data-elementdelay="0.08"
 								data-endelementdelay="0.08"
 								data-endspeed="500"
-								style="z-index: 4; max-width: auto; max-height: auto; white-space: nowrap;">Researchers / Innovators
+								style="z-index: 4; max-width: auto; max-height: auto; white-space: nowrap;">Researchers / Inventors
 							</div>
 							<!-- LAYER NR. 5 -->
 							<div class="tp-caption finewide_verysmall_white_mw white customin customout tp-resizeme text-right paragraph"

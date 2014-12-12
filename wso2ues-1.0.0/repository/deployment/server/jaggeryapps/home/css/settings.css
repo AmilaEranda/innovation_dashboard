@@ -716,6 +716,20 @@ border-color:rgb(255, 214, 88);
 border-style:none;
 }
 
+.tp-caption.small_thin_green_new {
+font-size:14px;
+line-height:17px;
+font-weight:bold;
+font-family:"Open Sans";
+color:#333;
+text-decoration:none;
+background-color:rgb(154, 226, 183);
+padding:1px 2px 0px;
+text-shadow:none;
+margin:0px;
+border-width:0px;
+}
+
 .tp-caption.lightgrey_divider {
 text-decoration:none;
 background-color:rgba(235, 235, 235, 1);
