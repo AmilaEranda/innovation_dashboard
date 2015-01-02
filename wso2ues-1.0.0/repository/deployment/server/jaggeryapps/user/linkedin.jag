@@ -1,0 +1,25 @@
+<%
+	include("db.jag");
+	include("mailconverter.jag");
+	var username=session.get("LOGGED_IN_USER")+"";
+	var person=db.query("SELECT * FROM person WHERE email='"+""+remakeEmail(username)+"'");
+	var person_area_of_interest=db.query("SELECT person_area_of_interest_id FROM person_area_of_interest WHERE person_person_id='"+""+person[0].person_id+"'");
+	var person_organization=db.query("SELECT person_organization_id FROM person_organization WHERE person_id='"+""+person[0].person_id+"'");
+	
+	function errorCodeLinkedIn(){
+		/*if(person[0].initials==""|person[0].initials==null){
+			//Please fill basic details
+			return "1";
+		}*/
+		if(person_area_of_interest.length<1){
+			//Please add your area of interest
+			return "2";
+		}else if(person_organization.length<1){
+			//Please select your organization
+			return "3";
+		}else{
+			return "0";
+		}
+	}
+
+%>

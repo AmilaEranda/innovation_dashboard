@@ -44,6 +44,8 @@
 				dbdt.push({"id":result[i].publication_id,"name":result[i].publication_id,"text":result[i].title,"value":result[i].journal_id});
 			}else if(pub_type=="2"){
 				dbdt.push({"id":result[i].publication_id,"name":result[i].publication_id,"text":result[i].name,"value":result[i].publisher});
+			}else if(pub_type=="5"){
+				dbdt.push({"id":result[i].publication_id,"name":result[i].publication_id,"text":result[i].title,"value":result[i].publisher});
 			}else{
 				dbdt.push({"id":result[i].publication_id,"name":result[i].publication_id,"text":result[i].title,"value":result[i].name});
 			}			

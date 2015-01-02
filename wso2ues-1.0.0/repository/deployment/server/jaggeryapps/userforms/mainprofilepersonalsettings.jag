@@ -1,4 +1,4 @@
-<html>
+<!DOCTYPE html>
 <%
 var user = require('/modules/user.js').current();
 if (!user) {
@@ -16,6 +16,12 @@ lastlogin=db.query("SELECT * FROM user_log WHERE login_details_id='"+login_detai
 if(lastlogin.length==0){
     lastlogin=db.query("SELECT * FROM user_log WHERE login_details_id='"+login_details[0].login_details_id+"'");
 }%>
+<%var person_privacy=db.query("Select * FROM person_privacy WHERE person_id='"+person_id+"'");
+if(person_privacy.length<1){
+    db.query("INSERT INTO person_privacy(show_email,show_gender,show_mobile_no,show_home_no,show_tel_no,show_fax_no,show_home_addr,show_office_addr,person_id) VALUES('0','0','0','0','0','0','0','0','"+person_id+"');");
+    person_privacy=db.query("Select * FROM person_privacy WHERE person_id='"+person_id+"'");
+}
+%>
 <html>
     <head>
         <meta charset="UTF-8">
@@ -24,7 +30,8 @@ if(lastlogin.length==0){
         <link href="css1/bootstrap.min.css" rel="stylesheet" type="text/css" />
         <link href="css1/font-awesome.min.css" rel="stylesheet" type="text/css" />
         <link href="css1/panel.css" rel="stylesheet" type="text/css" />
-        <link type="text/css" rel="stylesheet" href="css1/forms/basicdetails.css" />
+        <link href="css1/datepicker/jquery.datepick.css" rel="stylesheet">
+        <link type="text/css" rel="stylesheet" href="css1/forms/privacysettings.css" />
         <link href="css1/jquerymessagebox/msgBoxLight.css" rel="stylesheet" type="text/css">
         <script src="js1/jquery/jquery-1.9.1.js"></script>
         <script src="js1/bootstrap/bootstrap.min.js" type="text/javascript"></script>
@@ -32,37 +39,35 @@ if(lastlogin.length==0){
         <script src="js1/jquerymessagebox/jquery.msgBox.js" type="text/javascript"></script>
         <script type="text/javascript">
             $(function(){
-                $('#contactdetailsform').submit(function(){
-                    if($("#additional_email").val().length>0){
-                        if(isEmail($("#additional_email").val())){
-                            submitData();
-                        }else{
-                            errorMessage("Error","Invalid Other E-Mail Address");
-                        }
-                    }else{
-                        submitData();
-                    }                                        
+                $('input[type="password"]').val('');
+                $('input[type="password"]').on({
+                  keydown: function(e) {
+                    if (e.which === 32)
+                      return false;
+                  },
+                  change: function() {
+                    this.value = this.value.replace(/\s/g, "");
+                  }
+                });
+                $('#settingform').submit(function(){
+                    var url = "privacysettings.jag";
+                    $.ajax({
+                       type: "POST",
+                       url: url,
+                       data: $("#settingform").serialize(),
+                       success: function(data)
+                       {
+                           if ($.trim(data) == 'true') {
+                                successMessage("Done", "Update Successfully");clear();
+                            } else {
+                                errorMessage("Error",data);clear();
+                            }
+                       }
+                    });
                     return false;
                 });
             });
-            function submitData(){
-                var url = "contactdetails.jag";
-                $.ajax({
-                   type: "POST",
-                   url: url,
-                   data: $("#contactdetailsform").serialize(),
-                   success: function(data)
-                   {
-                       if ($.trim(data) == 'true') {
-                            successMessage("Done", "Update Successfully");
-                        } else {
-                            errorMessage("Error",data);
-                        }
-                   }
-                });
-            }
             function errorMessage(title,error){$.msgBox({title: title,content: error});}function successMessage(title,content){$.msgBox({title:title,content:content,type: "info"});}
-            function isEmail(email){var regex = /^([a-zA-Z0-9.+-])+\@(([a-zA-Z0-9-])+\.)+([a-zA-Z0-9]{2,4})+$/;return regex.test(email);}
         </script>
     </head>
     <body class="skin-blue">        
@@ -74,7 +79,7 @@ if(lastlogin.length==0){
                             <img src="<%=url%>" class="img-circle" style="margin-top: -5px;" alt="User Image" />
                         </div>
                         <div class="pull-left info">
-                            <p><%=(person[0].first_name.length>26)?person[0].first_name.substring(0,25):person[0].first_name%></p>
+                           <p><%=(person[0].first_name.length>26)?person[0].first_name.substring(0,25):person[0].first_name%></p>
                         </div>
                     </div>
                     <ul class="sidebar-menu">
@@ -123,7 +128,7 @@ if(lastlogin.length==0){
                                 <li><a href="mainprofilepublications.jag?formtype=tech" style="margin-left: 10px;"><i class="fa fa-angle-double-right"></i>Technical Report</a></li>
                                 <li><a href="mainprofilepublications.jag?formtype=conf" style="margin-left: 10px;"><i class="fa fa-angle-double-right"></i>Conference</a></li>
                             </ul>
-                        </li>
+                        </li>                        
                     </ul>
                 </section>
             </aside>
@@ -131,8 +136,8 @@ if(lastlogin.length==0){
                 <!-- Content Header (Page header) -->
                 <section class="content-header">
                     <h1>
-                        Contact Details 
-                        <small>Edit Contact Details</small>
+                        Privacy Settings 
+                        <small>Manage my public profile details</small>
                     </h1>
                     <ol class="breadcrumb">
                         Last Login: <%=lastlogin[0].date_time.toString().substring(0,16)%>
@@ -140,64 +145,48 @@ if(lastlogin.length==0){
                 </section>
                 <section class="content">
                     <div id="formWrapper" class="container roundCorner textColor">
-                        <form class="form-horizontal" id="contactdetailsform">
+                        <form class="form-horizontal" id="settingform">
                             <fieldset>
-                                <legend style="margin-left:20px;">Telephone Details</legend>
                                 <div class="form-group">
-                                    <label class="control-label col-xs-3">Telephone No.</label>
-                                    <div class="col-xs-5">
-                                        <input id="telephoneform" name="telephoneform" type="text" placeholder="Telephone Number" class="form-control1 input-md" value="<%=(person[0].telephone==null)?"":person[0].telephone%>">
+                                    <label class="control-label col-xs-5">Show E-Mail in public profile</label>
+                                    <div class="col-xs-1">
+                                        <input id="showemail" name="showemail" type="checkbox" class="form-control1 input-md" style="margin-top:-0px;" <%=(person_privacy[0].show_email=="1")?"checked":""%>>
                                     </div>
-                                    <label class="control-label col-xs-1">Extention</label>
-                                    <div class="col-xs-3">
-                                        <input id="extention" name="extention" type="text" placeholder="Extention Number" class="form-control1 input-md" value="<%=(person[0].extention==null)?"":person[0].extention%>">
+                                    <label class="control-label col-xs-5">Show Gender in public profile</label>
+                                    <div class="col-xs-1">
+                                        <input id="showgender" name="showgender" type="checkbox" class="form-control1 input-md" style="margin-top:-0px;" <%=(person_privacy[0].show_gender=="1")?"checked":""%>>
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label class="control-label col-xs-3">Mobile No.</label>
-                                    <div class="col-xs-9">
-                                        <input id="mobileform" name="mobileform" type="text" placeholder="Mobile Number" class="form-control1 input-md" value="<%=(person[0].mobile==null)?"":person[0].mobile%>">
+                                    <label class="control-label col-xs-5">Show Mobile No. in public profile</label>
+                                    <div class="col-xs-1">
+                                        <input id="showmobile" name="showmobile" type="checkbox" class="form-control1 input-md" style="margin-top:-0px;" <%=(person_privacy[0].show_mobile_no=="1")?"checked":""%>>
+                                    </div>
+                                    <label class="control-label col-xs-5">Show Home No. in public profile</label>
+                                    <div class="col-xs-1">
+                                        <input id="showhome" name="showhome" type="checkbox" class="form-control1 input-md" style="margin-top:-0px;" <%=(person_privacy[0].show_home_no=="1")?"checked":""%>>
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label class="control-label col-xs-3">Home No.</label>
-                                    <div class="col-xs-9">
-                                        <input id="homeformno" name="homeformno" type="text" placeholder="Home Number" class="form-control1 input-md" value="<%=(person[0].homeno==null)?"":person[0].homeno%>">
+                                    <label class="control-label col-xs-5">Show Telephone No. in public profile</label>
+                                    <div class="col-xs-1">
+                                        <input id="showtelphone" name="showtelphone" type="checkbox" class="form-control1 input-md" style="margin-top:-0px;" <%=(person_privacy[0].show_tel_no=="1")?"checked":""%>>
                                     </div>
-                                </div>
-                                <legend style="margin-left:20px;">Fax</legend>
-                                <div class="form-group">
-                                    <label class="control-label col-xs-3">Fax No.</label>
-                                    <div class="col-xs-9">
-                                        <input id="fax" name="fax" type="text" placeholder="Fax Number" class="form-control1 input-md" value="<%=(person[0].fax==null)?"":person[0].fax%>">
-                                    </div>
-                                </div>
-                                <legend style="margin-left:20px;">E-Mail</legend>
-                                <div class="form-group">
-                                    <label class="control-label col-xs-3">Primary E-mail</label>
-                                    <div class="col-xs-9">
-                                        <input id="email" name="email" type="text" placeholder="E-Mail" class="form-control1 input-md" value="<%=(person[0].email==null)?"":person[0].email%>" disabled="">
+                                    <label class="control-label col-xs-5">Show Fax No. in public profile</label>
+                                    <div class="col-xs-1">
+                                        <input id="showfax" name="showfax" type="checkbox" class="form-control1 input-md" style="margin-top:-0px;" <%=(person_privacy[0].show_fax_no=="1")?"checked":""%>>
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label class="control-label col-xs-3">Other E-Mail</label>
-                                    <div class="col-xs-9">
-                                        <input id="additional_email" name="additional_email" type="text" placeholder="Additional Email" class="form-control1 input-md" value="<%=(person[0].additional_email==null)?"":person[0].additional_email%>">
+                                    <label class="control-label col-xs-5">Show Home address in public profile</label>
+                                    <div class="col-xs-1">
+                                        <input id="showhomeadd" name="showhomeadd" type="checkbox" class="form-control1 input-md" style="margin-top:-0px;" <%=(person_privacy[0].show_home_addr=="1")?"checked":""%>>
+                                    </div>
+                                    <label class="control-label col-xs-5">Show Office address in public profile</label>
+                                    <div class="col-xs-1">
+                                        <input id="showofficeadd" name="showofficeadd" type="checkbox" class="form-control1 input-md" style="margin-top:-0px;" <%=(person_privacy[0].show_office_addr=="1")?"checked":""%>>
                                     </div>
                                 </div>
-                                <legend style="margin-left:20px;">Address Details</legend>
-                                <div class="form-group">
-                                    <label class="control-label col-xs-3">Office Address</label>
-                                    <div class="col-xs-9">
-                                        <textarea id="officeform" name="officeform" rows="4" cols="50" placeholder="Office Address" class="form-control1 input-md" style="width: 100%;height: 100px;resize: none;"><%=(person[0].address_office==null)?"":person[0].address_office%></textarea>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label class="control-label col-xs-3">Home Address</label>
-                                    <div class="col-xs-9">
-                                        <textarea id="homeform" name="homeform" rows="4" cols="50" placeholder="Home Address" class="form-control1 input-md" style="width: 100%;height: 100px;resize: none;"><%=(person[0].address_home==null)?"":person[0].address_home%></textarea>
-                                    </div>
-                                </div>                                
                                 <div class="form-group">
                                     <label class="control-label col-xs-3"></label>
                                     <div class="col-xs-5"></div>
@@ -207,11 +196,22 @@ if(lastlogin.length==0){
                                     </div>
                                 </div>
                             </fieldset>
-                            <input type="hidden" name="type" value="edi"/>
                         </form>
                     </div>
                 </section>
             </aside>
-        </div><br><br><br><br>
+        </div>
+        <script type="text/javascript">
+        $(function(){
+            $("#showemail").css({opacity: 1});
+            $("#showgender").css({opacity: 1});
+            $("#showmobile").css({opacity: 1});
+            $("#showhome").css({opacity: 1});
+            $("#showtelphone").css({opacity: 1});
+            $("#showfax").css({opacity: 1});
+            $("#showhomeadd").css({opacity: 1});
+            $("#showofficeadd").css({opacity: 1});
+        });
+        </script>
     </body>
 </html><%}%>

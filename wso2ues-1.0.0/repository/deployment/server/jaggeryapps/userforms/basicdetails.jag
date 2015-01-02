@@ -27,11 +27,26 @@
 			var expertise=escape(request.getParameter("expertise"));
 			var other_information=escape(request.getParameter("other_information"));
 			var overseascountry=(request.getParameter("overseascountry")=="on")?"1":"0";
-			var overseascountry_reason=escape(request.getParameter("overseascountry_reason"));
+			var overseascountry_reason=(request.getParameter("overseascountry")=="on")?request.getParameter("overseascountry_reason"):"";
 			var deactivater=request.getParameter("deactivater");
+			var deactivaterVal=(person[0].record_status=="1"|person[0].record_status=="3")?((deactivater=="on")?"3":"1"):((deactivater=="on")?"5":"4");
+			var file_name="";
+			var full_name;
+			if(firstname==null|firstname==""){
+				full_name=initials+" "+lastname;				
+			}else{
+				full_name=firstname+" "+lastname;
+			}
+			if(!request.getFile("file_source").getName()==""){
+				var file = request.getFile("file_source");
+				var randomVal=random();
+				file_name=randomVal+file.getName();
+				uploadFile(randomVal,file);
+				db.query("UPDATE person SET cv='"+file_name+"' WHERE person_id='"+person_id+"';");
+			}
 
 			//Update person data
-			db.query("UPDATE person SET title_id='"+title+"',country_id='"+country+"',first_name='"+firstname+"',last_name='"+lastname+"',initials='"+initials+"',nic='"+nic+"',dob="+((bdy=="")?null:bdy)+",gender='"+gender+"',civilstatus='"+civilstatus+"',profession='"+profession+"',designation='"+designation+"',academic_qualification='"+academic_qualification+"',expertise='"+expertise+"',other_information='"+other_information+"',in_out_country='"+overseascountry+"',reason_out='"+((overseascountry=="1")?overseascountry_reason:"")+"',record_status='"+((deactivater=="on")?"3":"1")+"' WHERE person_id='"+person_id+"';");
+			db.query("UPDATE person SET title_id='"+title+"',full_name='"+full_name+"',country_id='"+country+"',first_name='"+firstname+"',last_name='"+lastname+"',initials='"+initials+"',nic='"+nic+"',dob="+((bdy=="")?null:bdy)+",gender='"+gender+"',civilstatus='"+civilstatus+"',profession='"+profession+"',designation='"+designation+"',academic_qualification='"+academic_qualification+"',expertise='"+expertise+"',other_information='"+other_information+"',in_out_country='"+overseascountry+"',reason_out='"+((overseascountry=="1")?overseascountry_reason:"")+"',record_status='"+deactivaterVal+"' WHERE person_id='"+person_id+"';");
 			//Update person area of interest
 			db.query("DELETE FROM person_area_of_interest WHERE person_person_id='"+person_id+"'");
 			for(var i=0;i<tabledata.length;i++){
@@ -48,17 +63,41 @@
 	function validateData(){
 		if(username==null){
 			return "Please login.";
-		}else if(request.getParameter("firstname").length<1){
-			return "Please enter first name.";
+		}else if(request.getParameter("firstname").length<1&request.getParameter("initials").length<1){
+			return "Please enter first name or initials.";
 		}else if(request.getParameter("lastname").length<1){
 			return "Please enter last name.";
-		}else if(request.getParameter("initials").length<1){
-			return "Please enter initials.";
 		}else if(JSON.parse(request.getParameter("tabledata")).length<1){
 			return "Please enter your area of interest.";
 		}else if(request.getParameter("overseascountry")=="on"&&request.getParameter("overseascountry_reason").length<1){
 			return "Please enter reason for relocating overseas.";
 		}
 		return true;
+	}
+
+	function uploadFile(random,file){		
+		var folderpath="cv/"+person_id;
+		var folder=new File(folderpath);
+		var fileindir=new File("cv/"+person_id+"/"+random+file.getName());
+		folder.del();
+		folder.mkdir();
+		file.move("cv/"+person_id+"/"+random+file.getName());
+	}
+
+	function random(){
+	    var text = "";
+	    var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+	    for(var i=0;i<10;i++)
+	        text += possible.charAt(Math.floor(Math.random() * possible.length));
+	    return text;
+	}
+
+	function getReasonForRelocatingOverseas(overseascountry_reason){
+		switch(overseascountry_reason){
+			case 1:
+				return 'Overseas for sabbatical leave';
+			case 2:
+				return 'Overseas for Personal reason';
+		}
 	}
 %>

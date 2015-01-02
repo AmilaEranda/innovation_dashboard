@@ -32,17 +32,7 @@ var e = session.get('error') || {};
     <link rel="apple-touch-icon-precomposed" sizes="114x114" href="../assets/ico/apple-touch-icon-114-precomposed.png">
     <link rel="apple-touch-icon-precomposed" sizes="72x72" href="../assets/ico/apple-touch-icon-72-precomposed.png">
     <link rel="apple-touch-icon-precomposed" href="../assets/ico/apple-touch-icon-57-precomposed.png">
-    <link rel="shortcut icon" href="../assets/ico/favicon.png">
-    <script type="text/javascript" src="//platform.linkedin.com/in.js">
-    <script type="text/javascript" src="//platform.linkedin.com/in.js">
-        api_key:75tsn40m6y9n7x
-        authorize:true
-    </script>
-    <script type="text/javascript">
-        function redirect(){              
-            alert("Hi");
-        }
-    </script>
+    <link rel="shortcut icon" href="../assets/ico/favicon.png">    
   </head>
   <body>
     <div class="container">
@@ -76,29 +66,6 @@ var e = session.get('error') || {};
 									</div>
 								
 									<div class="span6">
-										<!--<form id="registerForm" action="samlsso.jag" method="POST" >
-									        <h2 class="form-signin-heading">Register</h2>
-									        <% /*if(e.error && e.type == 'regError'){ %>
-									            <div class="alert alert-error"><%= e.msg.split(':')[1] %></div>
-									        <%
-                                                e = {};
-                                                session.put('error', {});
-                                            }*/%>
-									        <div class="control"><label>Username</label><input id="reg-username" name="username" type="text" class="input-block-level required usrName"></div>
-									        <div class="control">
-									        	<label>Password</label>
-									        	<input id="reg-password" name="password" type="password" class="input-block-level required">
-									        </div>
-									        <div class="control">			
-							        			<label>Confirm password</label>
-									        	<input id="reg-password2" name="password2" type="password" class="input-block-level required" equalTo="#reg-password">	
-									        </div>
-									        <div>
-									        	<input id="reg-action" name="action" type="hidden" value="register">
-									        </div>
-									        <button id="registrationSubmit" class="btn btn-large btn-primary pull-right" type="submit">Register</button>
-								    	</form>-->
-
 								    	<h2 class="form-signin-heading">Register</h2>
 								        <% if(e.error && e.type == 'regError'){ %>
 								            <div class="alert alert-error"><%= e.msg %></div>
@@ -123,14 +90,14 @@ var e = session.get('error') || {};
 						</div>
 			      	</div>
 				</div>
-    		</div>
+    		</div>    		
 
     		<!-- Modal -->
 		    <div class="modal fade bs-example-modal-lge" id="signup" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="margin-top:-330px;">
 		        <div class="modal-dialog">
 		            <div class="modal-content">
 		                <div class="modal-header">
-		                    <button type="button" class="close" data-dismiss="modal" id="signUpButton"><span aria-hidden="true">&times;</span><span class="sr-only"></span></button>
+		                    <!--<button type="button" class="close" data-dismiss="modal" id="signUpButton"><span aria-hidden="true">&times;</span><span class="sr-only"></span></button>-->
 		                    <h4 class="modal-title" id="myModalLabel">Register</h4>
 		                </div>
 		                <div class="modal-body">
@@ -153,7 +120,7 @@ var e = session.get('error') || {};
 		                            <div class="form-group">
 		                                <label class="control-label textColor" for="firstname">First Name/s</label>
 		                                <div>
-		                                    <input id="firstname" name="firstname" type="text" placeholder="First Name" class="form-control1 input-md width2" required="">
+		                                    <input id="firstname" name="firstname" type="text" placeholder="First Name" class="form-control1 input-md width2">
 		                                </div>
 		                            </div>
 		                            <div class="form-group">
@@ -165,7 +132,7 @@ var e = session.get('error') || {};
 		                            <div class="form-group">
 		                                <label class="control-label textColor" for="initials">Initials</label>
 		                                <div>
-		                                    <input id="initials" name="initials" type="text" placeholder="Initials" class="form-control1 input-md width2" required="">
+		                                    <input id="initials" name="initials" type="text" placeholder="Initials" class="form-control1 input-md width2">
 		                                </div>
 		                            </div>
 		                            <div class="form-group">
@@ -255,26 +222,14 @@ var e = session.get('error') || {};
 		    </div>
 
 
-		    <!-- Modal -->
-		    <div class="modal fade bs-example-modal-lge" id="datapolicy" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="margin-top:-330px;">
-		        <div class="modal-dialog">
-		            <div class="modal-content">
-		                <div class="modal-header">
-		                    <button type="button" class="close" data-dismiss="modal" id="dataPolicyButton"><span aria-hidden="true">&times;</span><span class="sr-only"></span></button>
-		                    <h4 class="modal-title" id="myModalLabel">Data Policy</h4>
-		                </div>
-		                <div class="modal-body">
-		                    <p>The COSTI Data policy specifies requirements for data collection and dissemination while preserving the open, information-sharing culture.
-							In keeping with the goals and objectives of COSTI, we are committed to the highest degree of respect for the privacy of the researchers and scientists whose information we have stored in our database. We will not misuse any personally identifiable information voluntarily supplied by visitors or gathered through other sources. Information is collected and maintained solely in order to provide a one stop point to find researchers and scientists in Sri Lanka. The information is used to portray the research space of Sri Lanka on the National ST&I Dashboard maintained by COSTI.</p>
-							<p>The dashboard allows for both registered users and public to view the information provided. The dashboard also allows all users to find skills and expertise based on the information on research interests of people. On searching people, their names, affiliated institutions and research outputs only can be viewed. All other personal data can be viewed by the data owner only. 
-							Email addresses, phone numbers, and other contact information submitted by visitors voluntarily, collected in the course of other collaborations with COSTI, and through various other sources will only be used for COSTI communications and other research purposes.</p>
-							<p>Subject to the above provisions, we here by ask your consent to the storing and use of information by us in accordance with this policy. If we decide to change our privacy policy, we will post those changes on the Dashboard. Any changes to this privacy statement will also be announced on the COSTI home page.</p>
-							<p>By selecting the "Agree" below you agree that your details can be stored and used as specified in the policy.</p>
-		                </div>
-		            </div>
-		        </div>
-		    </div>
-
+		    
+		    <form id="loginFormli" action="samlsso.jag" method="POST" >
+				<input id="firstnameli" name="firstname" type="hidden" class="input-block-level">
+				<input id="lastnameli" name="lastname" type="hidden" class="input-block-level">
+			    <input id="usernameli" name="username" type="hidden" class="input-block-level">
+			    <input id="passwordli" name="password" type="hidden" class="input-block-level">
+			    <input id="reg-actionli" name="action" type="hidden" value="linkedin">
+			</form>
     		<div class="row row-footer span8 offset2 sso-footer">
 				<div class="footer row-fluid">
 					<div class="span12">
@@ -297,11 +252,31 @@ var e = session.get('error') || {};
 				</div>												
 			</div>
     	</div>
-    	
-    	
 			
 		
     </div> <!-- /container -->
+
+    <div class="container">
+    	<!-- Modal -->
+		    <div class="modal fade bs-example-modal-lge" id="datapolicy" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="margin-top:-330px;">
+		        <div class="modal-dialog">
+		            <div class="modal-content">
+		                <div class="modal-header">
+		                    <button type="button" class="close" data-dismiss="modal" id="dataPolicyButton"><span aria-hidden="true">&times;</span><span class="sr-only"></span></button>
+		                    <h4 class="modal-title" id="myModalLabel">Data Policy</h4>
+		                </div>
+		                <div class="modal-body">
+		                    <p>The COSTI Data policy specifies requirements for data collection and dissemination while preserving the open, information-sharing culture.
+							In keeping with the goals and objectives of COSTI, we are committed to the highest degree of respect for the privacy of the researchers and scientists whose information we have stored in our database. We will not misuse any personally identifiable information voluntarily supplied by visitors or gathered through other sources. Information is collected and maintained solely in order to provide a one stop point to find researchers and scientists in Sri Lanka. The information is used to portray the research space of Sri Lanka on the National ST&I Dashboard maintained by COSTI.</p>
+							<p>The dashboard allows for both registered users and public to view the information provided. The dashboard also allows all users to find skills and expertise based on the information on research interests of people. On searching people, their names, affiliated institutions and research outputs only can be viewed. All other personal data can be viewed by the data owner only. 
+							Email addresses, phone numbers, and other contact information submitted by visitors voluntarily, collected in the course of other collaborations with COSTI, and through various other sources will only be used for COSTI communications and other research purposes.</p>
+							<p>Subject to the above provisions, we here by ask your consent to the storing and use of information by us in accordance with this policy. If we decide to change our privacy policy, we will post those changes on the Dashboard. Any changes to this privacy statement will also be announced on the COSTI home page.</p>
+							<p>By selecting the "Agree" below you agree that your details can be stored and used as specified in the policy.</p>
+		                </div>
+		            </div>
+		        </div>
+		    </div>
+    </container>
 
     <!-- Le javascript
     ================================================== -->
@@ -309,6 +284,25 @@ var e = session.get('error') || {};
     <script src="js/jquery-1.8.3.min.js"></script>
     <script src="js/bootstrap.min.js"></script>
     <script src="js/jquerymessagebox/jquery.msgBox.js" type="text/javascript"></script>
+    <script type="text/javascript" src="//platform.linkedin.com/in.js">
+    <script type="text/javascript" src="//platform.linkedin.com/in.js">
+        api_key:75tsn40m6y9n7x
+        authorize:false
+    </script>
+    <script type="text/javascript">
+        function redirect(){              
+            IN.API.Profile("me")
+            .fields(["id","firstName","email-address","lastName"])
+            .result(function(result) {
+            	//alert(JSON.stringify(result));
+            	$("#firstnameli").val(result.values[0].firstName);
+            	$("#lastnameli").val(result.values[0].lastName);
+            	$("#usernameli").val(result.values[0].emailAddress);
+            	$("#passwordli").val(result.values[0].id);
+            	$("#loginFormli").submit();
+            });
+        }
+    </script>
 	<script type="text/javascript">
 		$(function(){
 			$("#registrationSubmitButton").prop("disabled",true);
@@ -327,12 +321,16 @@ var e = session.get('error') || {};
 			var researchertype=$("#researchertype").val();
 			var organization=$("#organization").val();
 			var organizationName=$("#organizationName").val();
+			var firstname=$("#firstname").val();
+			var initials=$("#initials").val();
 			if(!IsEmail(email)){
 				errorMessage("Error","Invalid E-mail address");
 			}else if((researchertype=="1"||researchertype=="2")&&(organization=="-1"&&organizationName=="")){
 				errorMessage("Error","Please enter new organization name");
 			}else if(password!=confirmPassword){
 				errorMessage("Error","Passwords not equal");
+			}else if(firstname.length<1&initials.length<1){
+				errorMessage("Error","Please enter firstname or initials.");
 			}else if(password.length<6){
 				errorMessage("Error","Minimum password length is 6 characters");
 			}else{

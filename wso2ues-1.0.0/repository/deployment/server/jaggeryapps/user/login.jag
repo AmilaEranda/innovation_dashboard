@@ -19,7 +19,7 @@ var security = require("sso"),
         requestedPage = request.getParameter("requestedPage"),
         log = new Log();
 
-print('<h2>Log in to user</h2>');
+//print('<h2>Log in to user</h2>');
 
 var partWithContext = request.getRequestURL().split(
         request.getRequestURI()
@@ -58,14 +58,13 @@ if (!isLogin) {
 
         <div>
 
-            <p>You are now being redirected to unified login. If the
-                redirection fails, please click on the button below.</p>
+            <p>Loading...</p>
                     <form method="post" action="<%= idpURL %>">
                        <p>
                            <input type="hidden" name="SAMLRequest" value="<%= encodedRequest %>"/>
                            <input type="hidden" name="RelayState" value="<%= relayState %>"/>
                            <input type="hidden" name="SSOAuthSessionID" value="<%= sessionId %>"/>
-                           <button type="submit">Redirect manually</button>
+                           <button type="submit">Loading manually</button>
                       </p>
                   </form>
               </div>

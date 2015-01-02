@@ -4,13 +4,34 @@ var user = require('/modules/user.js').current();
 if (!user) {
     response.sendRedirect('/userforms/login');
 }else{%>
+<%include("linkedin.jag");%>
+<%var errcodeli=errorCodeLinkedIn();%>
 <%include("db.jag");%>
 <%include("mailconverter.jag");%>
 <%var username=session.get("LOGGED_IN_USER")+"";%>
 <%var person=db.query("SELECT * FROM person WHERE email='"+""+remakeEmail(username)+"'");%>
 <%var person_id=person[0].person_id;%>
-<%var organization=db.query("SELECT name FROM organization WHERE organization_id=(SELECT organization_id FROM person_organization WHERE person_id='"+person_id+"' AND his_default=1 OR his_default=2)");%>
-<%var url="images/users/";url+=(person[0].image_name==""|person[0].image_name==null)?"profile.jpg": person[0].person_id+"/"+person[0].image_name;%>
+<%var randomValue=Math.random();%>
+<%
+if((person[0].record_status=="4"|person[0].record_status=="5")&&errcodeli!="0"){
+    if(errcodeli=="1"|errcodeli=="2"){
+        response.sendRedirect("mainprofilebasicdetails.jag");
+    }else if(errcodeli=="3"){
+        response.sendRedirect("mainprofileorganizationdetails.jag");
+    }
+}else{
+%>
+<%
+var organization_id=db.query("SELECT organization_id FROM person_organization WHERE person_id='"+person_id+"' AND (his_default=1 OR his_default=2)")[0].organization_id;
+var organization=db.query("SELECT name FROM organization WHERE organization_id='"+organization_id+"'");
+%>
+<%var url="images/users/";url+=(person[0].image_name==""|person[0].image_name==null)?"profile.jpg": person[0].person_id+"/"+person[0].image_name+"?"+randomValue;%>
+<%var login_details=db.query("SELECT login_details_id FROM login_details WHERE person_id='"+person_id+"'");
+var lastlogin;
+lastlogin=db.query("SELECT * FROM user_log WHERE login_details_id='"+login_details[0].login_details_id+"' ORDER BY date_time  DESC LIMIT 2,1");
+if(lastlogin.length==0){
+    lastlogin=db.query("SELECT * FROM user_log WHERE login_details_id='"+login_details[0].login_details_id+"'");
+}%>
 <html>
     <head>
         <meta charset="UTF-8">
@@ -49,10 +70,17 @@ if (!user) {
                             </a>
                         </li>
                         <li  class="active">
+                            <a href="mainprofilepersonalsettings.jag">
+                                <i class="fa fa-gear"></i><span>Privacy Settings</span>
+                            </a>
+                        </li>
+                        <%if(!(person[0].record_status=="4"|person[0].record_status=="5")){%>
+                        <li  class="active">
                             <a href="mainprofilepasswordreset.jag">
                                 <i class="fa fa-lock"></i><span>Password Reset</span>
                             </a>
                         </li>
+                        <%}%>
                         <li  class="active">
                             <a href="mainprofilecontactdetails.jag">
                                 <i class="fa fa-phone"></i><span>Contact Details</span>
@@ -72,28 +100,39 @@ if (!user) {
                             <ul class="treeview-menu">
                                 <li><a href="mainprofilepublications.jag?formtype=jour" style="margin-left: 10px;"><i class="fa fa-angle-double-right"></i>Journal</a></li>
                                 <li><a href="mainprofilepublications.jag?formtype=book" style="margin-left: 10px;"><i class="fa fa-angle-double-right"></i>Book</a></li>
+                                <li><a href="mainprofilepublicationsbookchapter.jag" style="margin-left: 10px;"><i class="fa fa-angle-double-right"></i>Book Chapter</a></li>
                                 <li><a href="mainprofilepublications.jag?formtype=tech" style="margin-left: 10px;"><i class="fa fa-angle-double-right"></i>Technical Report</a></li>
                                 <li><a href="mainprofilepublications.jag?formtype=conf" style="margin-left: 10px;"><i class="fa fa-angle-double-right"></i>Conference</a></li>
                             </ul>
-                        </li>
+                        </li>                        
                     </ul>
                 </section>
                 <!-- /.sidebar -->
             </aside>
             <!-- Right side column. Contains the navbar and content of the page -->
             <aside class="right-side">
+                <!-- Content Header (Page header) -->
+                <section class="content-header">
+                    <h1>
+                        Profile 
+                        <small>My Profile</small>
+                    </h1>
+                    <ol class="breadcrumb">
+                        Last Login: <%=lastlogin[0].date_time.toString().substring(0,16)%>
+                    </ol>
+                </section>
                 <!-- Main content -->
                 <section class="content">
                     <div id="content" class="clearfix">
                         <section id="left">
                             <div id="userStats" class="clearfix" style="margin-left:0px;width: auto;">
                                 <div class="pic" style="width:20%;text-align:center;" align="left">                                    
-                                    <a class="fancybox.iframe" href="mainprofilephoto.jag" id="profileimage"><img src="<%=url%>" height="150" width="150"/></a>
+                                    <a class="fancybox.iframe" href="mainprofilephoto.jag" id="profileimage"><img src="<%=url%>" height='150' width='150' title='Change Profile Picture'></a>
                                 </div>
                                 <div class="data" style="height: 150px;width: 78%;" align="="left">
-                                    <p style="font-size: 14px;margin-top: 0px;margin-bottom: 0px;"><%=db.query("SELECT title FROM title WHERE title_id='"+person[0].title_id+"'")[0].title%>&nbsp;<%=person[0].full_name%></p>
-                                    <p style="font-size: 14px;margin-top: 0px;margin-bottom: 0px;"><%=(organization.length<1)?"No organization set.":(organization[0].name.length>75)?""+organization[0].name.substring(0,75)+"...":organization[0].name%></p>
-                                    <p style="font-size: 14px;margin-top: 0px;margin-bottom: 0px;"><a href="mailto:<%=person[0].email%>" target="_top"><%if(person[0].person_id.toString()==person_id.toString()){%><%=person[0].email%><%}%></a></p>
+                                    <p style="font-size: 14px;margin-top: 0px;margin-bottom: 0px;" id="<%=randomValue%>"><%=db.query("SELECT title FROM title WHERE title_id='"+person[0].title_id+"'")[0].title%>&nbsp;<%=person[0].full_name%></p>
+                                    <p style="font-size: 14px;margin-top: 0px;margin-bottom: 0px;" id="<%=randomValue%>"><%=(organization.length<1)?"No organization set.":(organization[0].name.length>75)?""+organization[0].name.substring(0,75)+"...":organization[0].name%></p>
+                                    <p style="font-size: 14px;margin-top: 0px;margin-bottom: 0px;" id="<%=randomValue%>"><a href="mailto:<%=person[0].email%>" target="_top"><%if(person[0].person_id.toString()==person_id.toString()){%><%=person[0].email%><%}%></a></p>
                                     <%var count=db.query("SELECT COUNT(*) AS count FROM person_publication WHERE person_id='"+person_id+"'")[0].count;%>
                                     <% var thisyear=new Date().getFullYear().toString();
                                         var countthisyear=db.query("SELECT COUNT(*) As countthisyear FROM publication WHERE year='"+thisyear+"' AND publication_id= ANY (SELECT publication_id FROM person_publication WHERE person_id='"+person_id+"');")[0].countthisyear;%>
@@ -104,7 +143,7 @@ if (!user) {
                                     </ul>
                                 </div>
                             </div>
-                            <div id="chart_div" style="width: 550px; height: 250px;position:absolute;margin-top:5%;"></div>
+                            <div id="chart_div" style="width: 550px; height: 250px;position:absolute;margin-top:5%;"></div><br/>
                         </section>
                     </div>
                 </section><!-- /.content -->
@@ -132,17 +171,45 @@ if (!user) {
                 var data = google.visualization.arrayToDataTable([
                     ['Year', 'No of Papers'],
                     <%
+                    var maxval=0;
                     for(var i=0;i<graphyears.length;i++){
                         var counpub=db.query("SELECT COUNT(*) As countthisyear FROM publication WHERE year='"+graphyears[i]+"' AND publication_id= ANY (SELECT publication_id FROM person_publication WHERE person_id='"+person_id+"');")[0].countthisyear;
+                        counpub=parseInt(counpub);
+                        if(maxval<counpub){maxval=counpub;}
                         print("['"+graphyears[i]+"',"+counpub+"],");
-                    }%>
+                    } 
+                    var vAxis=0;
+                    if(maxval<9){
+                        vAxis=10;
+                    }else if(maxval<20){
+                        vAxis=20;
+                    }else if(maxval<30){
+                        vAxis=30;
+                    }else if(maxval<40){
+                        vAxis=40;
+                    }else if(maxval<50){
+                        vAxis=50;
+                    }else if(maxval<60){
+                        vAxis=60;
+                    }else if(maxval<70){
+                        vAxis=70;
+                    }else if(maxval<80){
+                        vAxis=80;
+                    }else if(maxval<90){
+                        vAxis=90;
+                    }else if(maxval<100){
+                        vAxis=100;
+                    }else{
+                        vAxis=200;
+                    }
+                    %>
                 ]);
 
                 var options = {
                     title: 'Publications contribution in last 8 years',
                     colors: ['#1EB031'],
                     hAxis: {title: 'Year', titleTextStyle: {color: 'black'},viewWindow:{min: 0,max: 8},ticks: [0, 25, 50, 75, 100.125]},
-                    vAxis: {viewWindow:{min: 0,max: 10}},
+                    vAxis: {viewWindow:{min: 0,max: <%=vAxis%>}},
                 };
 
                 var chart = new google.visualization.ColumnChart(document.getElementById('chart_div'));
@@ -153,6 +220,9 @@ if (!user) {
         <script type="text/javascript">
             $(document).ready(function() {
                 $(".fancybox").fancybox();
+                <%if((person[0].record_status=="4"|person[0].record_status=="5")&&errorCodeLinkedIn()!="0"){%>
+                        window.top.location.href="/user/";
+                <%}%>
             });
             $(document).ready(function() {
                 $("#profileimage").fancybox({
@@ -176,8 +246,8 @@ if (!user) {
                     closeClick  : false,
                     openEffect  : 'none',
                     closeEffect : 'none'
-                });
+                });                
             });
         </script>
     </body>
-</html><%}%>
+</html><%}}%>

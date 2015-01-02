@@ -25,9 +25,17 @@ var SAMLSSOProviderConstants = Packages.org.wso2.carbon.identity.sso.saml.ui.SAM
     var registerUser = function (username, password) {
         var userMod = require('/modules/user.js');
         try {
-            userMod.register(username, password);
-            //handleAuthentication();
-            userlogin();
+            if(action == 'linkedin'){
+                if(!userMod.userExists(username)){
+                    userMod.register(username.trim(), password);
+                }                
+                loginLinkedIn();
+            }else{
+                if(!userMod.userExists(username)){
+                    userMod.register(username.trim(), password);
+                }
+                userlogin();
+            }
         } catch (e) {
             log.debug(e);
             session.put('error', {error: true, type: 'regError', msg: e.message});
@@ -69,7 +77,7 @@ var SAMLSSOProviderConstants = Packages.org.wso2.carbon.identity.sso.saml.ui.SAM
                 for (var i = 0; i < signInRespDTO.getLogoutRespDTO().length; i++) {
                     var logoutDTO = signInRespDTO.getLogoutRespDTO()[i];
                     var typesLogoutDTO = new TypesLogoutDTO();
-                    typesLogoutDTO.setAssertionConsumerURL(logoutDTO.getAssertionConsumerURL());
+                    typesLogoutDTO.setAssertionConsumerURL(logoutDTO.getAssertionConsumerURL());log.info("==========3"+logoutDTO.getAssertionConsumerURL());
                     typesLogoutDTO.setLogoutResponse(logoutDTO.getLogoutResponse());
                     typesLogoutDTO.setRpSessionId(logoutDTO.getRpSessionId());
                     logoutArr.push(typesLogoutDTO);
@@ -110,27 +118,45 @@ var SAMLSSOProviderConstants = Packages.org.wso2.carbon.identity.sso.saml.ui.SAM
     };
 
     var userlogin = function(){
-        var person=db.query("SELECT * FROM login_details WHERE password=SHA1('"+password+"') AND email='"+username+"'");
-        if(person.length>0){
-            var record_status=db.query("SELECT record_status FROM person WHERE person_id='"+person[0].person_id+"'");
-            if((record_status[0].record_status=="1"|record_status[0].record_status=="3")&&username==person[0].email){
-                username=makeForUES(username);
-                handleAuthentication();
-            }else if(record_status[0].record_status=="0"){
-                //print("Please verify your email");
-                session.put('error', {error: true, type: 'loginError', msg: 'Authentication Failure, Please verify your email'});
-                response.sendRedirect('login.jag');
-            }else if(record_status[0].record_status=="2"){
-                //print("Your account has been deactivated.");
-                session.put('error', {error: true, type: 'loginError', msg: 'Authentication Failure, Your account has been deactivated'});
-                response.sendRedirect('login.jag');
-            }else{
-                session.put('error', {error: true, type: 'loginError', msg: 'Authentication Failure, invalid username or password'});
-                response.sendRedirect('login.jag');
-            }
-        }else{
-            session.put('error', {error: true, type: 'loginError', msg: 'Authentication Failure, invalid username or password'});
+        if (action == 'register') {
+            session.put('error', {error: true, type: 'loginError', msg: 'Please verify your email address.'});
             response.sendRedirect('login.jag');
+        } else {
+            var person=db.query("SELECT * FROM login_details WHERE password=SHA1('"+password+"') AND email='"+username+"'");
+            if(person.length>0){
+                var record_status=db.query("SELECT record_status FROM person WHERE person_id='"+person[0].person_id+"'");
+                if((record_status[0].record_status=="1"|record_status[0].record_status=="3")&&username==person[0].email){
+                    var userMod = require('/modules/user.js');
+                    if(!userMod.userExists(makeForUES(username))){
+                        userMod.register(makeForUES(username), "password");
+                    }
+                    var login_details=db.query("SELECT * FROM login_details WHERE email='"+username+"'");
+                    db.query("INSERT INTO user_log(type,login_details_id,date_time) VALUES('"+login_details[0].access_group_id+"','"+login_details[0].login_details_id+"',CURRENT_TIMESTAMP)");
+                    username=makeForUES(username);password="password";
+                    handleAuthentication();
+                }else if(record_status[0].record_status=="0"){
+                    session.put('error', {error: true, type: 'loginError', msg: 'Authentication Failure, Please verify your email'});
+                    response.sendRedirect('login.jag');
+                }else if(record_status[0].record_status=="2"){
+                    session.put('error', {error: true, type: 'loginError', msg: 'Authentication Failure, Your account has been deactivated'});
+                    response.sendRedirect('login.jag');
+                }else if(record_status[0].record_status=="4"|record_status[0].record_status=="5"){
+                    session.put('error', {error: true, type: 'loginError', msg: 'Please login with your linkedin profile.'});
+                    response.sendRedirect('login.jag');
+                }else{
+                    session.put('error', {error: true, type: 'loginError', msg: 'Authentication Failure, invalid username or password'});
+                    response.sendRedirect('login.jag');
+                }
+            }else{
+                var personli=db.query("SELECT * FROM person WHERE email='"+username+"'");
+                if(personli.length>0&&(personli[0].record_status=="4"|personli[0].record_status=="5")){
+                    session.put('error', {error: true, type: 'loginError', msg: 'Please login with your LinkedIn profile'});
+                    response.sendRedirect('login.jag');
+                }else{
+                    session.put('error', {error: true, type: 'loginError', msg: 'Authentication Failure, invalid username or password'});
+                    response.sendRedirect('login.jag');
+                }                
+            }
         }
     }
 
@@ -161,17 +187,120 @@ var SAMLSSOProviderConstants = Packages.org.wso2.carbon.identity.sso.saml.ui.SAM
         }
     }
 
+    var  loginLinkedIn = function(){
+        var personlinkedin=db.query("SELECT * FROM login_details WHERE password=SHA1('"+password+"') AND email='"+username+"'");
+        if(personlinkedin.length>0){
+            var login_details=db.query("SELECT * FROM login_details WHERE email='"+username+"'");
+            db.query("INSERT INTO user_log(type,login_details_id,date_time) VALUES('"+login_details[0].access_group_id+"','"+login_details[0].login_details_id+"',CURRENT_TIMESTAMP)");
+            var userMod = require('/modules/user.js');
+            if(!userMod.userExists(makeForUES(username))){
+                userMod.register(makeForUES(username), "password");
+            }
+            username=makeForUES(username);password="password";
+            handleAuthentication();
+        }else{
+            session.put('error', {error: true, type: 'loginError', msg: 'Authentication Failure, invalid username or password1'});
+            response.sendRedirect('login.jag');
+        }
+        
+    };
+
+    var handleLinkedIn = function(){
+        var canuseraddval=canuseradd();
+        if(canuseraddval=="9999"){
+            var firstname=request.getParameter("firstname");
+            var lastname=request.getParameter("lastname");
+            var password=request.getParameter("password");
+
+            db.query("INSERT INTO person(title_id,first_name,last_name,email,full_name,record_status,country_id,type,nationalty) VALUES('1','"+firstname+"','"+lastname+"','"+username+"','"+firstname+" "+lastname+"','4','129','RES','SRI')");
+
+            var person_id=db.query("SELECT person_id FROM person WHERE email='"+username+"'")[0].person_id;
+            var logindetails=db.query("SELECT * FROM login_details WHERE email='"+username+"'");
+            if(logindetails.length>0){
+                db.query("UPDATE login_details SET password=SHA1('"+password+"'),verification_code='' WHERE email='"+username+"'");
+            }else{
+                db.query("INSERT INTO login_details(email,password,person_id,access_group_id) VALUES('"+username+"',SHA1('"+password+"'),'"+person_id+"','2')");
+            }
+            
+
+            registerUser(makeForUES(username), "password");
+
+        }else if(canuseraddval=="0"){
+            //Change state to 4
+            var password=request.getParameter("password");
+
+            db.query("UPDATE person SET record_status='4' WHERE email='"+username+"';");
+
+            var person_id=db.query("SELECT person_id FROM person WHERE email='"+username+"'")[0].person_id;
+
+            var logindetails=db.query("SELECT * FROM login_details WHERE email='"+username+"'");
+            if(logindetails.length>0){
+                db.query("UPDATE login_details SET password=SHA1('"+password+"'),verification_code='' WHERE email='"+username+"'");
+            }else{
+                db.query("INSERT INTO login_details(email,password,person_id,access_group_id) VALUES('"+username+"',SHA1('"+password+"'),'"+person_id+"','2')");
+            }
+
+            registerUser(makeForUES(username), "password");
+
+        }else if(canuseraddval=="1"){
+            //Change state to 4
+            db.query("UPDATE person SET record_status='4' WHERE email='"+username+"';");
+            var password=request.getParameter("password");
+            var person_id=db.query("SELECT person.person_id FROM person WHERE person.email='"+username+"'")[0].person_id;
+            db.query("UPDATE login_details SET password=SHA1('"+password+"'),verification_code='' WHERE email='"+username+"' ");
+            loginLinkedIn();
+        }else if(canuseraddval=="2"){
+            session.put('error', {error: true, type: 'loginError', msg: 'Your account has been block with this e-mail.Please contact support team.'});
+            response.sendRedirect('login.jag');
+        }else if(canuseraddval=="3"){
+            //Change state to 5
+            db.query("UPDATE person SET record_status='5' WHERE email='"+username+"';");
+            var password=request.getParameter("password");
+            var person_id=db.query("SELECT person.person_id FROM person WHERE person.email='"+username+"'")[0].person_id;
+            db.query("UPDATE login_details SET password=SHA1('"+password+"'),verification_code='' WHERE email='"+username+"' ");
+            loginLinkedIn();
+        }else if(canuseraddval=="4"){
+            loginLinkedIn();
+        }else if(canuseraddval=="5"){
+            loginLinkedIn();
+        }else if(canuseradd=="-1"){
+            //login as linked in request
+            session.put('error', {error: true, type: 'regError', msg: 'An account with this e-mail already exist in the system.It is inactive.Please contact support team.'});
+            response.sendRedirect('login.jag');
+        }else{
+            session.put('error', {error: true, type: 'loginError', msg: 'Unknown user type for system.Please contact support team.'});
+            response.sendRedirect('login.jag');
+        }
+    };
+
     var handleavailableusers=function (canuseradd){
         if(canuseradd=="0"){
-            var password=request.getParameter("password");
-            var person_id=db.query("SELECT person.person_id FROM person WHERE person.email='"+username+"'")[0].person_id;                        
-            //save random number and send email again.
-            var random=makeid();
-            db.query("Delete FROM `innovation_db_a1`.`login_details` WHERE email='"+username+"'");
-            db.query("INSERT INTO login_details(email,password,verification_code,person_id,access_group_id) VALUES('"+username+"',SHA1('"+password+"'),'"+random+"','"+person_id+"','2')");
-            sendconfirmemail(username,random,request.getParameter("firstname"));
-            session.put('error', {error: true, type: 'regError', msg: 'Your data already available in the system.We\'ll send a verify e-mail to you.Please verify your E-mail and login with previous password you entered.'});
-            response.sendRedirect('login.jag');
+            var userMod = require('/modules/user.js');
+            if(userMod.userExists(makeForUES(username))){
+                session.put('error', {error: true, type: 'regError', msg: 'Please verify your E-mail.'});
+                response.sendRedirect('login.jag');
+            }else{
+                var password=request.getParameter("password");
+                var person_id=db.query("SELECT person.person_id FROM person WHERE person.email='"+username+"'")[0].person_id;                        
+                //save random number and send email again.
+                var random=makeid();
+
+                var logindetails=db.query("SELECT * FROM login_details WHERE email='"+username+"'");
+                if(logindetails.length>0){
+                    db.query("UPDATE login_details SET password=SHA1('"+password+"'),verification_code='"+random+"' WHERE email='"+username+"'");
+                }else{
+                    db.query("INSERT INTO login_details(email,password,verification_code,person_id,access_group_id) VALUES('"+username+"',SHA1('"+password+"'),'"+random+"','"+person_id+"','2')");
+                }                
+
+                if(!userMod.userExists(makeForUES(username))){
+                	userMod.register(makeForUES(username), "password");
+                }
+
+
+                //sendconfirmemail(username,random,request.getParameter("firstname"));
+                session.put('error', {error: true, type: 'regError', msg: 'Your data already available in the system.We\'ll send a verify e-mail to you.Please verify your E-mail and login with previous password you entered.'});
+                response.sendRedirect('login.jag');
+            }            
         } else if(canuseradd=="1"){
             session.put('error', {error: true, type: 'regError', msg: 'An account with this e-mail already exist in the system.'});
             response.sendRedirect('login.jag');
@@ -180,6 +309,17 @@ var SAMLSSOProviderConstants = Packages.org.wso2.carbon.identity.sso.saml.ui.SAM
             response.sendRedirect('login.jag');
         } else if(canuseradd=="3"){
             session.put('error', {error: true, type: 'regError', msg: 'Your account related to this e-mail was deactivated.Please login using the same e-mail to activate the account.'});
+            response.sendRedirect('login.jag');
+        }else if(canuseradd=="4"|canuseradd=="5"){
+            //login as linked in request
+            session.put('error', {error: true, type: 'regError', msg: 'An account with this e-mail already exist in the system.Please login using your LinkedIn profile.'});
+            response.sendRedirect('login.jag');
+        }else if(canuseradd=="-1"){
+            //login as linked in request
+            session.put('error', {error: true, type: 'regError', msg: 'An account with this e-mail already exist in the system.It is inactive.Please contact support team.'});
+            response.sendRedirect('login.jag');
+        }else{
+            session.put('error', {error: true, type: 'loginError', msg: 'Unknown user type for system.Please contact support team.'});
             response.sendRedirect('login.jag');
         }
     }
@@ -204,7 +344,14 @@ var SAMLSSOProviderConstants = Packages.org.wso2.carbon.identity.sso.saml.ui.SAM
                 
         var password=request.getParameter("password");
 
-        db.query("INSERT INTO person(title_id,gender,first_name,last_name,initials,email,full_name,record_status,country_id,type,nationalty) "+ "VALUES('" + title + "','" + gender + "','" + firstname + "','" + lastname + "','" + initials + "',"+ "'" + email+ "','" + firstname + " " + lastname + "','" + "0" + "','" + "129" + "','" + "RES" + "','" + "SRI" + "')");
+        var full_name;
+        if(firstname==null|firstname==""){
+            full_name=initials+" "+lastname;                
+        }else{
+            full_name=firstname+" "+lastname;
+        }
+
+        db.query("INSERT INTO person(title_id,gender,first_name,last_name,initials,email,full_name,record_status,country_id,type,nationalty) "+ "VALUES('" + title + "','" + gender + "','" + firstname + "','" + lastname + "','" + initials + "',"+ "'" + email+ "','" + full_name + "','" + "1" + "','" + "129" + "','" + "RES" + "','" + "SRI" + "')");
         var person_id=db.query("SELECT person_id FROM person WHERE email='"+email+"'")[0].person_id;
         var random=makeid();
         db.query("INSERT INTO login_details(email,password,verification_code,person_id,access_group_id) VALUES('"+email+"',SHA1('"+password+"'),'"+random+"','"+person_id+"','2')");
@@ -217,7 +364,7 @@ var SAMLSSOProviderConstants = Packages.org.wso2.carbon.identity.sso.saml.ui.SAM
         if(researchertype!="3"){
             db.query("INSERT INTO person_organization(person_id,organization_id,his_default,record_status) VALUES('"+person_id+"','"+organization+"','1','1')");
         }
-        returnValue=sendconfirmemail(username,random,firstname);
+        //returnValue=sendconfirmemail(username,random,firstname);
         return returnValue;
     }
 
@@ -247,27 +394,24 @@ var SAMLSSOProviderConstants = Packages.org.wso2.carbon.identity.sso.saml.ui.SAM
             relayState = session.get('relayState');
         }
 
-        if (action == 'register') {print("register");
-            //registerUser(username, password);
-            var canuseradd=canuseradd();
-            if(canuseradd==9999){
+        if (action == 'register') {
+            var canuseraddval=canuseradd();
+            if(canuseraddval==9999){
                 //Add user
                 var adduser=addUser();
                 if(adduser+""=="true"){
                     username=makeForUES(username);
-                    registerUser(username, password);
-                    //session.put('error', {error: true, type: 'regError', msg: 'Please verify your email.'});
-                    //response.sendRedirect('login.jag');
+                    registerUser(username, "password");
                 }else{
                     session.put('error', {error: true, type: 'regError', msg: adduser});
                     response.sendRedirect('login.jag');
                 }
-            }else{log.info("3");
-                handleavailableusers(canuseradd);
+            }else{
+                handleavailableusers(canuseraddval);
             }
+        } else if(action == 'linkedin'){
+            handleLinkedIn();
         } else {
-            // Request coming from login page with username and password
-            //send request to our own custom function
             userlogin();
         }
     }

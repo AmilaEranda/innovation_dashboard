@@ -175,6 +175,9 @@ if (!user) {
                     }
                 });*/
 			}
+			function edit(url){
+				parent.document.location.href=url;
+			}
 		</script>
 		<script src="js1/jquery/jquery-1.9.1.js"></script>
         <script src="js1/jquerymessagebox/jquery.msgBox.js" type="text/javascript"></script>
@@ -227,10 +230,11 @@ if (!user) {
                         <a href="personpapersmore.jag<%=url%>"><%=(person_publication[i].publication_type==2)?person_publication[i].name:person_publication[i].title%></a>
                     </td>
                     <td>
-                        <%=(person_publication[i].publication_type==1)?"Journal Article":(person_publication[i].publication_type==2)?"Research Book":(person_publication[i].publication_type==3)?"Technical Report":"Conference Paper"%>
+                        <%=(person_publication[i].publication_type==1)?"Journal Article":(person_publication[i].publication_type==2)?"Research Book":(person_publication[i].publication_type==3)?"Technical Report":(person_publication[i].publication_type==4)?"Conference Paper":"Book Chapter"%>
                     </td>
                     <td>
                 	<%if(person_publication[i].person_id==person[0].person_id){%>
+                		<a href="#" id="edit" onclick="edit(<%="'"+urlGenerator(person_publication[i].publication_id,person_publication[i].publication_type)+"'"%>);">Edit</a>&nbsp;&nbsp;&nbsp;or&nbsp;
                 		<a href="#" id="confirm" onclick="confirmFunction(<%=person_publication[i].publication_id%>);">Delete</a>
                 		<!--<a href="personpaperdelete.jag?pubid=<%=person_publication[i].publication_id%>" id="hiddenurl"></a>-->
                 	<%}else{%>
@@ -245,3 +249,11 @@ if (!user) {
 	</body>	
 </html>
 <%}}%>
+<%
+function urlGenerator(publid,publication_type){
+	var url="/userforms/";
+	url+=(person_publication[i].publication_type==1)?"mainprofilepublications.jag?formtype=jour":(person_publication[i].publication_type==2)?"mainprofilepublications.jag?formtype=book":(person_publication[i].publication_type==3)?"mainprofilepublications.jag?formtype=tech":(person_publication[i].publication_type==4)?"mainprofilepublications.jag?formtype=conf":"mainprofilepublicationsbookchapter.jag";
+	url+="&edit=true&publication_id="+publid;
+	return url;
+}
+%>

@@ -10,10 +10,11 @@
 		var mobileform=escape(request.getParameter("mobileform"));
 		var homeform=escape(request.getParameter("homeform"));
 		var officeform=escape(request.getParameter("officeform"));
+		var homeformno=escape(request.getParameter("homeformno"));
 		var additional_email=escape(request.getParameter("additional_email"));
 		var extention=escape(request.getParameter("extention"));
 		var fax=escape(request.getParameter("fax"));
-		db.query("UPDATE person SET telephone='"+telephoneform+"',mobile='"+mobileform+"',address_home='"+homeform+"',address_office='"+officeform+"',additional_email='"+additional_email+"',extention='"+extention+"',fax='"+fax+"' WHERE person_id='"+person_id+"';");
+		db.query("UPDATE person SET telephone='"+telephoneform+"',mobile='"+mobileform+"',address_home='"+homeform+"',address_office='"+officeform+"',additional_email='"+additional_email+"',extention='"+extention+"',fax='"+fax+"',homeno='"+homeformno+"' WHERE person_id='"+person_id+"';");
 		print('true');
 	}catch(e){
 		print("Error while updating contact details.Please contact support team.Thank you.");

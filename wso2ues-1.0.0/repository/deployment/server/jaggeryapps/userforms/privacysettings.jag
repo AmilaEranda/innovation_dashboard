@@ -1,0 +1,27 @@
+<%include('db.jag');%>
+<%include("mailconverter.jag");%>
+<%var username=session.get("LOGGED_IN_USER")+"";%>
+<%var person=db.query("SELECT person_id FROM person WHERE email='"+""+remakeEmail(username)+"'");%>
+<%var person_id=person[0].person_id;%>
+<%
+	var showemail=(request.getParameter("showemail")=="on")?"1":"0";
+	var showgender=(request.getParameter("showgender")=="on")?"1":"0";
+	var showmobile=(request.getParameter("showmobile")=="on")?"1":"0";
+	var showhome=(request.getParameter("showhome")=="on")?"1":"0";
+	var showtelphone=(request.getParameter("showtelphone")=="on")?"1":"0";
+	var showfax=(request.getParameter("showfax")=="on")?"1":"0";
+	var showhomeadd=(request.getParameter("showhomeadd")=="on")?"1":"0";
+	var showofficeadd=(request.getParameter("showofficeadd")=="on")?"1":"0";
+
+	try{
+		var idperson_privacy=db.query("Select idperson_privacy FROM person_privacy WHERE person_id='"+person_id+"'");
+		if(idperson_privacy.length<1){
+			db.query("INSERT INTO person_privacy(show_email,show_gender,show_mobile_no,show_home_no,show_tel_no,show_fax_no,show_home_addr,show_office_addr,person_id) VALUES('"+showemail+"','"+showgender+"','"+showmobile+"','"+showhome+"','"+showtelphone+"','"+showfax+"','"+showhomeadd+"','"+showofficeadd+"','"+person_id+"');");
+		}else{
+			db.query("UPDATE person_privacy SET show_email='"+showemail+"',show_gender='"+showgender+"',show_mobile_no='"+showmobile+"',show_home_no='"+showhome+"',show_tel_no='"+showtelphone+"',show_fax_no='"+showfax+"',show_home_addr='"+showhomeadd+"',show_office_addr='"+showofficeadd+"' WHERE person_id='"+person_id+"';");
+		}
+		print("true");
+	}catch(e){
+		print("Error while updating data.Please contact support team.");
+	}
+%>

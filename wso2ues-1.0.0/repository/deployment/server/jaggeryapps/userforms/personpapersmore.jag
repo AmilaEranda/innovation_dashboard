@@ -397,6 +397,64 @@ if (!user) {
 		                </tr>
 		            </table>
 		        </div>
+        	<%}%><%else if(publication[0].publication_type=="5"){%>
+        		<div class="CSSTableGenerator">
+		            <table>
+		                <tr>
+		                    <td width="20%"></td>
+		                    <td></td>
+		                </tr>
+		                <tr>
+		                    <td>Chapter Title</td>
+		                    <td><%=(publication[0].title==null)?"":publication[0].title%></td>
+		                </tr>
+		                <tr>
+		                    <td>Publisher</td>
+		                    <td><%=(publication[0].publisher==null)?"":publication[0].publisher%></td>
+		                </tr>
+		                <tr>
+		                    <td>Editor</td>
+		                    <td><%=(publication[0].editions==null)?"":publication[0].editions%></td>
+		                </tr>
+		                <tr>
+		                    <td>Chapter No.</td>
+		                    <td><%=(publication[0].pages==null)?"":publication[0].pages%></td>
+		                </tr>
+		                <tr>
+		                    <td>ISBN No.</td>
+		                    <td><%=(publication[0].isbn_no==null)?"":publication[0].isbn_no%></td>
+		                </tr>
+		                <tr>
+		                    <td>Year</td>
+		                    <td><%=publication[0].year.toString().substring(0,4)%></td>
+		                </tr>
+		                <tr>
+		                    <td>Co-Authors</td>
+		                    <td><%for(var i=0;i<coauthors.length;i++){
+		                    		if(i==0){print(coauthors[i].full_name);}
+		                    		else{print(", "+coauthors[i].full_name);}
+		                    	}%>
+		                    </td>
+		                </tr>
+		                <tr>
+		                    <td>Area of interests</td>
+		                    <td><%for(var i=0;i<sub_sub_area_of_interest.length;i++){
+		                    		if(i==0){print(areaofinterest[i].name+" > "+subareaofinterests[i].name+" > "+sub_sub_area_of_interest[i].name);}
+		                    		else{print("<br>"+areaofinterest[i].name+" > "+subareaofinterests[i].name+" > "+sub_sub_area_of_interest[i].name);}
+		                    	}%><%//=areaofinterest.length%>
+		                    </td>
+		                </tr>
+		                <tr>
+		                    <td>Collaboration Universities/Institutes</td>
+		                    <td>
+		                    	<%for(var i=0;i<organizations.length;i++){
+		                    		if(i==0){print(organizations[i].name);}
+		                    		else{print(", "+organizations[i].name);}
+		                    	}%>
+		                    </td>
+		                </tr>
+		            </table>
+		        </div>
         	<%}%>	    	
 	    </div>
 	</body>

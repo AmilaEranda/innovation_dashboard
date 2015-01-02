@@ -1,0 +1,12 @@
+<%include('db.jag');%>
+<%include("mailconverter.jag");%>
+<%var username=session.get("LOGGED_IN_USER")+"";%>
+<%var person=db.query("SELECT * FROM person WHERE email='"+""+remakeEmail(username)+"'");%>
+<%var person_id=person[0].person_id;%>
+<%
+	var folderpath="cv/"+person_id;
+	var folder=new File(folderpath);
+	folder.del();
+	db.query("UPDATE person SET cv='' WHERE person_id='"+person_id+"';");
+	print("true");
+%>

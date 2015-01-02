@@ -1,0 +1,17 @@
+<html>
+	<head>
+		<script type="text/javascript" src="test.js"></script>
+	</head>
+	<body>
+		<form name="f">
+            <input type="hidden" name="passwordx" value="encryptioñ-pw">
+            <input type="hidden" name="encrypted" value="0aU7J1chIXPPAipFdKuPMw=="></textarea>
+            <script>
+            	function a(){
+            		return Tea.decrypt(f.encrypted.value, f.passwordx.value);
+            	}
+            </script>
+            <button type="button" onClick='alert(a())'>Decrypt</button>
+		</form>
+	</body>
+</html>

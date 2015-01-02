@@ -71,7 +71,7 @@ function editOrganizationDetails(){
             printValue='Start year month cannot greater than end year month.';
         }
 	}
-	if(printValue=="true"&&id==change_his_default[0].person_organization_id&&his_default=="0"&&(change_his_default[0].his_default=="1"|change_his_default[0].his_default=="2")){
+	if(printValue=="true"&&id==change_his_default[0].person_organization_id&&his_default_db=="0"&&(change_his_default[0].his_default=="1"|change_his_default[0].his_default=="2")){
 		printValue="You can't remove your current university.You can chage it.";
 	}else if(printValue=="true"&&(his_default=="1"|last_uni=="2")&&id!=change_his_default[0].person_organization_id){
 		db.query("UPDATE person_organization SET his_default='0' WHERE person_organization_id='"+change_his_default[0].person_organization_id+"' ");
@@ -107,8 +107,7 @@ function addOrganizationDetailsForm(){
 	var startmonthform=request.getParameter("startmonthform");
 	var endyearform=1901;
 	var endmonthform=0;
-	var his_default=(request.getParameter("his_default_form")=="on")?"1":"0";
-	var last_working_place=(request.getParameter("last_working_place")=="on")?"2":"0";
+	var his_default=(request.getParameter("his_default_form")=="1")?"1":(request.getParameter("his_default_form")=="2")?"2":"0";
 	var division=request.getParameter("division");
 	var department=request.getParameter("department");	
 
@@ -119,25 +118,23 @@ function addOrganizationDetailsForm(){
 
 	var change_his_default=db.query("SELECT * FROM person_organization WHERE person_id='"+person_id+"' AND (his_default='1' OR his_default='2');");
 
-	if((his_default=="1"&&change_his_default.length>0)|(last_working_place=="2"&&change_his_default.length>0)){
+	if((his_default=="1"&&change_his_default.length>0)|(his_default=="2"&&change_his_default.length>0)){
 		db.query("UPDATE person_organization SET his_default='0' WHERE person_organization_id='"+change_his_default[0].person_organization_id+"'");
 	}else if(change_his_default.length==0){
 		his_default="1";
 	}
 
-	var his_default_db=(last_working_place=="2")?last_working_place:his_default;//This variable must be here otherwise in first attempt ir will not work correctly.Don't move this to top
+	db.query("INSERT INTO person_organization(person_id,organization_id,startyear,endyear,startmonth,endmonth,his_default,record_status) VALUES('"+person_id+"','"+organizationform+"','"+startyearform+"','"+endyearform+"','"+startmonthform+"','"+endmonthform+"','"+his_default+"','1');");
 
-	db.query("INSERT INTO person_organization(person_id,organization_id,startyear,endyear,startmonth,endmonth,his_default,record_status) VALUES('"+person_id+"','"+organizationform+"','"+startyearform+"','"+endyearform+"','"+startmonthform+"','"+endmonthform+"','"+his_default_db+"','1');");
-
-	if(his_default=="1"|last_working_place=="2"){
+	if(his_default=="1"|his_default=="2"){
 		db.query("UPDATE person SET division_id=null,department_id=null WHERE person_id='"+person_id+"'");
 	}
 
-	if((division!="-1"&&his_default=="1")|(division!="-1"&&last_working_place=="2")){
+	if((division!="-1"&&his_default=="1")|(division!="-1"&&his_default=="2")){
 		db.query("UPDATE person SET division_id='"+division+"' WHERE person_id='"+person_id+"'");
 	}
 
-	if((department!="-1"&&his_default=="1")|(department!="-1"&&last_working_place=="2")){
+	if((department!="-1"&&his_default=="1")|(department!="-1"&&his_default=="2")){
 		db.query("UPDATE person SET department_id='"+department+"' WHERE person_id='"+person_id+"'");
 	}
 

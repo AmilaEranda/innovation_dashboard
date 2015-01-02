@@ -4,8 +4,8 @@ var user = require('/modules/user.js').current();
 if (!user) {
     response.sendRedirect('/userforms/login');
 }else{%>
-<%var year=new Date().getFullYear();var formtype=request.getParameter("formtype");%>
-<%if(formtype==null|formtype!="jour"&formtype!="book"&formtype!="tech"&formtype!="conf"&formtype!="bookchapter"){response.sendRedirect("mainprofile.jag");}else{%>
+<%var year=new Date().getFullYear();var formtype="bookchapter";%>
+<%if(formtype!="bookchapter"){response.sendRedirect("mainprofile.jag");}else{%>
 <%include('db.jag');%>
 <%include("mailconverter.jag");%>
 <%include("researchareas.jag");%>
@@ -30,7 +30,6 @@ if(lastlogin.length==0){
         <link href="css1/jquerymessagebox/msgBoxLight.css" rel="stylesheet" type="text/css">
         <link rel="stylesheet" type="text/css" href="css1/select2/css/select2.css"/>
         <link rel="stylesheet" type="text/css" href="css1/select2/select2-bootstrap.css"/>
-        <link href="css1/datepicker/jquery.datepick.css" rel="stylesheet">
         <script type="text/javascript">
             var rowidentifier=0;
             var rowidentifierpublication=1000;
@@ -39,7 +38,6 @@ if(lastlogin.length==0){
             var mainvalues=<%=db.query("SELECT * FROM area_of_interest ORDER BY name")%>;
             var sub_values=<%=db.query("SELECT * FROM sub_area_of_interest ORDER BY name")%>;
             var sub_sub_values=<%=db.query("SELECT * FROM sub_sub_area_of_interest ORDER BY name")%>;
-            var journal_values=<%=db.query("SELECT * FROM journal WHERE status='1'")%>;
             var organization_values=<%=getOrganizationsOfPerson(person[0].person_id)%>;
         </script>
         <style type="text/css">
@@ -202,13 +200,15 @@ if(lastlogin.length==0){
                 </section>
             </aside>
             <aside class="right-side">
+                <!-- Content Header (Page header) -->
                 <section class="content-header">
-                    <h1><%var title=(formtype!=null&&formtype=="jour")?"Journal Article":(formtype!=null&&formtype=="book")?"Research Book":(formtype!=null&&formtype=="tech")?"Technical Report":(formtype!=null&&formtype=="conf")?"Conference Paper":(formtype!=null&&formtype=="bookchapter")?"Book Chapter":"";%>
-                        <div id="titlepage"><%=title%><small>(Add)</small></div>
+                    <h1>
+                        Book Chapter 
+                        <small>Add Book Chapter</small>
                     </h1>
                     <ol class="breadcrumb">
                         Last Login: <%=lastlogin[0].date_time.toString().substring(0,16)%>
-                    </ol>
+                    </ol>                    
                 </section>
                 <section class="content" style="background-repeat: repeat;">
                     <div id="content">
@@ -217,32 +217,16 @@ if(lastlogin.length==0){
                     <div id="formWrapper" class="container roundCorner textColor">
                         <form class="form-horizontal" enctype="multipart/form-data" id="publicationform">
                             <fieldset>
-                                <div class="form-group">
-                                    <div id="journaldiv">
-                                        <label class="control-label col-xs-3">Journal(*)</label>
-                                        <div class="col-xs-9">
-                                            <select id="journalform" name="journalform" class="select2 input-default" onchange="journalChanger()" style="width:510px;">
-                                                <option value="-1">-----------Select-----------</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="form-group" id="journalotherdiv">
-                                    <label class="control-label col-xs-3" id="otherjornallabel">Other Journal name(*)</label>
-                                    <div class="col-xs-9">
-                                        <input id="othernameform" name="othernameform" type="text" placeholder="Other Journal name" class="form-control1 input-md">
-                                    </div>
-                                </div>
                                 <div class="form-group" id="nameformdiv">
-                                    <label class="control-label col-xs-3" id="changeLabel1">Name</label>
+                                    <label class="control-label col-xs-3" id="changeLabel1">Chapter Title(*)</label>
                                     <div class="col-xs-9">
-                                        <input id="nameform" name="nameform" type="<%=(formtype!=null&&formtype=="jour")?"text":(formtype!=null&&formtype=="book")?"hidden":(formtype!=null&&formtype=="tech")?"text":(formtype!=null&&formtype=="conf")?"text":""%>" placeholder="Journal name" class="input-md<%=(formtype!=null&&formtype=="book")?"":" form-control1"%>" style="width:100%;">
+                                        <input id="titleform" name="titleform" type="text" placeholder="Chapter Title" class="input-md" style="width:510px;">
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label class="control-label col-xs-3" id="changeLabel2">Article title</label>
+                                    <label class="control-label col-xs-3" id="changeLabel2">Publisher(*)</label>
                                     <div class="col-xs-9">
-                                        <input id="titleform" name="titleform" type="<%=(formtype!=null&&formtype=="jour")?"hidden":(formtype!=null&&formtype=="book")?"text":(formtype!=null&&formtype=="tech")?"hidden":(formtype!=null&&formtype=="conf")?"hidden":""%>" placeholder="Article title" class="input-md<%=(formtype!=null&&formtype=="book")?" form-control1":""%>" style="width:510px;">
+                                        <input id="nameform" name="nameform" type="text" placeholder="Publisher" class="input-md form-control1" style="width:510px;">
                                     </div>
                                 </div>                                
                                 <div class="form-group">
@@ -254,26 +238,16 @@ if(lastlogin.length==0){
                                     </div>
                                 </div>
                                 <div id="divforavailablepub">
-                                <div class="form-group" id="changediv1">
-                                    <label class="control-label col-xs-3">Volume No.</label>
-                                    <div class="col-xs-3">
-                                        <input id="volumenoform" name="volumenoform" type="text" placeholder="Volume Number" class="form-control1 input-md" style="width:210px;">
-                                    </div>
-                                    <label class="control-label col-xs-2">Issue No.</label>
-                                    <div class="col-xs-4">
-                                        <input id="issuenoform" name="issuenoform" type="text" placeholder="Issue Number" class="form-control1 input-md">
+                                <div class="form-group">
+                                    <label class="control-label col-xs-3">Editor</label>
+                                    <div class="col-xs-9">
+                                        <input id="editions" name="editions" type="text" placeholder="Editor" class="form-control1 input-md">
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label class="control-label col-xs-3">Editions</label>
+                                    <label class="control-label col-xs-3">Chapter No.</label>
                                     <div class="col-xs-9">
-                                        <input id="editions" name="editions" type="text" placeholder="Editions" class="form-control1 input-md">
-                                    </div>
-                                </div>
-                                <div class="form-group" id="pagesdiv">
-                                    <label class="control-label col-xs-3">Pages</label>
-                                    <div class="col-xs-9">
-                                        <input id="pages" name="pages" type="text" placeholder="Pages" class="form-control1 input-md">
+                                        <input id="chapterno" name="chapterno" type="text" placeholder="Chapter Number" class="form-control1 input-md">
                                     </div>
                                 </div>
                                 <div class="form-group">
@@ -288,34 +262,8 @@ if(lastlogin.length==0){
                                                 <%}%>
                                             </select>
                                         </div>
-                                    </div>
-                                    <div id="monthwrapper" class="col-xs-6">
-                                        <label class="control-label col-xs-4">Month</label>
-                                        <div class="col-xs-2">
-                                            <select id="monthform" name="monthform" class="select2" style="width:205px;">
-                                                <option value="0">Select</option>
-                                                <option value="1">January</option>
-                                                <option value="2">February</option>
-                                                <option value="3">March</option>
-                                                <option value="4">April</option>
-                                                <option value="5">May</option>
-                                                <option value="6">June</option>
-                                                <option value="7">July</option>
-                                                <option value="8">August</option>
-                                                <option value="9">September</option>
-                                                <option value="10">October</option>
-                                                <option value="11">November</option>
-                                                <option value="12">December</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div id="datewrapper">
-                                        <label class="control-label col-xs-3" for="date">Date(*)</label>
-                                        <div class="col-xs-3">
-                                            <input id="datepicker" readonly="readonly" name="datepicker" type="text" class="form-control1 input-md">
-                                        </div>
-                                    </div>
-                                    <div id="isbnnumberwrapper" class="col-xs-6" style="display:none;">
+                                    </div>                                  
+                                    <div id="isbnnumberwrapper" class="col-xs-6">
                                         <label class="control-label col-xs-3">ISBN</label>
                                         <div class="col-xs-3">
                                             <input id="isbnno" name="isbnno" type="text" placeholder="ISBN Number" class="form-control1 input-md" style="width:230px;">
@@ -323,7 +271,7 @@ if(lastlogin.length==0){
                                     </div>                                    
                                 </div>
                                 <fieldset>
-                                    <legend style="margin-left:20px;">Add Area of interests for <%=title%>(*)</legend>
+                                    <legend style="margin-left:20px;">Add Area of interests for Book Chapter(*)</legend>
                                     <div style="margin-left:18px;margin-bottom:20px;padding-bottom:10px;padding-left:5px;padding-right:5px;border: 1px solid green;">
                                         <div class="form-group">
                                             <label class="control-label col-xs-3">Research Area</label>
@@ -382,7 +330,7 @@ if(lastlogin.length==0){
                                     </div>
                                 </fieldset>
                                 <div class="form-group">
-                                    <label class="control-label col-xs-3">Upload <%=(formtype!=null&&formtype=="jour")?"Paper":(formtype!=null&&formtype=="book")?"Book":(formtype!=null&&formtype=="tech")?"Report":(formtype!=null&&formtype=="conf")?"Paper":""%></label>
+                                    <label class="control-label col-xs-3">Upload Book Chapter</label>
                                     <div class="col-xs-5">
                                         <div style="position:relative;">
                                             <a class='btn btn-primary' href='javascript:;'>
@@ -406,7 +354,7 @@ if(lastlogin.length==0){
                                 </div>
                             </fieldset>
                             <input type="hidden" name="oper" value="addform">
-                            <input type='hidden' id="formtype" name="formtype" value="<%=formtype%>"/>
+                            <input type='hidden' id="formtype" name="formtype" value="bookchapter"/>
                         </form>                        
                     </div>
                 </section>
@@ -417,14 +365,8 @@ if(lastlogin.length==0){
         <script src="js1/bootstrap/bootstrap.min.js" type="text/javascript"></script>
         <script src="js1/home/forms.js" type="text/javascript"></script>
         <script src="js1/select2/select2.js"></script>
-        <script src="js1/datepicker/jquery.plugin.js"></script>
-        <script src="js1/datepicker/jquery.datepick.js"></script>
         <script type="text/javascript">
             $(function(){
-                $('#datepicker').datepick({
-                    dateFormat:'yyyy-mm-dd',
-                    minDate:new Date(1950,1 - 1,26)
-                });
                 $("#person").select2({
                     placeholder: "Select researchers",
                     minimumInputLength: 2,
@@ -451,8 +393,8 @@ if(lastlogin.length==0){
                     escapeMarkup: function (m) {
                         return m;
                     }
-                });//nameform
-                $("#<%=(formtype!=null&&formtype=="jour")?"titleform":(formtype!=null&&formtype=="book")?"nameform":(formtype!=null&&formtype=="tech")?"titleform":(formtype!=null&&formtype=="conf")?"titleform":""%>").select2({
+                });
+                $("#titleform").select2({
                     placeholder: "Select researchers",
                     minimumInputLength: 2,
                     allowClear: true,
@@ -466,7 +408,7 @@ if(lastlogin.length==0){
                         data: function (term, page) {
                             return {
                                 titledataget: term, // search term
-                                pub_type:<%=(formtype!=null&&formtype=="jour")?"1":(formtype!=null&&formtype=="book")?"2":(formtype!=null&&formtype=="tech")?"3":(formtype!=null&&formtype=="conf")?"4":(formtype!=null&&formtype=="bookchapter")?"5":""%>,
+                                pub_type:'5',
                                 page_limit: 10
                             };
                         },
@@ -496,156 +438,33 @@ if(lastlogin.length==0){
             function formatSelectionTitle(state) {
                 if(state.id=="-1"){
                     $("#divforavailablepub").show();
-                    if(!$("#divforavailablepub").is(':visible')){
-                        $("#journalform").select2("val","");
-                        $("#journalform").select2("enable",true);
-                        $("#titleform").val("");
-                        $("#titleform").prop("disabled", false);
+                    if($("#divforavailablepub").is(':visible')){
+                        $("#nameform").val("");
+                        $("#nameform").prop("disabled", false);
                         $("#nameform").val("");
                         $("#nameform").prop("disabled", false);
                     }
                     return state.text;
                 }else{
-                    <%if(formtype=="jour"){%>
-                        manageAvailableJournal(state);
-                    <%}else if(formtype=="book"){%>
-                        manageAvailableBook(state);
-                    <%}else if(formtype=="tech"){%>
-                        manageAvailableTechnicalReports(state);
-                    <%}else if(formtype=="conf"){%>
-                        manageAvailableConference(state);
-                    <%}%>                    
+                    manageAvailableBook(state);                    
                     return state.text;
                 }                
             }
-            <%if(formtype=="jour"){%>
-                function manageAvailableJournal(state){
-                    $("#divforavailablepub").hide();
-                    $("#journalform").select2("val",state.value);
-                    $("#journalform").select2("disable",true);
-                }
-            <%}else if(formtype=="book"){%>
-                function manageAvailableBook(state){
-                    $("#divforavailablepub").hide();
-                    $("#titleform").val(state.value);
-                    $("#titleform").prop("disabled", true);
-                }
-            <%}else if(formtype=="tech"){%>
-                function manageAvailableTechnicalReports(state){
-                    $("#divforavailablepub").hide();
-                    $("#nameform").val(state.value);
-                    $("#nameform").prop("disabled", true);
-                }
-            <%}else if(formtype=="conf"){%>
-                function manageAvailableConference(state){
-                    $("#divforavailablepub").hide();
-                    $("#nameform").val(state.value);
-                    $("#nameform").prop("disabled", true);
-                }
-            <%}%>
-            function formChanger(val) {
-                if (val == 1) {//Journal
-                    formViewChanger('Journal name(*)', 'Journal Name', 'Article title(*)', 'Article title', val);
-                } else if (val == 2) {//Book
-                    formViewChanger('Book name(*)', 'Book Name', 'Publisher(*)', 'Publisher', val);
-                } else if (val == 3) {//Tech
-                    formViewChanger('Series Name(*)', 'Name', 'Document Title(*)', 'Document Title', val);
-                } else {//Conference
-                    formViewChanger('Proceeding Name(*)', 'Name', 'Title(*)', 'Title', val);
-                }
-            }
-            function formViewChanger(changeLabel1, placeholder1, changeLabel2, placeholder2, val) {
-                $('#changeLabel1').text(changeLabel1);
-                $('#nameform').attr("placeholder", placeholder1);
-                $('#changeLabel2').text(changeLabel2);
-                $('#titleform').attr("placeholder", placeholder2);
-                if (val == 1) {//Journal
-                    $('#changediv1').show();
-                    $('#journaldiv').show();
-                    $('#pagesdiv').show();
-                    $('#nameformdiv').hide();
-                    $('#monthwrapper').show();
-                    $('#yearwrapper').show();
-                    $('#datewrapper').hide();
-                    if($('#journalform option:selected').text()=="Other"){
-                        $('#journalotherdiv').show();
-                    }else{
-                        $('#journalotherdiv').hide();
-                    }
-                } else if (val == 2) {//Book
-                    $('#changediv1').hide();
-                    $('#journaldiv').hide();
-                    $('#pagesdiv').hide();
-                    $('#nameformdiv').show();
-                    $('#monthwrapper').hide();
-                    $('#isbnnumberwrapper').show();
-                    $('#yearwrapper').show();
-                    $('#datewrapper').hide();
-                } else if (val == 3) {//Tech
-                    $('#changediv1').hide();
-                    $('#journaldiv').hide();
-                    $('#pagesdiv').hide();
-                    $('#nameformdiv').show();
-                    $('#monthwrapper').show();
-                    $('#yearwrapper').show();
-                    $('#datewrapper').hide();
-                } else if (val == 4) {//Conference
-                    $('#changediv1').hide();
-                    $('#journaldiv').hide();
-                    $('#pagesdiv').show();
-                    $('#nameformdiv').show();
-                    $('#monthwrapper').show();
-                    $('#yearwrapper').show();//datewrapper
-                    $('#datewrapper').hide();
-                }
-            }
-            function journalChanger(){
-                var journalform = $('#journalform').val();
-                if (journalform=='0') {
-                	if($("#titleform").val()!=""&&$("#titleform").val()!="-1"){
-                		errorMessage("Error","Other journal cannot be have for available journal article.");
-            		}else{
-            			$('#journalotherdiv').show();
-            		}                    
-                }else{
-                    $('#journalotherdiv').hide();
-                }
+            function manageAvailableBook(state){
+                $("#divforavailablepub").hide();
+                $("#nameform").val(state.value);
+                $("#nameform").prop("disabled", true);
             }
             var researchareas=<%=getSubResearchAreas()%>;
             $("#publicationform").submit(function(eventObj){
-                validateForm();
+                validateBook();
                 return false;
             });
-            function validateForm(){
-                if($("#formtype").val()=="jour"){
-                    validateJournal();
-                }else if($("#formtype").val()=="book"){
-                    validateBook();
-                }else if($("#formtype").val()=="tech"){
-                    validateTech();
-                }else if($("#formtype").val()=="conf"){
-                    validateConf();
-                }
-            }
-            function validateJournal(){
-                if($("#divforavailablepub").is(':visible')&&$("#journalform").val()=="-1"){
-                    errorMessage("Error","Please select a journal");
-                }else if($("#journalform").val()=="0"&$("#othernameform").val()==""){
-                    errorMessage("Error","Please Insert Journal name.");
-                }else if($("#titleform").val()==""){
-                    errorMessage("Error","Please Insert Journal title.");
-                }else if($("#organization").val()=="-1"){
-                    errorMessage("Error","Please Select your organization.");
-                }else if(tabledata.length<1&&$("#divforavailablepub").is(':visible')){
-                    errorMessage("Error","Please Insert Area of Interest for the journal");
-                }else{
-                    submitForm();
-                }
-            }
             function validateBook(){
-                if($("#nameform").val()==""){
-                    errorMessage("Error","Please Insert name for the book");
-                }else if($("#titleform").val()==""){
+                var titlevalue=$("#titleform").select2("data");
+                if(titlevalue==""|titlevalue==null){
+                    errorMessage("Error","Please Insert book chapter title");
+                }else if($("#nameform").val()==""){
                     errorMessage("Error","Please Insert publisher for the book");
                 }else if($("#organization").val()=="-1"){
                     errorMessage("Error","Please Select your organization.");
@@ -655,42 +474,12 @@ if(lastlogin.length==0){
                     submitForm();
                 }
             }
-            function validateTech(){
-                if($("#nameform").val()==""){
-                    errorMessage("Error","Please Insert name for the technical report");
-                }else if($("#titleform").val()==""){
-                    errorMessage("Error","Please Insert title for the technical report");
-                }else if($("#organization").val()=="-1"){
-                    errorMessage("Error","Please Select your organization.");
-                }else if($("#divforavailablepub").is(':visible')&&tabledata.length<1){
-                    errorMessage("Error","Please Insert Area of Interest for the technical report");
-                }else{
-                    submitForm();
-                }
-            }
-            function validateConf(){
-                if($("#nameform").val()==""){
-                    errorMessage("Error","Please Insert name for the conference");
-                }else if($("#titleform").val()==""){
-                    errorMessage("Error","Please Insert title for the conference");
-                }else if($("#organization").val()=="-1"){
-                    errorMessage("Error","Please Select your organization.");
-                }
-                /*else if($("#divforavailablepub").is(':visible')&&$("#datepicker").val()==""){
-                    errorMessage("Error","Please Insert date for the conference");
-                }*/
-                else if($("#divforavailablepub").is(':visible')&&tabledata.length<1){
-                    errorMessage("Error","Please Insert Area of Interest for the conference");
-                }else{
-                    submitForm();
-                }
-            }
             function submitForm(){
                 $("#register").attr('disabled',true);
                 $('<input />').attr('type', 'hidden').attr('name', "tabledata").attr('value',JSON.stringify(tabledata)).appendTo('#publicationform');
                 $('<input />').attr('type', 'hidden').attr('name', "tabledata1").attr('value',JSON.stringify(tabledata1)).appendTo('#publicationform');
-                <%if(formtype!="book"){%>$('<input />').attr('type', 'hidden').attr('name', "title_hidden_value").attr('value',$("#titleform").select2("data").text).appendTo('#publicationform');<%}%>
-                <%if(formtype=="book"){%>$('<input />').attr('type', 'hidden').attr('name', "name_hidden_value").attr('value',$("#nameform").select2("data").text).appendTo('#publicationform');<%}%>
+                $('<input />').attr('type', 'hidden').attr('name', "title_hidden_value").attr('value',$("#titleform").select2("data").text).appendTo('#publicationform');
+                $('<input />').attr('type', 'hidden').attr('name', "name_hidden_value").attr('value',$("#titleform").select2("data").text).appendTo('#publicationform');
                 $.ajax({
                     type: "POST",
                     mimeType:"multipart/form-data",
@@ -704,7 +493,7 @@ if(lastlogin.length==0){
                        if ($.trim(datas) == 'true') {
                             successMessage("Done", "Save Successfully");
                             window.setTimeout(function() {
-                                document.location.href="mainprofilepublications.jag?formtype=<%=formtype%>";
+                                document.location.href="mainprofilepublicationsbookchapter.jag";
                             }, 1000);
                         }else{
                         	$("#register").attr('disabled',false);
@@ -731,39 +520,11 @@ if(lastlogin.length==0){
             $('button[data-select2-open]').click(function(){
             $('#' + $(this).data('select2-open')).select2('open');
             });
-            $('#journalotherdiv').hide();
-            $('#nameformdiv').hide();
-            $('#month').addClass("select2 input-default");
-            <%  
-                if(formtype!=null&&formtype=="jour"){
-                    %>
-                        formChanger(1);
-                    <%
-                }else if(formtype!=null&&formtype=="book"){
-                    %>
-                        formChanger(2);
-                    <%
-                }else if(formtype!=null&&formtype=="tech"){
-                    %>
-                        formChanger(3);
-                    <%
-                }else if(formtype!=null&&formtype=="conf"){
-                    %>
-                        formChanger(4);
-                    <%
-                }else if(formtype!=null&&formtype=="bookchapter"){
-                    %>
-                    formChanger(2);
-                <%}%>
         </script>
         <script type="text/javascript">
             $.each(mainvalues,function(index,object){
                 $('#mainresform').append($("<option></option>").attr("value",object.area_of_interest_id).text(object.name));
             });
-            $('#journalform').append($("<option></option>").attr("value",0).text("-----Add new Journal-----"));
-            $.each(journal_values,function(index,object){
-                $('#journalform').append($("<option></option>").attr("value",object.journal_id).text(object.journal_title));
-            });            
             $.each(organization_values,function(index,object){
                 $('#organization').append($("<option></option>").attr("value",object.organization_id).text(object.name));
             });

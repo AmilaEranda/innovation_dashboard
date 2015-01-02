@@ -71,6 +71,8 @@
 			saveTechnicalReport();
 		}else if(formtype=="conf"){
 			saveConference();
+		}else if(formtype=="bookchapter"){
+			saveBookChapter();
 		}
 	}
 
@@ -359,7 +361,68 @@
 		}else if(formtype=="conf"){
 			//Conference duplications
 			return true;
+		}else if(formtype=="bookchapter"){
+			//Conference duplications
+			return true;
 		}
+	}
+
+	function saveBookChapter(){
+		var publication_type="5";//Pre define value for identify bookchapter in database
+		var printStatus="true";//Value for identify errors and send to end user
+		var tabledata=request.getParameter("tabledata");
+		tabledata = JSON.parse(tabledata);
+		var nameform=request.getParameter("name_hidden_value");
+		var publisher=request.getParameter("nameform");
+		var organization=request.getParameter("organization");
+		var yearform=request.getParameter("yearform");
+		var isbnno=request.getParameter("isbnno");
+		var editions=request.getParameter("editions");
+		var chapterno=request.getParameter("chapterno");
+		var file_name="";
+		var tabledata1=request.getParameter("tabledata1");
+		if(tabledata1!=""&&tabledata1!=null){tabledata1 = JSON.parse(tabledata1);}
+		//Upload file if available
+		if(!request.getFile("file_source").getName()==""){
+			var file = request.getFile("file_source");
+			var randomVal=random();
+			file_name=randomVal+file.getName();
+			printStatus=(uploadFile(randomVal,file)==true)?"true":"error uploading file.";
+		}
+		if(printStatus=="true"){
+			//Add Book
+			db.query("INSERT INTO publication(publication_type,title,publisher,year,isbn_no,publication_file,editions,person_id,pages) VALUES ('"+publication_type+"','"+nameform+"','"+publisher+"','"+yearform+"','"+isbnno+"','"+file_name+"','"+editions+"','"+person_id+"','"+chapterno+"')");
+
+			//Get book id
+			var publication_id=db.query("SELECT publication_id FROM  publication WHERE publication_id = (SELECT MAX(publication_id)  FROM publication);")[0].publication_id;
+
+			//Add area of interest
+			for(var i=0;i<tabledata.length;i++){
+				db.query("INSERT INTO publication_area_of_interest(publication_publication_id,area_of_interest_id,sub_area_of_interest_id,sub_sub_area_of_interest_id) VALUES('"+publication_id+"','"+tabledata[i].matrix[0]+"','"+tabledata[i].matrix[1]+"','"+tabledata[i].matrix[2]+"')");
+			}
+			//Insert person publication
+			db.query("INSERT INTO person_publication(person_id,publication_id) VALUES('"+person_id+"','"+publication_id+"')");
+
+			//Get person_publication_id
+			var person_publication_id=db.query("SELECT person_publication_id FROM  person_publication WHERE person_publication_id = (SELECT MAX(person_publication_id)  FROM person_publication);")[0].person_publication_id;
+
+			//Add organization_person_publication
+			if(organization!="-1"){
+				db.query("INSERT INTO organization_person_publication(organization_id,person_publication_id) VALUES('"+organization+"','"+person_publication_id+"')");
+			}
+
+			//Add Co-authors
+			if(tabledata1.length>0){
+				for(var i=0;i<tabledata1.length;i++){
+					db.query("INSERT INTO person_publication(person_id,publication_id) VALUES('"+tabledata1[i].personVariable+"','"+publication_id+"')");
+
+					var person_publication_id=db.query("SELECT person_publication_id FROM  person_publication WHERE person_publication_id = (SELECT MAX(person_publication_id)  FROM person_publication);")[0].person_publication_id;
+
+					db.query("INSERT INTO organization_person_publication(organization_id,person_publication_id) VALUES('"+tabledata1[i].personorganizationVariable+"','"+person_publication_id+"')");
+				}
+			}
+		}
+		print(printStatus);
 	}
 
 	function random(){

@@ -11,12 +11,10 @@ response.sendRedirect('/user');
     var encodedRequest = ssoRelyingParty.encode(samlLogoutRequest);
     var relayState = ssoRelyingParty.getUUID();
     var idpURL = ssoRelyingParty.getProperty("identityProviderURL");
-
 %>
 
 <div>
-   <p>You are now redirected to Stratos Identity. If the
-   redirection fails, please click the post button.</p>
+   <p>Loading...</p>
 
     <form id="logoutForm" method="post" action="<%=idpURL%>">
     <p>
@@ -24,7 +22,7 @@ response.sendRedirect('/user');
               value="<%= encodedRequest %>"/>
         <input type="hidden" name="RelayState" value="<%= relayState %>"/>
         <input type="hidden" name="SSOAuthSessionID" value="<%= sessionId %>"/>
-        <button type="submit">POST</button>
+        <button type="submit">Loading manually</button>
     </p>
     </form>
 </div>
