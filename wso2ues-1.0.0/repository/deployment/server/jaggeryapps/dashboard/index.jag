@@ -1,14 +1,14 @@
 <%
-/*var user = require('/modules/user.js').current();
+var user = require('/modules/user.js').current();
 if (!user) {
-    response.sendRedirect('/dashboard/login');
-}*/
+    //response.sendRedirect('/dashboard/login');
+}
 %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>My Dashboard | User Engagement Server</title>
+    <title>Sri Lanka Innovation Dashboard</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
     <meta name="author" content="">
@@ -54,7 +54,7 @@ if (!user) {
 
 			<a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse"> <span class="icon-bar"></span> <span class="icon-bar"></span> <span class="icon-bar"></span> </a>
 			
-			<a class="brand" href="#"></a>
+			<a class="brand" href="/home"></a>
 			
 
 			
@@ -89,7 +89,7 @@ if (!user) {
 			<div class="row-fluid">
 
 				<div class="span5">
-					<input id="inp-designer-title" type="text" value="dashboard">
+					<input id="inp-designer-title" type="text" value="Dashboard">
 				</div>
 				<div class="span7">
 					<div class="nav-collapse collapse">
@@ -142,7 +142,7 @@ if (!user) {
 		</div>
 	</div>
 	
-	<%/*%><div class="navbar-inner sub-navbar-designer-view">
+	<div class="navbar-inner sub-navbar-designer-view">
 
 		<div class="container-fluid">
 
@@ -168,7 +168,7 @@ if (!user) {
 
 			<!--/.nav-collapse -->
 		</div>
-	</div><%*/%>
+	</div>
 
 	
 </div>
@@ -192,7 +192,7 @@ if (!user) {
             
 			
             <li class="layout_block static" data-sizey="1" data-sizex="2" data-col="1" data-row="1"
-                data-url="" data-wid="33" data-prefs="{}" data-title="">
+                data-url="" data-wid="1" data-prefs="{}" data-title="">
                 <div class="grid_header">
            			<h3></h3>
             		<span class="grid_header_controls">
@@ -216,7 +216,7 @@ if (!user) {
             </li>
             
             <li class="layout_block static" data-sizey="1" data-sizex="2" data-col="3" data-row="1"
-                data-url="" data-wid="34" data-prefs="{}" data-title="">
+                data-url="" data-wid="2" data-prefs="{}" data-title="">
                 <div class="grid_header">
            			<h3></h3>
             		<span class="grid_header_controls">
@@ -240,7 +240,7 @@ if (!user) {
             </li>
             
             <li class="layout_block static" data-sizey="1" data-sizex="1" data-col="5" data-row="1"
-                data-url="" data-wid="35" data-prefs="{}" data-title="">
+                data-url="" data-wid="3" data-prefs="{}" data-title="">
                 <div class="grid_header">
            			<h3></h3>
             		<span class="grid_header_controls">
@@ -264,7 +264,7 @@ if (!user) {
             </li>
             
             <li class="layout_block static" data-sizey="1" data-sizex="1" data-col="6" data-row="1"
-                data-url="" data-wid="36" data-prefs="{}" data-title="">
+                data-url="" data-wid="4" data-prefs="{}" data-title="">
                 <div class="grid_header">
            			<h3></h3>
             		<span class="grid_header_controls">
@@ -285,98 +285,6 @@ if (!user) {
 
        			<button class="btn btn-add-gadget">Add Gadget</button>
          		
-            </li>
-            
-            <li class="layout_block " data-sizey="3" data-sizex="3" data-col="4" data-row="5"
-                data-url="http://localhost:9763/portal/gadgets/publications-people/publications-people.xml" data-wid="37" data-prefs="{}" data-title="Publications - People">
-                <div class="grid_header">
-           			<h3></h3>
-            		<span class="grid_header_controls">
-                		<a class="show-widget-pref" data-collapse="true"><i class="icon-cog"></i></a>
-                		<a class="expand-widget"><i class="icon-resize-full"></i></a>
-                		<a class="shrink-widget"><i class="icon-resize-small"></i></a>
-                		<a class="close-widget" href="#"><i class="icon-remove"></i></a>
-            		</span>
-        		</div>
-        		<div class="gadget-pref-cont">
-        	
-        		</div>
-                
-
-                <div class="add-gadget-item">
-
-                </div>
-                
-                
-            </li>
-            
-            <li class="layout_block " data-sizey="3" data-sizex="3" data-col="1" data-row="5"
-                data-url="http://localhost:9763/portal/gadgets/organization-map/organization-map.xml" data-wid="38" data-prefs="{}" data-title="Organizations and Institutes">
-                <div class="grid_header">
-           			<h3></h3>
-            		<span class="grid_header_controls">
-                		<a class="show-widget-pref" data-collapse="true"><i class="icon-cog"></i></a>
-                		<a class="expand-widget"><i class="icon-resize-full"></i></a>
-                		<a class="shrink-widget"><i class="icon-resize-small"></i></a>
-                		<a class="close-widget" href="#"><i class="icon-remove"></i></a>
-            		</span>
-        		</div>
-        		<div class="gadget-pref-cont">
-        	
-        		</div>
-                
-
-                <div class="add-gadget-item">
-
-                </div>
-                
-                
-            </li>
-            
-            <li class="layout_block " data-sizey="3" data-sizex="3" data-col="4" data-row="2"
-                data-url="http://localhost:9763/portal/gadgets/global-innovation-index-2013/global-innovation-index-2013.xml" data-wid="39" data-prefs="{}" data-title="Global Innovation Index 2013">
-                <div class="grid_header">
-           			<h3></h3>
-            		<span class="grid_header_controls">
-                		<a class="show-widget-pref" data-collapse="true"><i class="icon-cog"></i></a>
-                		<a class="expand-widget"><i class="icon-resize-full"></i></a>
-                		<a class="shrink-widget"><i class="icon-resize-small"></i></a>
-                		<a class="close-widget" href="#"><i class="icon-remove"></i></a>
-            		</span>
-        		</div>
-        		<div class="gadget-pref-cont">
-        	
-        		</div>
-                
-
-                <div class="add-gadget-item">
-
-                </div>
-                
-                
-            </li>
-            
-            <li class="layout_block " data-sizey="3" data-sizex="3" data-col="1" data-row="2"
-                data-url="http://localhost:9763/portal/gadgets/people-organizations/people-organizations.xml" data-wid="40" data-prefs="{}" data-title="People - Organizations">
-                <div class="grid_header">
-           			<h3></h3>
-            		<span class="grid_header_controls">
-                		<a class="show-widget-pref" data-collapse="true"><i class="icon-cog"></i></a>
-                		<a class="expand-widget"><i class="icon-resize-full"></i></a>
-                		<a class="shrink-widget"><i class="icon-resize-small"></i></a>
-                		<a class="close-widget" href="#"><i class="icon-remove"></i></a>
-            		</span>
-        		</div>
-        		<div class="gadget-pref-cont">
-        	
-        		</div>
-                
-
-                <div class="add-gadget-item">
-
-                </div>
-                
-                
             </li>
             
 
