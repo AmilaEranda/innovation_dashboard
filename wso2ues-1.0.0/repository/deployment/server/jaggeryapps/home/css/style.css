@@ -156,6 +156,7 @@ table { background: #fff; }
 	background: #fff;
 	border-bottom: 2px solid #eaeaea;
 	box-shadow: 0px 0px 10px rgba(0,0,0,0.2);
+	padding-bottom: 5px;
 }
 
 .header .header-top{
@@ -232,20 +233,20 @@ table { background: #fff; }
  * Logo
  */
 
-.logo { margin-top: 20px; }
+.logo { margin-top: 10px; }
 
 .logo img {
 	display: inline-block; 
-	max-width: 50px;
+	max-width: 40px;
 }
 
 .logo h1 {
 	position: relative;
-	top: 10px;
+	top: 5px;
 	left: 5px;
 	display: inline-block; 
 	margin: 0;
-	font-size: 40px;
+	font-size: 32px;
 	font-family: 'Open Sans Condensed', sans-serif;
 	font-weight: 700;
 	color: #565656;
@@ -253,7 +254,7 @@ table { background: #fff; }
 
 .header .logo p{
 	margin-left: 60px;
-	margin-top: -6px;
+	margin-top: -15px;
 	font-size: 14px;
 	color: #666;
 }
@@ -271,11 +272,11 @@ table { background: #fff; }
 	color: #fff;
 }
 
-.header .navbar-default .navbar-nav{ margin-top: 20px; }
+.header .navbar-default .navbar-nav{ margin-top: 10px; }
 
 .header .navbar-default .navbar-nav>li>a{
-	padding-top: 0px;
-	padding-bottom: 20px;
+	padding-top: 5px;
+	padding-bottom: 5px;
 	font-family: 'Open Sans Condensed', sans-serif;
 	font-size: 18px;
 	font-weight: 700;
@@ -882,7 +883,7 @@ table { background: #fff; }
  * Showcase Section
  */
  
-.showcase { padding-top: 80px; }
+.showcase { padding-top: 40px; }
  
 .showcase .showcase-item{
 	position: relative;
@@ -893,7 +894,7 @@ table { background: #fff; }
 
 .showcase .showcase-item img {
 	position: absolute;
-	top: -60px;
+	top: -30px;
 	width: 100%;
 	max-width: 255px;
 }
@@ -907,7 +908,7 @@ table { background: #fff; }
 .showcase .showcase-item p {
 	padding-bottom: 25px;
 	font-size: 13px;
-	color: #9a9a9a;
+	color: #333;
 }
 
 /*
