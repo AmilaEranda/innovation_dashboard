@@ -1,0 +1,237 @@
+<%
+	include_once("scripts/db.jag");
+
+	var pid = parseInt(request.getParameter("pid"));
+	var isValid = true;
+	var perName, perImage, perGender, perTitle, perPubCount;
+	
+	if(pid === null || pid === "" || isNaN(pid) || pid < 0){
+		isValid = false;
+	}
+
+	if(isValid){
+		var result = db.query("SELECT pe.first_name AS `per_fname`, pe.initials AS `per_initials`, pe.last_name AS `per_lname`, pe.gender AS `per_gender`, ti.title AS `per_title`, pe.designation AS `per_desig`, pe.in_out_country AS `per_inout`, COUNT(pp.publication_id) AS `per_pub_count`, org.name AS `per_org_name` FROM person pe LEFT JOIN title ti ON pe.title_id = ti.title_id LEFT JOIN person_publication pp ON pp.person_id = pe.person_id LEFT JOIN person_organization po ON pe.person_id = po.person_id LEFT JOIN organization org ON org.organization_id = po.organization_id WHERE pe.record_status = 1 AND po.his_default = 1 AND pe.person_id =" + pid);
+		if(result.length > 0){
+			perName = ""
+			if(result[0].per_fname === null || result[0].per_fname.trim().length === 0){
+				perName = result[0].per_initials.trim();
+			} else {
+				perName = result[0].per_fname.trim();
+			}
+			perName += " " + result[0].per_lname;
+			perImage = result[0].per_image;
+			perGender = result[0].per_gender;
+			perTitle = result[0].per_title;
+			perDesignation = result[0].per_desig;
+			perPubCount = result[0].per_pub_count;
+			perInOut = result[0].per_pub_inout;
+			perOrgName = result[0].per_org_name;
+			
+			if(result[0].per_fname === null && result[0].per_lname === null && result[0].per_initials === null){
+				print("per_fname: " + result[0].per_fname + ", ");
+				print("per_lname: " + result[0].per_lname + ", ");
+				print("per_initials: " + result[0].per_initials);
+				isValid = false;
+			}
+		} else {
+			isValid = false;
+		}
+	}
+
+%>
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title><% if(isValid){print(perName);} else {print("Invalid Researcher");} %> - Innovation Dashboard</title>
+		<link type="image/x-icon" href="images/dev/favicon.ico" rel="shortcut icon" />
+
+		<!-- Bootstrap core CSS -->
+		<!-- <link href="css2/bootstrap/bootstrap.min.css" rel="stylesheet"> -->
+		<link href="css2/flatly/bootstrap.min.css" rel="stylesheet">
+		<link href="css2/styles.css" rel="stylesheet">
+		<link href="css2/datatable/jquery.dataTables.css" rel="stylesheet">
+        <link href="css2/datatable/dataTables.bootstrap.css" rel="stylesheet">
+
+		<script src="js2/jquery/jquery-1.11.1.js"></script>
+		<script src="js2/bootstrap/bootstrap.js"></script>
+		<script src="js2/datatable/jquery.dataTables.js"></script>
+        <!-- <script src="js2/datatable/dataTables.bootstrap.js"></script> -->
+		<script src="js2/d3/d3.min.js"></script>
+		<script src="js2/d3/IndexBarChart.js"></script>
+		<script src="js2/scripts/person.js"></script>
+	</head>
+
+	<body>
+		<% include_once("util/topnav.jag"); %>
+
+		<div class="container-fluid">
+			<% if(isValid){ %>
+			<div class="row">
+				<div class="col-md-1">
+					<div style="text-align: center;">
+						<img src="images/people/<%
+							if(perImage == null){
+								if(perGender == 0){
+									print("blank/woman.svg");
+								} else {
+									print("blank/man.svg");
+								}
+							} else {
+								print(perImage);
+							} %>" style="width: 80px;" class="img">
+					</div>
+				</div>
+				<div class="col-md-11">
+					<div class="page-header">
+						<h1><% print(perTitle + " " + perName); %></h1>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-3">
+					<div class="text-center" style="margin-bottom: 10px;">
+						<% print(perOrgName); %>
+					</div>
+					<div class="text-center">
+						<strong>Organization</strong>
+					</div>
+				</div>
+				<div class="col-md-3">
+					<div class="text-center" style="margin-bottom: 10px;">
+						<% print(perDesignation); %> &nbsp;
+					</div>
+					<div class="text-center">
+						<strong>Designation</strong>
+					</div>
+				</div>
+				<div class="col-md-3">
+					<div class="text-center" style="margin-bottom: 10px;">
+						<% if(perPubCount != null){ print(perPubCount);} else {print("n/a");} %>
+					</div>
+					<div class="text-center">
+						<strong>Publications</strong>
+					</div>
+				</div>
+				<div class="col-md-3">
+					<div class="text-center" style="margin-bottom: 10px;">
+						<% if(perInOut === 1) {print("Relocating overseas");} %>
+					</div>
+					<div class="text-center">
+						<strong>&nbsp;</strong>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-12">
+					<div style="margin: 40px 0px;">
+						<div class="page-header"><h3>Rank of the researcher</h3></div>
+						<div id="person-index-chart" style="width: 100%; height: 100px;"></div>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-12">
+					<div style="margin: 40px 0px;">
+						<%
+						var resultPubs = db.query("SELECT pu.publication_id AS `pub_id`, pu.publication_type AS `pub_type`, pu.title AS `pub_title`, pu.year AS `pub_year`, pu.name AS `con_name`, jo.journal_title AS `jou_title` FROM person pe LEFT JOIN person_publication pp ON pp.person_id = pe.person_id LEFT JOIN publication pu ON pu.publication_id = pp.publication_id LEFT JOIN journal jo ON pu.journal_id = jo.journal_id WHERE pe.record_status = 1 AND pe.person_id =" + pid + " AND pu.publication_id IS NOT NULL");
+						if(resultPubs.length > 0){
+						%>
+						<div class="page-header"><h3>Publications of <% print(perTitle + " " + perName); %></h3></div>
+						<table id="pub-table" class="display" cellspacing="0" width="100%">
+							<thead>
+								<tr>
+									<th>Title</th>
+									<th>Authors</th>
+									<th>Year</th>
+									<th>Journal / Conference / Book</th>
+								</tr>
+							</thead>
+							<tfoot>
+								<tr>
+									<th>Title</th>
+									<th>Authors</th>
+									<th>Year</th>
+									<th>Journal / Conference / Book</th>
+								</tr>
+							</tfoot>
+							<tbody>
+								<%
+								for(var i = 0; i < resultPubs.length; i++){
+								%>
+								<tr>
+									<td>
+									<%
+									if (parseInt(resultPubs[i].pub_type) === 1){
+										print(resultPubs[i].pub_title);
+									} else if (parseInt(resultPubs[i].pub_type) === 2) {
+										print(resultPubs[i].con_name);
+									} else if (parseInt(resultPubs[i].pub_type) === 3){
+										print(resultPubs[i].pub_title);
+									} else {
+										print(resultPubs[i].pub_title);
+									}
+									%>
+									</td>
+									<td>
+									<%
+									var resultAuthors = db.query("SELECT pe.first_name AS `aut_fname`, pe.initials AS `aut_initials`, pe.last_name AS `aut_lname` FROM person_publication pp LEFT JOIN person pe ON pe.person_id = pp.person_id WHERE publication_id =" + resultPubs[i].pub_id);
+									for(var j = 0; j < resultAuthors.length; j++){
+										var autFullName = "";
+										if(resultAuthors[j].aut_fname === null || resultAuthors[j].aut_fname.trim().length === 0){
+											autFullName = resultAuthors[j].aut_initials;
+										} else {
+											autFullName = resultAuthors[j].aut_fname;
+										}
+										autFullName += " " + resultAuthors[j].aut_lname;
+									%>	
+										<p><%=autFullName %></p>
+									<%
+									}
+									%>
+									</td>
+									<td>
+									<%
+									var pubYear = "" + resultPubs[i].pub_year + "";
+									pubYear = pubYear.trim().substring(0, 4);
+									print(pubYear);
+									%>
+									</td>
+									<td>
+									<%
+									if (parseInt(resultPubs[i].pub_type) === 1){
+										print(resultPubs[i].jou_title);
+									} else if (parseInt(resultPubs[i].pub_type) === 2) {
+										print("");
+									} else if (parseInt(resultPubs[i].pub_type) === 3){
+										print(resultPubs[i].con_name);
+									} else {
+										print(resultPubs[i].con_name);
+									}
+									%>
+									</td>
+								</tr>
+								<% } %>
+							</tbody>
+						</table>
+						<% } %>
+					</div>
+				</div>
+			</div>
+			<% } else { %>
+			<div class="row">
+				<div class="col-md-12">
+					<div style="">
+						<h3>Not Found</h3>
+						<p>The researcher you are looking for is not found in Sri Lanka Innovation Dashboard</p>
+						<p>Go to <a href="index.jag">home page</a></p>
+					</div>
+				</div>
+			</div>
+			<% } %>
+		</div>
+		<% include_once("util/footer.jag"); %>
+  </body>
+</html>
+<% db.close(); %>

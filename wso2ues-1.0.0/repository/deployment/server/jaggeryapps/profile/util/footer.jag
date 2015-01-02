@@ -1,0 +1,22 @@
+<div class="footer-div">
+	<div class="container">
+		<div class="row">
+			<div class="col-md-4">
+				<h3 class="footer-title">People</h3>
+			</div>
+			<div class="col-md-4">
+				<h3 class="footer-title">Places</h3>
+			</div>
+			<div class="col-md-4">
+				<h3 class="footer-title">Position</h3>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-12">
+				<div class="text-center">
+					<span style="color: white;">2013 &#169; COSTI. All Rights Reserved. Powered by </span><a href="http://www.opensource.lk">Lanka Software Foundation</a>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
