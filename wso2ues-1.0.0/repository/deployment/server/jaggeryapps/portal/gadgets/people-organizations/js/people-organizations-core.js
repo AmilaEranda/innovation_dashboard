@@ -2,11 +2,10 @@ var pref = new gadgets.Prefs();
 var barChart, lineChart, pieChart;
 var chartData, aoiData;
 var chartType; // bar, line, pie, list
-var selectedType, selectedName, selectedOrgId;
+var selectedType, selectedName, selectedOrgId, selectedFacId;
 var selectedId;
 var futureType;
-//var firstFrom, firstTo;
-//var secondFrom, secondTo;
+var selectedOrgName, selectedFacName, selectedDepName, selectedDivName;
 
 $(document).ready(function(){
 	// setting chart type
@@ -32,19 +31,15 @@ $(document).ready(function(){
 	
 	selectedType = "org";
 	
-	//firstFrom = firstTo = 0;
-	//secondFrom = secondTo = 0;
-	
 	initBarChart();
 	
 	initLineChart();
 	
 	initPieChart();
 	
-	//fetchData();
-	fetchCustomData("org", 0, "");
-	
 	fetchAOIData();
+	
+	fetchCustomData("org", 0, "");
 	
 	// on resize the window
 	$(window).resize(function(){
@@ -57,23 +52,22 @@ $(document).ready(function(){
 		$(this).addClass("btn-success");
 		$(this).blur();
 		chartType = $(this).text().toLowerCase();
-		drawChartsAndList(chartData);
+		drawChartsAndListWithRange(chartData);
 	});
 	
 	$(".back").click(function(){
-		if (selectedType === "dep"){
-			fetchCustomData("fac", selectedOrgId, selectedName);
-		} else if (selectedType === "fac"){
+		if (selectedType === "fac"){
 			selectedName = "";
-			fetchCustomData("org", 0, selectedName);
+			fetchCustomData("org", 0, selectedName, true);
 			$("#peo-org-back").hide();
+		} else if (selectedType === "dep"){
+			fetchCustomData("fac", selectedOrgId, selectedName, true);
+		} else if (selectedType === "peo"){
+			fetchCustomData("dep", selectedFacId, selectedName, true);
+		} else if (selectedType === "divpeo"){
+			fetchCustomData("fac", selectedOrgId, selectedName, true);
 		}
 		$(this).blur();
-	
-		//fetchCustomData();
-		//$(this).blur();
-		//setChartTitle("");
-		//$("#peo-org-back").hide();
 	});
 	
 	$("#aoi-selection").change(function(d, i) {
@@ -137,12 +131,14 @@ $(document).ready(function(){
 	});
 	
 	$("#ssaoi-selection").change(function(d, i) {
-		fetchCustomData(selectedType, selectedId, selectedName, false);
+		fetchCustomData(selectedType, selectedId, selectedName, false, true);
 		$("#ssaoi-selection").blur();
-		if(selectedType == "org"){
+		if(selectedType === "org"){
 			$("#peo-org-back").hide();
 		}
 	});
+	
+	console.clear();
 });
 
 function fetchAOIData() {
@@ -171,31 +167,34 @@ function initAoiSelections(){
 	}
 }
 
-function fetchData() {
-	var url = "../../portal/gadgets/people-organizations/data-files/people-organizations-data.jag";
-	selectedType = "org";
-	$.ajax({
-		url: url,
-		type: "GET",
-		dataType: "json",
-		data: {
-			type: selectedType
-		},
-		success: onDataReceived
-	});
-}
-
-function fetchCustomData(type, id, name, titleChanged) {
+function fetchCustomData(type, id, name, isBack, isAoiChanged) {
 	var aoiId = $("#aoi-selection option:selected").val();
 	var saoiId = $("#saoi-selection option:selected").val();
 	var ssaoiId = $("#ssaoi-selection option:selected").val();
 	
 	selectedType = type;
-	if (type === "fac"){
-		selectedOrgId = id;
-		selectedName = name;
-	}
 	selectedId = id;
+	if("undefined" === typeof isBack || isBack === false){
+		if (type === "fac"){
+			selectedOrgId = id;
+			selectedName = name;
+			selectedOrgName = name;
+		} else if (type === "dep"){
+			selectedFacId = id;
+			selectedName = name;
+			selectedFacName = name;
+		} else if (type === "peo") {
+			selectedDepName = name;
+		} else if (type === "div"){
+			selectedOrgId = id;
+			selectedName = name;
+			selectedOrgName = name;
+		} else if (type === "divpeo") {
+			selectedFacId = id;
+			//selectedName = name;
+			selectedDivName = name;
+		}
+	}
 	
 	var url = "../../portal/gadgets/people-organizations/data-files/people-organizations-data.jag";
 	
@@ -215,11 +214,13 @@ function fetchCustomData(type, id, name, titleChanged) {
 
 	setOptionsForCharts();
 	
-	if ("undefined" === typeof titleChanged || titleChanged === true) {
-		setChartTitle(name, selectedType);
+	setInfoForCharts();
+	
+	if ("undefined" === typeof isAoiChanged || isAoiChanged === false){
+		setChartTitle(name, selectedType, isBack);
 	}
 	
-	if (selectedType == "fac" || selectedType == "dep"){
+	if (selectedType == "fac" || selectedType == "dep" || selectedType == "div"){
 		$("#peo-org-back").show();
 	} 
 }
@@ -235,46 +236,22 @@ function onDataReceived(data) {
 			var cnfg = {
 				barBottomColor: "#E27100",
 				barTopColor: "#A75300",
-				cursorType: "auto"
+				cursorType: "pointer"
 			};
 			barChart.setOptions(cnfg);
 			
 			cnfg = {
 				lineColor: "#A75300",
-				cursorType: "auto"
+				cursorType: "pointer"
 			};
 			lineChart.setOptions(cnfg);
 			
 			cnfg = {
-				cursorType: "auto"
+				cursorType: "pointer"
 			};
 			pieChart.setOptions(cnfg);
 		}
-		
-		//var value = $("#limitSlider").slider("value");
-		//var fromTo = value.split(';');
-		//
-		/*if (selectedType === "org") {
-			firstFrom = fromTo[0];
-			firstTo = fromTo[1];
-		} else if (selectedType === "fac"){
-			secondFrom = fromTo[0];
-			secondTo = fromTo[1];
-		}*/
-		
 		drawSlider(1, chartData.length);
-		/*initSlider(1, chartData.length);
-		var maxValue = (chartData.length > 10) ? 10 : chartData.length;
-		if(selectedType === "org"){
-			if(firstFrom === 0 && firstTo === 0) {
-				$("#limitSlider").slider('value', 1, maxValue);
-			} else {
-				$("#limitSlider").slider('value', firstFrom, firstTo);
-			}
-			console.log(firstFrom);
-		} else {
-			$("#limitSlider").slider('value', 1, maxValue);
-		}*/
 	}
 	
 	drawChartsAndList(chartData);
@@ -283,29 +260,22 @@ function onDataReceived(data) {
 function drawSlider(start, end) {
 	initSlider(start, end);
 	var maxValue = (end > 10) ? 10 : end;
-	
-	/*if(selectedType === "org"){
-		if(firstFrom === 0 && firstTo === 0) {
-			$("#limitSlider").slider('value', 1, maxValue);
-		} else {
-			$("#limitSlider").slider('value', firstFrom, firstTo);
-		}
-		console.log(firstFrom);
-	} else {
-		$("#limitSlider").slider('value', 1, maxValue);
-	}*/
-	
 	$("#limitSlider").slider('value', 1, maxValue);
 }
 
-function setChartTitle(name, type){
-	if (type === "fac") {
-		$("#chartState").text(name);
+function setChartTitle(name, type, isBack){
+	if (type === "org") {
+		$("#chartState").text("");
+	} else if (type === "fac") {
+		$("#chartState").html('<a href="../../profile/organization.jag?oid=' + selectedOrgId + '" target="_blank">' + selectedOrgName + '</a>');
 	} else if (type === "dep") {
-		var newText = $("#chartState").text() + " / " + name;
-		$("#chartState").text(newText);
+		$("#chartState").html('<a href="../../profile/organization.jag?oid=' + selectedOrgId + '" target="_blank">' + selectedOrgName + '</a>' + " / " + selectedFacName);
+	} else if (type === "peo") {
+		$("#chartState").html('<a href="../../profile/organization.jag?oid=' + selectedOrgId + '" target="_blank">' + selectedOrgName + '</a>' + " / " + selectedFacName + " / " + selectedDepName);
+	} else if (type === "divpeo") {
+		$("#chartState").html('<a href="../../profile/organization.jag?oid=' + selectedOrgId + '" target="_blank">' + selectedOrgName + '</a>' + " / " + selectedDivName);
 	} else {
-		$("#chartState").text(name);
+		$("#chartState").text("");
 	}
 }
 
@@ -330,8 +300,8 @@ function setOptionsForCharts(){
 		pieChart.setOptions(cnfg);
 	} else if (selectedType === "fac"){
 		var cnfg = {
-			barBottomColor: "#DB4476",
-			barTopColor: "#C53D6A",
+			barBottomColor: "#0E8615",
+			barTopColor: "#109518",
 			cursorType: "pointer"
 		};
 		barChart.setOptions(cnfg);
@@ -350,26 +320,68 @@ function setOptionsForCharts(){
 		var cnfg = {
 			barBottomColor: "#970097",
 			barTopColor: "#6F006F",
-			cursorType: "auto"
+			cursorType: "pointer"
 		};
 		barChart.setOptions(cnfg);
 		
 		cnfg = {
 			lineColor: "#6F006F",
-			cursorType: "auto"
+			cursorType: "pointer"
 		};
 		lineChart.setOptions(cnfg);
 		
 		cnfg = {
-			cursorType: "auto"
+			cursorType: "pointer"
 		};
 		pieChart.setOptions(cnfg);
+	}
+}
+
+function setInfoForCharts(){
+	$('#info-icon').tooltip('destroy');
+	$("#info-icon").removeAttr("title");
+	if("undefined" === typeof selectedType || selectedType === "org"){
+		$("#info-icon").tooltip({
+			animation: true,
+			placement: "left",
+			html: true,
+			title: '<div style="text-align: left; font-size: 12px; margin: 8px 5px;"><p><i class="fa fa-info-circle fa-lg"></i>&nbsp; <b>Number of researchers and scientists</b> in research organizations in Sri Lanka.</p><p>You can filter the results by selecting area of interests and range appropriately.</p><p>Each data item is clickable.</p><p>Click on a data item will take you to the next level in the <i>organization</i>.<br/><b>e.g.</b></p><ul><li>If it\'s a university, it will take you to faculties</li><li>If it\'s a research institute, it will take you to divisions</li></ul></div>'
+    		});
+	} else if (selectedType === "fac") { // maybe a division
+		$("#info-icon").tooltip({
+			animation: true,
+			placement: "left",
+			html: true,
+			title: '<div style="text-align: left; font-size: 12px; margin: 8px 5px;"><p><i class="fa fa-info-circle fa-lg"></i>&nbsp; <b>Number of researchers and scientists</b> in faculties or divisions.</p><p>Each data item is clickable.</p><p>Click on a data item will take you to the next level in the <i>faculty</i> or <i>division</i>.<br/><b>e.g.</b></p><ul><li>If it\'s a faculty, it will take you to departments</li><li>If it\'s a division, it will take you to details of researchers</li></ul></div>'
+		});
+	} else if (selectedType === "dep") {
+		$("#info-icon").tooltip({
+			animation: true,
+			placement: "left",
+			html: true,
+			title: '<div style="text-align: left; font-size: 12px; margin: 8px 5px;"><p><i class="fa fa-info-circle fa-lg"></i>&nbsp; <b>Number of researchers and scientists</b> in departments.</p><p>Click on a data item will take you to the details of researchers in particular department.</p></div>'
+		});
+	} else if (selectedType === "peo") {
+		$("#info-icon").tooltip({
+			animation: true,
+			placement: "left",
+			html: true,
+			title: '<div style="text-align: left; font-size: 12px; margin: 8px 5px;"><p><i class="fa fa-info-circle fa-lg"></i>&nbsp; <b>Researchers</b> in department.</p><p>Click on any name to see his / her profile.</p></div>'
+		});
+	} else if (selectedType === "divpeo") {
+		$("#info-icon").tooltip({
+			animation: true,
+			placement: "left",
+			html: true,
+			title: '<div style="text-align: left; font-size: 12px; margin: 8px 5px;"><p><i class="fa fa-info-circle fa-lg"></i>&nbsp; <b>Researchers</b> in division.</p><p>Click on any name to see his / her profile.</p></div>'
+		});
 	}
 }
 
 function drawChartsAndList(data){
 	var place = $("#placeholder");
 	place.empty();
+	var gadgetWidth = place.width();
 	
 	if ('undefined' !== typeof data) {
 		if(data.length < 1){
@@ -378,25 +390,67 @@ function drawChartsAndList(data){
 		} else {
 			var value = $("#limitSlider").slider("value");
 			var fromTo = value.split(';');
+			var newTo = parseInt(fromTo[1]);
+			if (gadgetWidth < 500){
+				newTo = parseInt(fromTo[0]) + 4;
+				$("#limitSlider").slider("value", fromTo[0], newTo);
+			} else if (gadgetWidth < 1000){
+				newTo = parseInt(fromTo[0]) + 9;
+				$("#limitSlider").slider("value", fromTo[0], newTo);
+			} else if (gadgetWidth < 1500){
+				newTo = parseInt(fromTo[0]) + 14;
+				$("#limitSlider").slider("value", fromTo[0], newTo);
+			} else {
+				newTo = parseInt(fromTo[0]) + 19;
+				$("#limitSlider").slider("value", fromTo[0], newTo);
+			}
+			
+			var newData = getSlicedChartData(fromTo[0], newTo);
+			
+			if (selectedType === "peo"){
+				createPeopleChart(newData);
+			} else if (selectedType === "divpeo"){
+				createPeopleChart(newData);
+			} else {			
+				if (chartType === "bar") {
+					drawBarChart(newData);
+				} else if (chartType === "line"){
+					drawLineChart(newData);
+				} else if (chartType === "pie"){
+					drawPieChart(newData);
+				} else if (chartType === "list"){
+					createList(newData);
+				}
+			}
+		}
+	}
+}
+
+function drawChartsAndListWithRange(data){
+	var place = $("#placeholder");
+	place.empty();
+	
+	if ('undefined' !== typeof data) {
+		if (data.length < 1) {
+			$("#slider-area").empty();
+			showNotAvailbleMsg();
+		} else {
+			var value = $("#limitSlider").slider("value");
+			var fromTo = value.split(';');
 			var newData = getSlicedChartData(fromTo[0], fromTo[1]);
 			
-			//
-			/*if (selectedType === "org") {
-				firstFrom = fromTo[0];
-				firstTo = fromTo[1];
-			} else if (selectedType === "fac"){
-				secondFrom = fromTo[0];
-				secondTo = fromTo[1];
-			} */
-		
-			if (chartType === "bar") {
-				drawBarChart(newData);
-			} else if (chartType === "line"){
-				drawLineChart(newData);
-			} else if (chartType === "pie"){
-				drawPieChart(newData);
-			} else if (chartType === "list"){
-				createList(newData);
+			if (selectedType === "peo" || selectedType === "divpeo"){
+				createPeopleChart(newData);
+			} else {
+				if (chartType === "bar") {
+					drawBarChart(newData);
+				} else if (chartType === "line"){
+					drawLineChart(newData);
+				} else if (chartType === "pie"){
+					drawPieChart(newData);
+				} else if (chartType === "list"){
+					createList(newData);
+				}
 			}
 		}
 	}
@@ -407,13 +461,23 @@ function initSlider(fromVal, toVal){
 	sliderArea.empty();
 	
 	var bElem = document.createElement("b");
-	var text = document.createTextNode("Range: ");
+	var sliderText = "";
+	if (selectedType === "org" || selectedType === ""){
+		sliderText = "Range of Organizations: "
+	} else if (selectedType === "fac"){
+		sliderText = "Range of Faculties: "
+	} else if (selectedType === "dep"){
+		sliderText = "Range of Departments: "
+	} else if (selectedType === "div"){
+		sliderText = "Range of Divisions: "
+	}
+	var text = document.createTextNode(sliderText);
 	bElem.appendChild(text);
 	sliderArea.append(bElem);
 	
 	var spanElem = document.createElement("span");
 	spanElem.style.display = "inline-block";
-	spanElem.style.width = "86%";
+	spanElem.style.width = "66%";
 	spanElem.style.padding = "0 5px";
 	
 	var inputElem = document.createElement("input");
@@ -425,7 +489,7 @@ function initSlider(fromVal, toVal){
 	spanElem.appendChild(inputElem);
 	sliderArea.append(spanElem);
 	
-	if(toVal <= fromVal){
+	if (toVal <= fromVal) {
 		$("#limitSlider").slider({
 			from: fromVal,
 			step: 1,
@@ -448,7 +512,8 @@ function initSlider(fromVal, toVal){
 			dimension: "",
 			skin: "round_plastic", // plastic, round, round_plastic, blue
 			callback: function (value) {
-				drawChartsAndList(chartData);
+				//drawChartsAndList(chartData);
+				drawChartsAndListWithRange(chartData);
 			}
 		});
 	}
@@ -460,10 +525,10 @@ function initBarChart(){
         marginTop: 5,
         marginRight: 5,
         marginBottom: 50,
-        marginLeft: 30,
+        marginLeft: 45,
         chartTitle: "",
         xAxisTitle: "",
-        yAxisTitle: "Number of researchers",
+        yAxisTitle: "Number of Current Researchers",
         barBottomColor: "#447fb0",
         barTopColor: "#315a7c",
         barBorderColor: "#23415a",
@@ -487,13 +552,13 @@ function drawBarChart(data, options){
 function initLineChart(){
 	var data = [];
 	var lineChartOptions = {
-			marginTop: 20,
+			marginTop: 5,
 	        marginRight: 5,
 	        marginBottom: 50,
-	        marginLeft: 30,
-	        chartTitle: "Number of researchers over area of interests",
+	        marginLeft: 45,
+	        chartTitle: "",
 	        xAxisTitle: "",
-	        yAxisTitle: "",
+	        yAxisTitle: "Number of Current Researchers",
 	        lineColor: "#A52A2A",
 	        valuePrecision: 2,
 	        nanMessage: "Data not available"
@@ -554,9 +619,19 @@ function createList(data){
 	thElem1.style.width = "70%";
 	var thElem2 = document.createElement("th");
 	thElem2.style.width = "30%";
-	var text = document.createTextNode("Area of Interest");
+	var tableTitleStr = "";
+	if (selectedType === null || selectedType === "org"){
+		tableTitleStr = "Organizations";
+	} else if (selectedType === "fac"){
+		tableTitleStr = "Faculties";
+	} else if (selectedType === "dep"){
+		tableTitleStr = "Departments";
+	} else if (selectedType === "div"){
+		tableTitleStr = "Divisions";
+	}
+	var text = document.createTextNode(tableTitleStr);
 	thElem1.appendChild(text);
-	text = document.createTextNode("Value");
+	text = document.createTextNode("Number of Current Researchers");
 	thElem2.appendChild(text);
 	
 	trElem.appendChild(thElem1);
@@ -589,6 +664,7 @@ function createList(data){
 
 function showNotAvailbleMsg(){
 	var place = $("#placeholder");
+	place.empty();
 	$(".bar-tooltip").hide();
 	$(".line-tooltip").hide();
 	$(".pie-tooltip").hide();
@@ -598,21 +674,117 @@ function showNotAvailbleMsg(){
 	divElem.style.paddingRight = "16px";
 	divElem.style.textAlign = "center";
 	
-	//var iDivElem = document.createElement("div");
-	//var iconElem = document.createElement("i");
-	//iconElem.setAttribute("class", "fa fa-info-circle 5x");
-	//iDivElem.appendChild(iconElem);
+	var headingElem = document.createElement("div");
+	headingElem.style.marginTop = "16px";
+	$(headingElem).animate({fontSize:'20px'}, "slow");
+	headingElem.innerHTML = '<p><i class="fa fa-exclamation-circle fa-lg"></i>&nbsp; Data Not Available</p>';
 	
-	var h3Elem = document.createElement("h3");
-	var text = document.createTextNode("Data not available");
-	h3Elem.appendChild(text);
+	var divElemDetails = document.createElement("div");
+	divElemDetails.innerHTML = '<i>Currently no data is available to display for this level.</i>';
 	
-	//divElem.appendChild(iDivElem);
-	divElem.appendChild(h3Elem);
+	divElem.appendChild(headingElem);
+	divElem.appendChild(divElemDetails);
+	place.append(divElem);
+}
+
+function createPeopleChart(data){
+	if('undefined' === typeof data){
+		data = chartData;
+	}
+	var place = $("#placeholder");
+	$(".bar-tooltip").hide();
+	$(".line-tooltip").hide();
+	$(".pie-tooltip").hide();
+	
+	var divElem = document.createElement("div");
+	divElem.style.paddingLeft = "16px";
+	divElem.style.paddingRight = "16px";
+	
+	var tableElem = document.createElement("table");
+	tableElem.setAttribute("class", "table table-striped");
+	var theadElem = document.createElement("thead");
+	
+	// heading row
+	var trElem = document.createElement("tr");
+	var thElem0 = document.createElement("th");
+	thElem0.style.width = "10%";
+	var thElem1 = document.createElement("th");
+	thElem1.style.width = "20%";
+	var thElem2 = document.createElement("th");
+	thElem2.style.width = "70%";
+	
+	var text = document.createTextNode("#");
+	thElem0.appendChild(text);
+	
+	var tableTitleStr = "Image";
+	text = document.createTextNode(tableTitleStr);
+	thElem1.appendChild(text);
+	text = document.createTextNode("Name of the Researcher");
+	thElem2.appendChild(text);
+	
+	trElem.appendChild(thElem0);
+	trElem.appendChild(thElem1);
+    trElem.appendChild(thElem2);
+	theadElem.appendChild(trElem);
+    tableElem.appendChild(theadElem);
+	
+	var tbodyElem = document.createElement("tbody");
+	for (var i = 0; i < data.length; i++) {
+		trElem = document.createElement("tr");
+		var tdElem0 = document.createElement("td");
+		var tdElem1 = document.createElement("td");
+		var tdElem2 = document.createElement("td");
+		
+		var text = document.createTextNode((i + 1) + ".");
+		tdElem0.appendChild(text);
+		
+		var image = data[i].image;
+		if(image === null || image === ""){
+			if(parseInt(data[i].gender) === 1){
+				image = "/userforms/images/users/man.png";
+			} else {
+				image = "/userforms/images/users/woman.png";
+			}
+		} else {
+			image = "/userforms/images/users/" + data[i].id + "/" + data[i].image;
+		}
+		var imgElem = document.createElement("img");
+		imgElem.setAttribute("src", image);
+		imgElem.style.width = "60px";
+		tdElem1.appendChild(imgElem);
+		
+		var divElemDetails = document.createElement("div");
+		var desigElem = "";
+		if (data[i].designation === null || data[i].designation === "") {
+			desigElem = "";
+		} else {
+			desigElem = '<span style="margin-right: 24px;" title="Designation"><i class="fa fa-certificate fa-lg"></i>&nbsp; ' + data[i].designation + '</span>';
+		}
+		var pubsElem = "";
+		if (data[i].pubcount === null || data[i].pubcount === "" || parseInt(data[i].pubcount) === 0) {
+			pubsElem = "";
+		} else {
+			pubsElem = '<span title="Publications"><i class="fa fa-newspaper-o fa-lg"></i>&nbsp; ' + data[i].pubcount + '</span>';
+		}
+		divElemDetails.innerHTML = '<h5><a href="../../profile/person.jag?pid='+ data[i].id +'" target="_blank">' + data[i].name + '</a></h5>'+ desigElem + pubsElem;
+		tdElem2.appendChild(divElemDetails);
+		
+		trElem.appendChild(tdElem0);
+		trElem.appendChild(tdElem1);
+        trElem.appendChild(tdElem2);
+		
+		tbodyElem.appendChild(trElem);
+	}
+	tableElem.appendChild(tbodyElem);
+	
+	divElem.appendChild(tableElem);
 	place.append(divElem);
 }
 
 function getSlicedChartData(fromValue, toValue){
+	if (isNaN(toValue)) {
+		toValue = fromValue;
+	}
 	var truncData = [];
 	var currentValue;
 	if(chartData.length < toValue){

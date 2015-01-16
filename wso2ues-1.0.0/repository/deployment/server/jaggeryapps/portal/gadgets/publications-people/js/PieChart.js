@@ -67,7 +67,8 @@ function PieChart(area, data, options) {
                     return d.startAngle;
                 })
                 .endAngle(function(d) {
-//                    return (d.value / 1000) * 2 * Math.PI;
+					console.log(d.endAngle);
+                    //return (d.value / 1000) * Math.PI;
                     return d.endAngle;
                 });
 
@@ -163,8 +164,10 @@ function PieChart(area, data, options) {
                             .style("display", "none");
                 })
                 .on("click", function(d, i) {
-					if(d.data.id !== ""){
-						fetchCustomData(d.data.id, d.data.name);
+					if (d.data.type === "peo"){
+						fetchCustomData("yea", d.data.id, d.data.name);
+					} else if (d.data.type === "yea"){
+						window.open("../../profile/person.jag?pid=" + d.data.id + "&year=" + d.data.name);
 					}
 					/*
                     var isExpanded = d3.select(this).attr("class") === "expanded";

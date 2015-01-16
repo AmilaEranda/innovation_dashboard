@@ -1,0 +1,75 @@
+<%
+include_once("../../../db/db.jag");
+
+var type = request.getParameter("type");
+var oid = request.getParameter("oid");
+var yearValue = request.getParameter("year");
+var aoiId = request.getParameter("aoiId");
+var saoiId = request.getParameter("saoiId");
+var ssaoiId = request.getParameter("ssaoiId");
+
+function getDBData() {
+	var dbdt = [];
+	var strQuery = "";
+	if ("undefined" === typeof type || type === null || type === "" || type === "org") { // select all organizations
+		if ("undefined" === typeof aoiId || aoiId === null || aoiId === "" || aoiId === "0") {
+			strQuery = "SELECT org.name AS `org_name`, COUNT(DISTINCT pbl.publication_id) AS `pbl_count`, org.organization_id AS `org_id` FROM organization org LEFT JOIN organization_person_publication opp ON opp.organization_id = org.organization_id LEFT JOIN person_publication ppbl ON opp.person_publication_id = ppbl.person_publication_id LEFT JOIN publication pbl ON pbl.publication_id = ppbl.publication_id LEFT JOIN country cou ON cou.country_id = org.country_id WHERE cou.code = 'LK' AND org.record_status = 1 GROUP BY org.organization_id ORDER BY COUNT(pbl.publication_id) DESC , org.name ASC LIMIT 100";
+		} else if (aoiId !== "0" && saoiId === "0" && ssaoiId === "0") {
+			strQuery = "SELECT org.name AS `org_name`, COUNT(DISTINCT pbl.publication_id) AS `pbl_count`, org.organization_id AS `org_id` FROM organization org LEFT JOIN organization_person_publication opp ON opp.organization_id = org.organization_id LEFT JOIN person_publication ppbl ON opp.person_publication_id = ppbl.person_publication_id LEFT JOIN publication pbl ON pbl.publication_id = ppbl.publication_id LEFT JOIN publication_area_of_interest paoi ON pbl.publication_id = paoi.publication_publication_id LEFT JOIN country cou ON cou.country_id = org.country_id WHERE paoi.area_of_interest_id = " + parseInt(aoiId) + " AND cou.code = 'LK' AND org.record_status = 1 GROUP BY org.organization_id ORDER BY COUNT(pbl.publication_id) DESC , org.name ASC LIMIT 100";
+		} else if(saoiId !== "0" && ssaoiId === "0") {
+			strQuery = "SELECT org.name AS `org_name`, COUNT(DISTINCT pbl.publication_id) AS `pbl_count`, org.organization_id AS `org_id` FROM organization org LEFT JOIN organization_person_publication opp ON opp.organization_id = org.organization_id LEFT JOIN person_publication ppbl ON opp.person_publication_id = ppbl.person_publication_id LEFT JOIN publication pbl ON pbl.publication_id = ppbl.publication_id LEFT JOIN publication_area_of_interest paoi ON pbl.publication_id = paoi.publication_publication_id LEFT JOIN country cou ON cou.country_id = org.country_id WHERE paoi.sub_area_of_interest_id = " + parseInt(saoiId) + " AND cou.code = 'LK' AND org.record_status = 1 GROUP BY org.organization_id ORDER BY COUNT(pbl.publication_id) DESC , org.name ASC LIMIT 100";
+		} else if(ssaoiId !== "0") {
+			strQuery = "SELECT org.name AS `org_name`, COUNT(DISTINCT pbl.publication_id) AS `pbl_count`, org.organization_id AS `org_id` FROM organization org LEFT JOIN organization_person_publication opp ON opp.organization_id = org.organization_id LEFT JOIN person_publication ppbl ON opp.person_publication_id = ppbl.person_publication_id LEFT JOIN publication pbl ON pbl.publication_id = ppbl.publication_id LEFT JOIN publication_area_of_interest paoi ON pbl.publication_id = paoi.publication_publication_id LEFT JOIN country cou ON cou.country_id = org.country_id WHERE paoi.sub_sub_area_of_interest_id = " + parseInt(ssaoiId) + " AND cou.code = 'LK' AND org.record_status = 1 GROUP BY org.organization_id ORDER BY COUNT(pbl.publication_id) DESC , org.name ASC LIMIT 100";
+		}
+		var result = db.query(strQuery);
+		for(var i = 0; i < result.length; i++){
+			dbdt.push({"name": result[i].org_name.trim().replace(/\t+/g, " "), "value": result[i].pbl_count, "id": result[i].org_id, "type": "org"});
+		}
+	} else if (type === "yea") { // select one organization
+		if (aoiId == null || aoiId == "" || aoiId == "0" || "undefined" == typeof aoiId) {
+			strQuery = "SELECT pbl.year AS `pbl_year`, COUNT(DISTINCT pbl.publication_id) AS `pbl_count` FROM organization org LEFT JOIN organization_person_publication opp ON opp.organization_id = org.organization_id LEFT JOIN person_publication ppbl ON opp.person_publication_id = ppbl.person_publication_id LEFT JOIN publication pbl ON pbl.publication_id = ppbl.publication_id WHERE org.organization_id = " + parseInt(oid) + " AND pbl.year IS NOT NULL GROUP BY pbl.year ORDER BY pbl.year ASC LIMIT 100";
+		} else if (aoiId !== "0" && saoiId === "0" && ssaoiId === "0") {
+			strQuery = "SELECT pbl.year AS `pbl_year`, COUNT(DISTINCT pbl.publication_id) AS `pbl_count` FROM organization org LEFT JOIN organization_person_publication opp ON opp.organization_id = org.organization_id LEFT JOIN person_publication ppbl ON opp.person_publication_id = ppbl.person_publication_id LEFT JOIN publication pbl ON pbl.publication_id = ppbl.publication_id LEFT JOIN publication_area_of_interest paoi ON pbl.publication_id = paoi.publication_publication_id WHERE org.organization_id = " + parseInt(oid) + " AND pbl.year IS NOT NULL AND paoi.area_of_interest_id = " + parseInt(aoiId) + " GROUP BY pbl.year ORDER BY pbl.year ASC LIMIT 100";
+		} else if(saoiId !== "0" && ssaoiId === "0") {
+			strQuery = "SELECT pbl.year AS `pbl_year`, COUNT(DISTINCT pbl.publication_id) AS `pbl_count` FROM organization org LEFT JOIN organization_person_publication opp ON opp.organization_id = org.organization_id LEFT JOIN person_publication ppbl ON opp.person_publication_id = ppbl.person_publication_id LEFT JOIN publication pbl ON pbl.publication_id = ppbl.publication_id LEFT JOIN publication_area_of_interest paoi ON pbl.publication_id = paoi.publication_publication_id WHERE org.organization_id = " + parseInt(oid) + " AND pbl.year IS NOT NULL AND paoi.sub_area_of_interest_id = " + parseInt(saoiId) + " GROUP BY pbl.year ORDER BY pbl.year ASC LIMIT 100";
+		} else if(ssaoiId !== "0") {
+			strQuery = "SELECT pbl.year AS `pbl_year`, COUNT(DISTINCT pbl.publication_id) AS `pbl_count` FROM organization org LEFT JOIN organization_person_publication opp ON opp.organization_id = org.organization_id LEFT JOIN person_publication ppbl ON opp.person_publication_id = ppbl.person_publication_id LEFT JOIN publication pbl ON pbl.publication_id = ppbl.publication_id LEFT JOIN publication_area_of_interest paoi ON pbl.publication_id = paoi.publication_publication_id WHERE org.organization_id = " + parseInt(oid) + " AND pbl.year IS NOT NULL AND paoi.sub_sub_area_of_interest_id = " + parseInt(ssaoiId) + " GROUP BY pbl.year ORDER BY pbl.year ASC LIMIT 100";
+		}
+		var result = db.query(strQuery);
+		var strYear;
+		for(var i = 0; i < result.length; i++){
+			strYear = ("" + result[i].pbl_year + "").substring(0, 4);
+			dbdt.push({"name": strYear, "value": result[i].pbl_count, "id": "", "type": "yea"});
+			if(i !== result.length - 1){
+				var currYear = parseInt(("" + result[i].pbl_year + "").substring(0, 4));
+				var nextYear = parseInt(("" + result[i+1].pbl_year + "").substring(0, 4));
+				if(currYear + 1 !== nextYear){
+					for(var j = currYear + 1; j < nextYear; j++){
+						var ye = ("" + j + "").substring(0, 4);
+						dbdt.push({"name": ye, "value": 0, "id": "", "type": "yea"});
+					}
+				}
+			}
+		}
+	} else if (type === "pub") { // select one year
+		if ("undefined" === typeof aoiId || aoiId === null || aoiId === "" || aoiId === "0") {
+			strQuery = "SELECT pub.publication_id AS `pbl_id`, (CASE WHEN pub.title = '' THEN pub.name WHEN pub.title IS NULL THEN pub.name ELSE pub.title END) AS `pbl_title`, pub.publication_type AS `pub_type`, pub.year AS `pbl_year`, GROUP_CONCAT(CONCAT((CASE WHEN per.initials = '' THEN per.first_name WHEN per.initials IS NULL THEN per.first_name ELSE per.initials END), ' ', per.last_name) SEPARATOR ', ') AS `pub_publishers` FROM organization org LEFT JOIN organization_person_publication opp ON opp.organization_id = org.organization_id LEFT JOIN person_publication ppu ON opp.person_publication_id = ppu.person_publication_id LEFT JOIN publication pub ON pub.publication_id = ppu.publication_id LEFT JOIN person per ON per.person_id = ppu.person_id WHERE org.organization_id = " + parseInt(oid) + " AND pub.year = " + parseInt(yearValue) + " GROUP BY pub.publication_id ORDER BY pub.year DESC , pub.title ASC";
+		} else if (aoiId !== "0" && saoiId === "0" && ssaoiId === "0") {
+			strQuery = "SELECT pub.publication_id AS `pbl_id`, (CASE WHEN pub.title = '' THEN pub.name WHEN pub.title IS NULL THEN pub.name ELSE pub.title END) AS `pbl_title`, pub.publication_type AS `pub_type`, pub.year AS `pbl_year`, GROUP_CONCAT(CONCAT((CASE WHEN per.initials = '' THEN per.first_name WHEN per.initials IS NULL THEN per.first_name ELSE per.initials END), ' ', per.last_name) SEPARATOR ', ') AS `pub_publishers` FROM organization org LEFT JOIN organization_person_publication opp ON opp.organization_id = org.organization_id LEFT JOIN person_publication ppu ON opp.person_publication_id = ppu.person_publication_id LEFT JOIN publication pub ON pub.publication_id = ppu.publication_id LEFT JOIN person per ON per.person_id = ppu.person_id LEFT JOIN publication_area_of_interest paoi ON pub.publication_id = paoi.publication_publication_id WHERE org.organization_id = " + parseInt(oid) + " AND pub.year = " + parseInt(yearValue) + " AND paoi.area_of_interest_id = " + parseInt(aoiId) + " GROUP BY pub.publication_id ORDER BY pub.year DESC , pub.title ASC";
+		} else if (saoiId !== "0" && ssaoiId === "0") {
+			strQuery = "SELECT pub.publication_id AS `pbl_id`, (CASE WHEN pub.title = '' THEN pub.name WHEN pub.title IS NULL THEN pub.name ELSE pub.title END) AS `pbl_title`, pub.publication_type AS `pub_type`, pub.year AS `pbl_year`, GROUP_CONCAT(CONCAT((CASE WHEN per.initials = '' THEN per.first_name WHEN per.initials IS NULL THEN per.first_name ELSE per.initials END), ' ', per.last_name) SEPARATOR ', ') AS `pub_publishers` FROM organization org LEFT JOIN organization_person_publication opp ON opp.organization_id = org.organization_id LEFT JOIN person_publication ppu ON opp.person_publication_id = ppu.person_publication_id LEFT JOIN publication pub ON pub.publication_id = ppu.publication_id LEFT JOIN person per ON per.person_id = ppu.person_id LEFT JOIN publication_area_of_interest paoi ON pub.publication_id = paoi.publication_publication_id WHERE org.organization_id = " + parseInt(oid) + " AND pub.year = " + parseInt(yearValue) + " AND paoi.sub_area_of_interest_id = " + parseInt(saoiId) + " GROUP BY pub.publication_id ORDER BY pub.year DESC , pub.title ASC";
+		} else if(ssaoiId !== "0") {
+			strQuery = "SELECT pub.publication_id AS `pbl_id`, (CASE WHEN pub.title = '' THEN pub.name WHEN pub.title IS NULL THEN pub.name ELSE pub.title END) AS `pbl_title`, pub.publication_type AS `pub_type`, pub.year AS `pbl_year`, GROUP_CONCAT(CONCAT((CASE WHEN per.initials = '' THEN per.first_name WHEN per.initials IS NULL THEN per.first_name ELSE per.initials END), ' ', per.last_name) SEPARATOR ', ') AS `pub_publishers` FROM organization org LEFT JOIN organization_person_publication opp ON opp.organization_id = org.organization_id LEFT JOIN person_publication ppu ON opp.person_publication_id = ppu.person_publication_id LEFT JOIN publication pub ON pub.publication_id = ppu.publication_id LEFT JOIN person per ON per.person_id = ppu.person_id LEFT JOIN publication_area_of_interest paoi ON pub.publication_id = paoi.publication_publication_id WHERE org.organization_id = " + parseInt(oid) + " AND pub.year = " + parseInt(yearValue) + " AND paoi.sub_sub_area_of_interest_id = " + parseInt(ssaoiId) + " GROUP BY pub.publication_id ORDER BY pub.year DESC , pub.title ASC";
+		}
+		var result = db.query(strQuery);
+		var strYear;
+		for (var i = 0; i < result.length; i++) {
+			strYear = ("" + result[i].pbl_year + "").substring(0, 4);
+			dbdt.push({"name": result[i].pbl_title.trim().replace(/\t+/g, " "), "year": strYear, "pubtype": result[i].pub_type, "id": result[i].pbl_id, "publishers": result[i].pub_publishers, "type": "pub"});
+		}
+	}
+	return {publications_count_data: dbdt};
+}
+print(getDBData());
+
+%>

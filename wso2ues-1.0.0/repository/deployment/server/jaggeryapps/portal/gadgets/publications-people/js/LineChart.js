@@ -151,9 +151,10 @@ function LineChart(area, data, options) {
                 .call(yAxis)
                 .append("text")
                 .attr("transform", "rotate(-90)")
-                .attr("y", 6)
-                .attr("dy", ".71em")
+                .attr("y", -35)
+                .attr("dy", "0em")
                 .style("text-anchor", "end")
+				.style("font-size", "12px")
                 .text(cnfg.yAxisTitle);
 
         // chart title
@@ -272,8 +273,10 @@ function LineChart(area, data, options) {
                             .style("display", "none");
                 })
 				.on("click", function(d, i){
-					if(d.id !== ""){
-						fetchCustomData(d.id, d.name);
+					if (d.type === "peo"){
+						fetchCustomData("yea", d.id, d.name);
+					} else if (d.type === "yea"){
+						window.open("../../profile/person.jag?pid=" + d.id + "&year=" + d.name);
 					}
 				});
 
@@ -306,6 +309,11 @@ function LineChart(area, data, options) {
                         tspan = text.text(null).append("tspan").attr("x", 0).attr("y", y).attr("dy", dy + "em");
 
                 while (word = words.pop()) {
+					if(dataArray.length > 20){
+						if(word.length !== 4){
+							word = word.substr(0, 2);
+						}
+					}
                     line.push(word);
                     tspan.text(line.join(" "));
                     if (tspan.node().getComputedTextLength() > width) {

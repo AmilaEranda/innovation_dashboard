@@ -48,6 +48,9 @@
 			</div>
 		</div>
 		<div id="placeholder" style="height:86%;"></div>
+		<div id="srcContent" style="text-align: right;">
+			<span style="font-size: 9px;">Source: Cornell University, INSEAD, and WIPO (2013): The Global Innovation Index 2013, <a href="http://www.globalinnovationindex.org/" target="_blank">www.globalinnovationindex.org</a></span>
+		</div>
 	</div>
 </body>
 </html>

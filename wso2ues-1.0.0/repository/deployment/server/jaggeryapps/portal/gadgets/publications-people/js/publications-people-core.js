@@ -52,7 +52,7 @@ $(document).ready(function(){
 		$(this).addClass("btn-success");
 		$(this).blur();
 		chartType = $(this).text().toLowerCase();
-		drawChartsAndList(chartData);
+		drawChartsAndListWithRange(chartData);
 	});
 	
 	$(".back").click(function(){
@@ -176,11 +176,6 @@ function fetchCustomData(type, pid, name) {
 	var ssaoiId = $("#ssaoi-selection option:selected").val();
 	
 	selectedType = type;
-	/*if(pid == null || "undefined" == typeof pid){
-		selectedType = "peo";
-	} else {
-		selectedType = "yea";
-	}*/
 	selectedPid = pid;
 	
 	var url = "../../portal/gadgets/publications-people/data-files/publications-people-data.jag";
@@ -198,9 +193,11 @@ function fetchCustomData(type, pid, name) {
 		success: onDataReceived
 	});
 	
+	setInfoForCharts();
+	
 	setOptionsForCharts();
 	
-	setChartTitle(name);
+	setChartTitle(name, selectedPid);
 	
 	if(selectedType == "yea"){
 		$("#pub-peo-back").show();
@@ -209,7 +206,6 @@ function fetchCustomData(type, pid, name) {
 
 function onDataReceived(data) {
 	chartData = data.publications_count_data;
-	
 	if(chartData.length > 0){
 		if(selectedType == "peo"){
 			initSlider(1, chartData.length);
@@ -225,8 +221,12 @@ function onDataReceived(data) {
 	drawChartsAndList(chartData);
 }
 
-function setChartTitle(name){
-	$("#chartState").text(name);
+function setChartTitle(name, pid){
+	if("undefined" !== typeof name){
+		$("#chartState").html('<a href="../../profile/person.jag?pid=' + pid + '" target="_blank">' + name + '</a>');
+	} else {
+		$("#chartState").text(name);
+	}
 }
 
 function setOptionsForCharts(){
@@ -263,7 +263,7 @@ function setOptionsForCharts(){
 		lineChart.setOptions(cnfg);
 		
 		cnfg = {
-			cursorType: "auto"
+			cursorType: "pointer"
 		};
 		pieChart.setOptions(cnfg);
 	}
@@ -272,20 +272,104 @@ function setOptionsForCharts(){
 function drawChartsAndList(data){
 	var place = $("#placeholder");
 	place.empty();
+	var gadgetWidth = place.width();
+	
+	if (data.length < 1) {
+		$("#slider-area").empty();
+		showNotAvailbleMsg();
+	} else {
+		var value = $("#limitSlider").slider("value");
+		var fromTo = value.split(';');
+		var newTo = parseInt(fromTo[1]);
+	
+		if (selectedType === "peo"){
+			if (gadgetWidth < 500){
+				newTo = parseInt(fromTo[0]) + 4;
+				$("#limitSlider").slider("value", fromTo[0] - 1, newTo);
+			} else if (gadgetWidth < 1000){
+				newTo = parseInt(fromTo[0]) + 9;
+				$("#limitSlider").slider("value", fromTo[0] - 1, newTo);
+			} else if (gadgetWidth < 1500){
+				newTo = parseInt(fromTo[0]) + 14;
+				$("#limitSlider").slider("value", fromTo[0] - 1, newTo);
+			} else {
+				newTo = parseInt(fromTo[0]) + 19;
+				$("#limitSlider").slider("value", fromTo[0] - 1, newTo);
+			}
+		} else if (selectedType === "yea"){
+			if (gadgetWidth < 500){
+				fromTo[0] = newTo - 4;
+				$("#limitSlider").slider("value", fromTo[0], newTo + 1);
+			} else if (gadgetWidth < 1000){
+				fromTo[0] = newTo - 9;
+				$("#limitSlider").slider("value", fromTo[0], newTo + 1);
+			} else if (gadgetWidth < 1500){
+				fromTo[0] = newTo - 14;
+				$("#limitSlider").slider("value", fromTo[0], newTo + 1);
+			} else {
+				fromTo[0] = newTo - 19;
+				$("#limitSlider").slider("value", fromTo[0], newTo + 1);
+			}
+		}
+		
+		var newData = getSlicedChartData(fromTo[0], newTo);
+
+		if ('undefined' !== typeof data) {
+			if(chartType === "bar"){
+				drawBarChart(newData);
+			} else if (chartType === "line"){
+				drawLineChart(newData);
+			} else if (chartType === "pie"){
+				drawPieChart(newData);
+			} else if (chartType === "list"){
+				createList(newData);
+			}
+		}
+	}
+}
+
+function setInfoForCharts(){
+	$('#info-icon').tooltip('destroy');
+	$("#info-icon").removeAttr("title");
+	if("undefined" === typeof selectedType || selectedType === "peo"){ // people
+		$("#info-icon").tooltip({
+			animation: true,
+			placement: "left",
+			html: true,
+			title: '<div style="text-align: left; font-size: 12px; margin: 8px 5px;"><p><i class="fa fa-info-circle fa-lg"></i>&nbsp; <b>The first 100 researchers</b> based on publications.</p><p>You can filter the results by selecting area of interests and range of people appropriately.</p><p>Each data item is clickable.</p><p>Click on a data item will take you to the year wise publications for particular <i>researcher</i>.</p></div>'
+    		});
+	} else if (selectedType === "yea") { // year
+		$("#info-icon").tooltip({
+			animation: true,
+			placement: "left",
+			html: true,
+			title: '<div style="text-align: left; font-size: 12px; margin: 8px 5px;"><p><i class="fa fa-info-circle fa-lg"></i>&nbsp; <b>Number of publications </b> according to year.</p><p>Click on researcher name to see his / her public profile.</p><p>Each data item is clickable.</p><p>Click on a data item will take you to the publications of that year.</p></div>'
+		});
+	}
+}
+
+function drawChartsAndListWithRange(data){
+	var place = $("#placeholder");
+	place.empty();
 	
 	var value = $("#limitSlider").slider("value");
 	var fromTo = value.split(';');
-	var newData = getSlicedChartData(fromTo[0], fromTo[1]);
-
+	var newData = getSlicedChartData(parseInt(fromTo[0]), parseInt(fromTo[1]));
+	
 	if ('undefined' !== typeof data) {
-		if(chartType === "bar"){
-			drawBarChart(newData);
-		} else if (chartType === "line"){
-			drawLineChart(newData);
-		} else if (chartType === "pie"){
-			drawPieChart(newData);
-		} else if (chartType === "list"){
-			createList(newData);
+		if (data.length < 1) {
+			$("#slider-area").empty();
+			showNotAvailbleMsg();
+		} else {
+			if(chartType === "bar"){
+				drawBarChart(newData);
+			} else if (chartType === "line"){
+				drawLineChart(newData);
+			} else if (chartType === "pie"){
+				drawPieChart(newData);
+			} else if (chartType === "list"){
+				createList(newData);
+			}
 		}
 	}
 }
@@ -296,9 +380,9 @@ function initSlider(fromVal, toVal){
 	
 	var bElem = document.createElement("b");
 	var text;
-	if(selectedType == "peo"){
-		text = document.createTextNode("Select: ");
-	} else if(selectedType == "yea"){
+	if(selectedType === "peo"){
+		text = document.createTextNode("Range of people: ");
+	} else if(selectedType === "yea"){
 		text = document.createTextNode("Year: ");
 	}
 	bElem.appendChild(text);
@@ -306,7 +390,7 @@ function initSlider(fromVal, toVal){
 	
 	var spanElem = document.createElement("span");
 	spanElem.style.display = "inline-block";
-	spanElem.style.width = "86%";
+	spanElem.style.width = "66%";
 	spanElem.style.padding = "0 5px";
 	
 	var inputElem = document.createElement("input");
@@ -342,11 +426,13 @@ function initSlider(fromVal, toVal){
 		step: 1,
 		//scale: tickArr,
 		smooth: true, 
-		round: 0, 
+		round: 0,
+		format: { format: '####', locale: 'us' },
 		dimension: "",
 		skin: "round_plastic", // plastic, round, round_plastic, blue
 		callback: function (value) {
-			drawChartsAndList(chartData);
+			//drawChartsAndList(chartData);
+			drawChartsAndListWithRange(chartData);
 		}
 	});
 }
@@ -357,10 +443,10 @@ function initBarChart(){
         marginTop: 5,
         marginRight: 5,
         marginBottom: 50,
-        marginLeft: 30,
+        marginLeft: 45,
         chartTitle: "",
         xAxisTitle: "",
-        yAxisTitle: "Number of publications",
+        yAxisTitle: "Number of Publications",
         barBottomColor: "#447fb0",
         barTopColor: "#315a7c",
         barBorderColor: "#23415a",
@@ -387,10 +473,10 @@ function initLineChart(){
 			marginTop: 5,
 	        marginRight: 5,
 	        marginBottom: 50,
-	        marginLeft: 30,
+	        marginLeft: 45,
 	        chartTitle: "",
 	        xAxisTitle: "",
-	        yAxisTitle: "Number of publications",
+	        yAxisTitle: "Number of Publications",
 	        lineColor: "#A52A2A",
 	        valuePrecision: 2,
 	        nanMessage: "Data not available"
@@ -451,9 +537,15 @@ function createList(data){
 	thElem1.style.width = "70%";
 	var thElem2 = document.createElement("th");
 	thElem2.style.width = "30%";
-	var text = document.createTextNode("Area of Interest");
+	var tableTitleStr = "";
+	if (selectedType === null || selectedType === "peo"){
+		tableTitleStr = "Person Name";
+	} else if (selectedType === "yea"){
+		tableTitleStr = "Year";
+	}
+	var text = document.createTextNode(tableTitleStr);
 	thElem1.appendChild(text);
-	text = document.createTextNode("Value");
+	text = document.createTextNode("Number of Publications");
 	thElem2.appendChild(text);
 	
 	trElem.appendChild(thElem1);
@@ -484,7 +576,35 @@ function createList(data){
 	place.append(divElem);
 }
 
+function showNotAvailbleMsg(){
+	var place = $("#placeholder");
+	place.empty();
+	$(".bar-tooltip").hide();
+	$(".line-tooltip").hide();
+	$(".pie-tooltip").hide();
+	
+	var divElem = document.createElement("div");
+	divElem.style.paddingLeft = "16px";
+	divElem.style.paddingRight = "16px";
+	divElem.style.textAlign = "center";
+	
+	var headingElem = document.createElement("div");
+	headingElem.style.marginTop = "16px";
+	$(headingElem).animate({fontSize:'20px'}, "slow");
+	headingElem.innerHTML = '<p><i class="fa fa-exclamation-circle fa-lg"></i>&nbsp; Data Not Available</p>';
+	
+	var divElemDetails = document.createElement("div");
+	divElemDetails.innerHTML = '<i>Currently no data is available to display for this level.</i>';
+	
+	divElem.appendChild(headingElem);
+	divElem.appendChild(divElemDetails);
+	place.append(divElem);
+}
+
 function getSlicedChartData(fromValue, toValue){
+	if (isNaN(toValue)) {
+		toValue = fromValue;
+	}
 	var truncData = [];
 	if(selectedType == "peo"){
 		if(chartData.length < toValue){
@@ -502,5 +622,16 @@ function getSlicedChartData(fromValue, toValue){
 		}
 	}
 	return truncData;
+}
+
+function getStrDate(plmn) {
+    var today = new Date();
+    var d = new Date(today);
+    if ('undefined' === typeof plmn) {
+        plmn = 0;
+    }
+    d.setDate(d.getDate() + parseInt(plmn));
+    var strDate = d.getFullYear() + "-" + ("0" + (d.getMonth() + 1)).slice(-2) + "-" + ("0" + d.getDate()).slice(-2);
+    return strDate;
 }
 

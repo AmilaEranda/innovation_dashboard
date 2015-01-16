@@ -181,8 +181,9 @@ function setLocationTimeout(i, orgName, orgImage){
 					orgImage = "org.png";
 				}
 				var image = {
-					url: '../../images/organizations/' + orgMark,
+					url: '../../images/organizations/' + orgImage,
 					scaledSize: new google.maps.Size(24, 24),
+					size: new google.maps.Size(24, 24),
 					origin: new google.maps.Point(0, 0),
 					anchor: new google.maps.Point(12, 12)
 				};
@@ -204,6 +205,7 @@ function setLocationTimeout(i, orgName, orgImage){
 					icon: image,
 					title: orgName
 				});
+				console.log(orgName+": "+results[0].geometry.location);
 				
 				google.maps.event.addListener(marker, 'click', function() {
 					infowindow.open(map, marker);
@@ -212,9 +214,10 @@ function setLocationTimeout(i, orgName, orgImage){
 			} else {
 				// not found or error
 				//console.log(status);
+				console.log("---------" + orgName + ": ");
 			}
 		});
-	}, i * 500);
+	}, i * 600);
 }
 
 function clearMarkers(){

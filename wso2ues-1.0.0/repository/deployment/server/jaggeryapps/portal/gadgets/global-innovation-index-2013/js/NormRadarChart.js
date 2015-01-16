@@ -457,7 +457,7 @@ function NormRadarChart(area, data, options) {
                 });
 		
 		// source
-		var radarSourceGroup = svg.append("g")
+		/*var radarSourceGroup = svg.append("g")
                 .attr("id", "radarSourceGroup")
                 .attr("transform", "translate(" + 0 + ", " + (cnfg.ExtraWidthY + cnfg.h - 2) + ")");
 		
@@ -478,7 +478,7 @@ function NormRadarChart(area, data, options) {
                 .style("font-size", "10px")
                 .attr("fill", "#8C8C8C")
                 .text("www.globalinnovationindex.org");
-
+		*/
     };
 }
 

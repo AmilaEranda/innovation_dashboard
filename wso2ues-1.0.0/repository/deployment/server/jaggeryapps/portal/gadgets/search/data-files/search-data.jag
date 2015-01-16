@@ -1,0 +1,55 @@
+<%
+include_once("../../../db/db.jag");
+
+var searchType = request.getParameter("type");
+var searchTerm = request.getParameter("term");
+var aoiId = request.getParameter("aoiId");
+var saoiId = request.getParameter("saoiId");
+var ssaoiId = request.getParameter("ssaoiId");
+
+function getDBData() {
+	var dbdt = [];
+	var strQuery = "";
+	if ("undefined" == typeof searchType || searchType === null || searchType === "" || searchType === "res"){ // search researchers
+		if (aoiId === null || aoiId === "" || aoiId === "0" || "undefined" === typeof aoiId) {
+			strQuery = "SELECT per.person_id AS per_id, tit.title AS per_title, per.initials AS per_inits, per.first_name AS per_fname, per.last_name AS per_lname, per.image_name AS per_image, org.name AS per_org_name, COUNT(DISTINCT ppu.publication_id) AS per_pub_count, per.gender AS per_gender FROM person per LEFT JOIN title tit ON per.title_id = tit.title_id LEFT JOIN person_organization por ON per.person_id = por.person_id LEFT JOIN organization org ON por.organization_id = org.organization_id LEFT JOIN person_publication ppu ON per.person_id = ppu.person_id WHERE (per.first_name LIKE '%" + searchTerm + "%' OR per.initials LIKE '%" + searchTerm + "%' OR per.last_name LIKE '%" + searchTerm + "%') AND per.record_status = 1 AND por.his_default = 1 GROUP BY per.person_id ORDER BY COUNT(DISTINCT ppu.publication_id) DESC, per.last_name ASC LIMIT 100";
+		} else if (aoiId !== "0" && saoiId === "0" && ssaoiId === "0") {
+			strQuery = "SELECT per.person_id AS per_id, tit.title AS per_title, per.initials AS per_inits, per.first_name AS per_fname, per.last_name AS per_lname, per.image_name AS per_image, org.name AS per_org_name, COUNT(DISTINCT ppu.publication_id) AS per_pub_count, per.gender AS per_gender FROM person per LEFT JOIN title tit ON per.title_id = tit.title_id LEFT JOIN person_organization por ON per.person_id = por.person_id LEFT JOIN organization org ON por.organization_id = org.organization_id LEFT JOIN person_publication ppu ON per.person_id = ppu.person_id LEFT JOIN person_area_of_interest paoi ON paoi.person_person_id = per.person_id WHERE (per.first_name LIKE '%" + searchTerm + "%' OR per.initials LIKE '%" + searchTerm + "%' OR per.last_name LIKE '%" + searchTerm + "%') AND per.record_status = 1 AND por.his_default = 1 AND paoi.area_of_interest_id = " + parseInt(aoiId) + " GROUP BY per.person_id ORDER BY COUNT(DISTINCT ppu.publication_id) DESC, per.last_name ASC LIMIT 100";
+		} else if(saoiId !== "0" && ssaoiId === "0") {
+			strQuery = "SELECT per.person_id AS per_id, tit.title AS per_title, per.initials AS per_inits, per.first_name AS per_fname, per.last_name AS per_lname, per.image_name AS per_image, org.name AS per_org_name, COUNT(DISTINCT ppu.publication_id) AS per_pub_count, per.gender AS per_gender FROM person per LEFT JOIN title tit ON per.title_id = tit.title_id LEFT JOIN person_organization por ON per.person_id = por.person_id LEFT JOIN organization org ON por.organization_id = org.organization_id LEFT JOIN person_publication ppu ON per.person_id = ppu.person_id LEFT JOIN person_area_of_interest paoi ON paoi.person_person_id = per.person_id WHERE (per.first_name LIKE '%" + searchTerm + "%' OR per.initials LIKE '%" + searchTerm + "%' OR per.last_name LIKE '%" + searchTerm + "%') AND per.record_status = 1 AND por.his_default = 1 AND paoi.sub_area_of_interest_id = " + parseInt(saoiId) + " GROUP BY per.person_id ORDER BY COUNT(DISTINCT ppu.publication_id) DESC, per.last_name ASC LIMIT 100";
+		} else if(ssaoiId !== "0") {
+			strQuery = "SELECT per.person_id AS per_id, tit.title AS per_title, per.initials AS per_inits, per.first_name AS per_fname, per.last_name AS per_lname, per.image_name AS per_image, org.name AS per_org_name, COUNT(DISTINCT ppu.publication_id) AS per_pub_count, per.gender AS per_gender FROM person per LEFT JOIN title tit ON per.title_id = tit.title_id LEFT JOIN person_organization por ON per.person_id = por.person_id LEFT JOIN organization org ON por.organization_id = org.organization_id LEFT JOIN person_publication ppu ON per.person_id = ppu.person_id LEFT JOIN person_area_of_interest paoi ON paoi.person_person_id = per.person_id WHERE (per.first_name LIKE '%" + searchTerm + "%' OR per.initials LIKE '%" + searchTerm + "%' OR per.last_name LIKE '%" + searchTerm + "%') AND per.record_status = 1 AND por.his_default = 1 AND paoi.sub_sub_area_of_interest_id = " + parseInt(ssaoiId) + " GROUP BY per.person_id ORDER BY COUNT(DISTINCT ppu.publication_id) DESC, per.last_name ASC LIMIT 100";
+		}
+		var result = db.query(strQuery);
+		var personName = ""
+		for (var i = 0; i < result.length; i++) {
+			personName = result[i].per_title + " ";
+			if (result[i].per_fname === null || result[i].per_fname.trim().replace(/\t+/g, " ") === "") {
+				personName += result[i].per_inits.trim().replace(/\t+/g, " ");
+			} else {
+				personName += result[i].per_fname.trim().replace(/\t+/g, " ");
+			}
+			personName += " " + result[i].per_lname.trim().replace(/\t+/g, " ");
+			dbdt.push({"name": personName, "pbl_count": result[i].per_pub_count, "id": result[i].per_id, "image": result[i].per_image, "organization": result[i].per_org_name, "gender": result[i].per_gender});
+		}
+	} else if (searchType === "pub") { // search publications
+		if (aoiId === null || aoiId === "" || aoiId === "0" || "undefined" == typeof aoiId) {
+			strQuery = "SELECT pub.publication_id AS pub_id, pub.title AS pub_title, pub.publication_type AS pub_type, pub.year AS pub_year, GROUP_CONCAT(DISTINCT CONCAT(per.initials, ' ', per.last_name) SEPARATOR ', ') pub_publishers FROM publication pub LEFT JOIN person_publication ppu ON pub.publication_id = ppu.publication_id LEFT JOIN person per ON per.person_id = ppu.person_id WHERE pub.title LIKE '%" + searchTerm + "%' GROUP BY pub.publication_id ORDER BY pub.year DESC, pub.title ASC LIMIT 100";
+		} else if (aoiId !== "0" && saoiId === "0" && ssaoiId === "0") {
+			strQuery = "SELECT pub.publication_id AS pub_id, pub.title AS pub_title, pub.publication_type AS pub_type, pub.year AS pub_year, GROUP_CONCAT(DISTINCT CONCAT(per.initials, ' ', per.last_name) SEPARATOR ', ') pub_publishers FROM publication pub LEFT JOIN person_publication ppu ON pub.publication_id = ppu.publication_id LEFT JOIN person per ON per.person_id = ppu.person_id LEFT JOIN publication_area_of_interest paoi ON paoi.publication_publication_id = pub.publication_id WHERE pub.title LIKE '%" + searchTerm + "%' AND paoi.area_of_interest_id = " + parseInt(aoiId) + " GROUP BY pub.publication_id ORDER BY pub.year DESC, pub.title ASC LIMIT 100";
+		} else if(saoiId !== "0" && ssaoiId === "0") {
+			strQuery = "SELECT pub.publication_id AS pub_id, pub.title AS pub_title, pub.publication_type AS pub_type, pub.year AS pub_year, GROUP_CONCAT(DISTINCT CONCAT(per.initials, ' ', per.last_name) SEPARATOR ', ') pub_publishers FROM publication pub LEFT JOIN person_publication ppu ON pub.publication_id = ppu.publication_id LEFT JOIN person per ON per.person_id = ppu.person_id LEFT JOIN publication_area_of_interest paoi ON paoi.publication_publication_id = pub.publication_id WHERE pub.title LIKE '%" + searchTerm + "%' AND paoi.sub_area_of_interest_id = " + parseInt(saoiId) + " GROUP BY pub.publication_id ORDER BY pub.year DESC, pub.title ASC LIMIT 100";
+		} else if(ssaoiId !== "0") {
+			strQuery = "SELECT pub.publication_id AS pub_id, pub.title AS pub_title, pub.publication_type AS pub_type, pub.year AS pub_year, GROUP_CONCAT(DISTINCT CONCAT(per.initials, ' ', per.last_name) SEPARATOR ', ') pub_publishers FROM publication pub LEFT JOIN person_publication ppu ON pub.publication_id = ppu.publication_id LEFT JOIN person per ON per.person_id = ppu.person_id LEFT JOIN publication_area_of_interest paoi ON paoi.publication_publication_id = pub.publication_id WHERE pub.title LIKE '%" + searchTerm + "%' AND paoi.sub_sub_area_of_interest_id = " + parseInt(ssaoiId) + " GROUP BY pub.publication_id ORDER BY pub.year DESC, pub.title ASC LIMIT 100";
+		}
+		var result = db.query(strQuery);
+		for (var i = 0; i < result.length; i++) {
+			var strYear = ("" + result[i].pub_year + "").substring(0, 4);
+			dbdt.push({"name": result[i].pub_title, "id": result[i].pub_id, "type": result[i].pub_type, "year": strYear, "publishers": result[i].pub_publishers});
+		}
+	}
+	return {search_data: dbdt};
+}
+print(getDBData());
+
+%>

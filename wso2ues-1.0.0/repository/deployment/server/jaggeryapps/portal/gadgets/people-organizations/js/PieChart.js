@@ -167,6 +167,10 @@ function PieChart(area, data, options) {
 						fetchCustomData("fac", d.data.id, d.data.name);
 					} else if (d.data.type == "fac"){
 						fetchCustomData("dep", d.data.id, d.data.name);
+					} else if (d.data.type == "dep"){
+						fetchCustomData("peo", d.data.id, d.data.name);
+					} else if (d.data.type == "div"){
+						fetchCustomData("divpeo", d.data.id, d.data.name);
 					}
 					/*
                     var isExpanded = d3.select(this).attr("class") === "expanded";

@@ -261,5 +261,23 @@ function createList(data){
 	tableElem.appendChild(tbodyElem);
 	
 	divElem.appendChild(tableElem);
+	
+	//src
+	var pElem = document.createElement("p");
+	pElem.style.color = "#8C8C8C";
+	pElem.style.fontSize = "10px";
+	text = document.createTextNode("Source: Cornell University, INSEAD, and WIPO (2013): The Global Innovation Index 2013, ");
+	pElem.appendChild(text);
+	var aElem = document.createElement("a");
+	aElem.setAttribute("href", "http://www.globalinnovationindex.org/");
+	aElem.setAttribute("target", "_blank");
+	aElem.style.color = "#8C8C8C";
+	aElem.style.fontSize = "10px";
+	text = document.createTextNode("www.globalinnovationindex.org");
+	aElem.appendChild(text);
+	pElem.appendChild(aElem);
+
+	divElem.appendChild(pElem);
+	
 	place.append(divElem);
 }

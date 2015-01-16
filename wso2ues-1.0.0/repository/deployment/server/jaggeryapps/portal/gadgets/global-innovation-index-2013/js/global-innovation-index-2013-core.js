@@ -88,6 +88,7 @@ function drawChartsAndList(data){
 	var place = $("#placeholder");
 	place.empty();
 
+	$("#srcContent").show();
 	if ('undefined' !== typeof data) {
 		if(chartType === "radar"){
 			drawRadarChart(data);
@@ -203,6 +204,7 @@ function createList(data){
 		data = chartData;
 	}
 	var place = $("#placeholder");
+	$("#srcContent").hide();
 	
 	var divElem = document.createElement("div");
 	divElem.style.paddingLeft = "16px";
@@ -259,5 +261,25 @@ function createList(data){
 	tableElem.appendChild(tbodyElem);
 	
 	divElem.appendChild(tableElem);
+	
+	//src
+	var divSrcElem = document.createElement("div");
+	divSrcElem.style.textAlign = "right";
+	var spanElem = document.createElement("span");
+	spanElem.style.fontSize = "9px";
+	text = document.createTextNode("Source: Cornell University, INSEAD, and WIPO (2013): The Global Innovation Index 2013, ");
+	spanElem.appendChild(text);
+	
+	var aElem = document.createElement("a");
+	aElem.setAttribute("href", "http://www.globalinnovationindex.org/");
+	aElem.setAttribute("target", "_blank");
+	aElem.style.fontSize = "9px";
+	text = document.createTextNode("www.globalinnovationindex.org");
+	aElem.appendChild(text);
+	
+	divSrcElem.appendChild(spanElem);
+	divSrcElem.appendChild(aElem);
+	divElem.appendChild(divSrcElem);
+	
 	place.append(divElem);
 }

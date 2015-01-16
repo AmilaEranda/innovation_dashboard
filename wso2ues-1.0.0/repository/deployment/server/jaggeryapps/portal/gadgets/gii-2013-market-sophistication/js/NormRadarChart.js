@@ -454,6 +454,29 @@ function NormRadarChart(area, data, options) {
                 .attr("x", function(d, i) {
                     return (i * segmentWidth) + (segmentWidth / 3) + 34;
                 });
+				
+		// source
+		var radarSourceGroup = svg.append("g")
+                .attr("id", "radarSourceGroup")
+                .attr("transform", "translate(" + 0 + ", " + (cnfg.ExtraWidthY + cnfg.h - 2) + ")");
+		
+		radarSourceGroup.append("text")
+				.attr("y", 0)
+                .attr("x", 0)
+                .style("font-size", "10px")
+                .attr("fill", "#8C8C8C")
+				.text("Source: Cornell University, INSEAD, and WIPO (2013): The Global Innovation Index 2013, ");
+		
+		radarSourceGroup.append("a")
+				.attr("xlink:href", "http://www.globalinnovationindex.org/")
+				.attr("target", "_blank")
+				.append("text")
+                .attr("y", 0)
+                .attr("x", 428)
+				.style("shape-rendering", "crispEdges")
+                .style("font-size", "10px")
+                .attr("fill", "#8C8C8C")
+                .text("www.globalinnovationindex.org");
 
     };
 }

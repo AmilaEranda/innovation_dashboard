@@ -208,10 +208,6 @@ function BarChart(area, data, options) {
                             .style("left", posX + "px")
                             .style("top", posY + "px");
 
-                    if (i === dataArray.length - 1) { // last data point
-                        //console.log("i: " + i);
-                    }
-
                 })
                 .on("mousemove", function(d, i) {
                 })
@@ -225,9 +221,10 @@ function BarChart(area, data, options) {
                             .style("display", "none");
                 })
 				.on("click", function(d, i){
-					if(d.type === "peo"){
-						//fetchCustomData(d.id, d.name);
+					if (d.type === "peo"){
 						fetchCustomData("yea", d.id, d.name);
+					} else if (d.type === "yea"){
+						window.open("../../profile/person.jag?pid=" + d.id + "&year=" + d.name);
 					}
 				});
 
@@ -243,9 +240,10 @@ function BarChart(area, data, options) {
                 .call(yAxis)
                 .append("text")
                 .attr("transform", "rotate(-90)")
-                .attr("y", 6)
-                .attr("dy", ".71em")
+                .attr("y", -35)
+                .attr("dy", "0em")
                 .style("text-anchor", "end")
+                .style("font-size", "12px")
                 .text(cnfg.yAxisTitle);
 
         // title
@@ -256,36 +254,39 @@ function BarChart(area, data, options) {
                 .style("font-size", "14px")
                 .style("font-weight", "bold")
                 .text(cnfg.chartTitle);
+		
+		// function to wrap x axis tick lables
+		function wrapBarText(text, width){
+			text.each(function() {
+				var text = d3.select(this),
+						words = text.text().split(/\s+/).reverse(),
+						word,
+						line = [],
+						lineNumber = 0,
+						lineHeight = 1.1, // ems
+						y = text.attr("y"),
+						dy = parseFloat(text.attr("dy")),
+						tspan = text.text(null).append("tspan").attr("x", 0).attr("y", y).attr("dy", dy + "em");
+
+				while (word = words.pop()) {
+					if(dataArray.length > 20){
+						if(word.length !== 4){
+							word = word.substr(0, 2);
+						}
+					}
+					line.push(word);
+					tspan.text(line.join(" "));
+					if (tspan.node().getComputedTextLength() > width) {
+						line.pop();
+						tspan.text(line.join(" "));
+						line = [word];
+						tspan = text.append("tspan").attr("x", 0).attr("y", y).attr("dy", ++lineNumber * lineHeight + dy + "em").text(word);
+					}
+				}
+			});
+		};
     };
 
-    // function to wrap x axis tick lables
-    function wrapBarText(text, width) {
-        text.each(function() {
-			var convText = d3.select(this).text().replace(/([A-Z])(?![A-Z])/g, " $1"); // add spaces for camelCase sentences
-			convText = convText.replace(/\s+/g, " ").trim(); // convert multiple spaces into one space
-			
-            var text = d3.select(this),
-                    words = convText.split(/\s+/).reverse(),
-                    word,
-                    line = [],
-                    lineNumber = 0,
-                    lineHeight = 1.1, // ems
-                    y = text.attr("y"),
-                    dy = parseFloat(text.attr("dy")),
-                    tspan = text.text(null).append("tspan").attr("x", 0).attr("y", y).attr("dy", dy + "em");
-		
-            while (word = words.pop()) {
-                line.push(word);
-                tspan.text(line.join(" "));
-                if (tspan.node().getComputedTextLength() > width) {
-                    line.pop();
-                    tspan.text(line.join(" "));
-                    line = [word];
-                    tspan = text.append("tspan").attr("x", 0).attr("y", y).attr("dy", ++lineNumber * lineHeight + dy + "em").text(word);
-                }
-            }
-        });
-    }
 }
 
 var globalBarNumber = 0;

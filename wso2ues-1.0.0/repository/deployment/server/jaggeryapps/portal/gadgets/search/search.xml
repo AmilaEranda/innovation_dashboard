@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+    <Module>
+    <ModulePrefs title="Search"
+                 author="LSF"
+                 height="230"
+                 scrolling="true"
+                 tags="people"
+                 description="A search facility to find the researchers in Sri Lanka.">
+		<Require feature="setprefs" />
+     </ModulePrefs>
+    <Content type="html">
+    <![CDATA[
+ <html>
+ <head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<title>Search</title>
+	<link rel="stylesheet" href="css/font-awesome/css/font-awesome.min.css" type="text/css">
+	<link rel="stylesheet" href="css/bootstrap/css/bootstrap.min.css" type="text/css">
+	<link rel="stylesheet" href="css/styles.css" type="text/css">
+	
+	<script language="javascript" type="text/javascript" src="js/jquery-1.11.1.min.js"></script>
+	<script language="javascript" type="text/javascript" src="js/bootstrap.min.js"></script>
+	
+	<script language="javascript" type="text/javascript" src="js/search-core.js"></script>
+	<script language="javascript" type="text/javascript">
+		$(function () {
+			//$('[data-toggle="tooltip"]').tooltip();
+		});
+	</script>
+</head>
+
+<body>
+	<div>
+		<div id="optionPanel">
+			<div id="optionsLeft"></div>
+			<div id="optionsRight" class="seriesContainer"></div>
+		</div>
+		<div style="padding: 0px 16px;">
+			<form id="search-form" action="" method="POST">
+				<div class="">
+					<table style="width: 100%;">
+						<tr>
+							<td style="width: 50%;">
+								<div class="radio">
+									<label>
+										<input type="radio" name="search-type" value="res" checked="checked">Researchers
+									</label>
+								</div>
+							</td>
+							<td style="width: 50%;">
+								<div class="radio">
+									<label>
+										<input type="radio" name="search-type" value="pub">Publications
+									</label>
+								</div>
+							</td>
+						</tr>
+					</table>
+				</div>
+				<div class="form-group">
+					<table style="width: 100%;">
+						<tr>
+							<td style="width: 33%;">
+								<select id="aoi-selection" class="form-control input-sm" style="">
+									<option value="0">-- Area of Interest --</option>
+								</select>
+							</td>
+							<td style="width: 33%;">
+								<select id="saoi-selection" class="form-control input-sm" style="">
+									<option value="0">-- Sub Area of Interest --</option>
+								</select>
+							</td>
+							<td style="width: 34%;">
+								<select id="ssaoi-selection" class="form-control input-sm" style="">
+									<option value="0">-- Field of Interest --</option>
+								</select>
+							</td>
+						</tr>
+					</table>
+				</div>
+				<div class="form-group">
+					<table style="width: 100%;">
+						<tr>
+							<td style="width: 75%;">
+								<input type="text" class="form-control input-sm" id="search-term" placeholder="Enter first name or last name">
+							</td>
+							<td style="width: 25%; text-align: right;">
+								<button type="submit" id="search-btn" class="btn btn-primary btn-sm" style="width: 90%; margin-left: 2px;"><span class="glyphicon glyphicon-search" aria-hidden="true"></span>&nbsp; Search</button>
+							</td>
+						</tr>
+					</table>
+				</div>
+			</form>
+			
+		</div>
+		<div id="loading-status" style="padding: 8px 16px; text-align: center; display: none;">
+			<label><i class="fa fa-circle-o-notch"></i>&nbsp; Loading...</label>
+		</div>
+		<div id="result-status" style="padding: 8px 16px;">
+			<span><i class="fa fa-info-circle fa-lg"></i>&nbsp; Enter name of researcher and press <b>Search</b> button.</span>
+		</div>
+		<div id="placeholder" style=""></div>
+	</div>
+</body>
+</html>
+
+    ]]>
+</Content>
+</Module>
+
+
