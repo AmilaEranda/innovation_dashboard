@@ -65,7 +65,7 @@ form select, form textarea{ box-shadow: none !important; }
 table { background: #fff; }
 
 .padd{
-	padding: 50px 0;
+	padding: 20px 0;
 }
 
 .social a i{
@@ -883,7 +883,7 @@ table { background: #fff; }
  * Showcase Section
  */
  
-.showcase { padding-top: 40px; }
+.showcase { padding-top: 15px; }
  
 .showcase .showcase-item{
 	position: relative;
@@ -893,10 +893,11 @@ table { background: #fff; }
 }
 
 .showcase .showcase-item img {
-	position: absolute;
-	top: -30px;
+	position: relative;
+	top: 5px;
 	width: 100%;
 	max-width: 255px;
+	padding-bottom: 10px;
 }
 
 .showcase .showcase-item h3, .showcase .showcase-item p { margin-left: 270px; padding-right: 20px;}
@@ -906,7 +907,7 @@ table { background: #fff; }
 }
 
 .showcase .showcase-item p {
-	padding-bottom: 25px;
+	padding-bottom: 10px;
 	font-size: 13px;
 	color: #333;
 }

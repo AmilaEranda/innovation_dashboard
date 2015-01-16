@@ -1,4 +1,13 @@
 <!DOCTYPE html>
+<%include('db.jag');%>
+<% var researchers=db.query("SELECT COUNT(*) AS count FROM person WHERE record_status=1 AND type='RES'")[0].count;%>
+<% var inventors=db.query("SELECT COUNT(*) AS count FROM person WHERE record_status=1 AND type='INV'")[0].count;%>
+<% var org_count=db.query("SELECT COUNT(*) AS count FROM organization WHERE record_status=1")[0].count;%>
+<% var papers_count=db.query("SELECT COUNT(*) AS count FROM publication")[0].count;%>
+<% var patent_count=db.query("SELECT COUNT(*) AS count FROM patent")[0].count;%>
+<% var col_count=db.query("SELECT COUNT(*) AS count FROM collaboration")[0].count;%>
+<% var rank=db.query("SELECT rank AS rank FROM global_index_detail WHERE country_id=129 AND global_index_id=2")[0].rank;%>
+<% var score=db.query("SELECT score AS score FROM global_index_detail WHERE country_id=129 AND global_index_id=2")[0].score;%>
 <html>
 	
 <!-- Mirrored from responsivewebinc.com/premium/cakefactory12/ by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 12 Sep 2014 12:14:16 GMT -->
@@ -45,10 +54,10 @@
 			    border-radius: 0px !important;
 			    box-shadow: none !important;
 			    margin: 3px auto 12px !important;
-			    max-width: 140px !important;
+			    max-width: 160px !important;
 			    max-height: 80px !important;
 			    height: 50px;
-			    width:140px;
+			    width:160px;
 			    padding: 0px;
 			}
 			#dashboard_logo {
@@ -60,6 +69,36 @@
 			    max-height: 80px !important;
 			    height: 50px;
 			    width: 50px;
+			}
+			.stat{
+				padding: 0px;
+				margin-top: 10px;
+				border-radius:5px;
+				-moz-box-shadow:    2px 2px 2px 2px #777;
+				-webkit-box-shadow: 2px 2px 2px 2px #777;
+				box-shadow:         2px 2px 2px 2px #777;
+			}
+			.stat_header{
+				font-size:16px;
+				line-height:20px;
+				font-weight:800;
+				font-family:"Open Sans";
+				color:rgb(255, 255, 255);
+				text-decoration:none;
+				padding-top: 15px;
+				padding-left: 20px;
+				position: absolute;
+			}
+			.stat_val{
+				font-size:22px;
+				line-height:20px;
+				font-weight:800;
+				font-family:"Open Sans";
+				color:rgb(255, 255, 255);
+				text-decoration:none;
+				padding-top: 45px;
+				padding-left: 65px;
+				position: absolute;
 			}
 		</style>
 	</head>
@@ -75,7 +114,7 @@
 				<div class="container">
 					<!-- Header top area content -->
 					<div class="row">
-						<div class="col-md-6 col-sm-6">
+						<div class="col-md-8 col-sm-8">
 							<!-- Logo area -->
 							<div class="logo">
 								<img class="img-responsive" src="img/gov_logo.jpg" alt="" />
@@ -85,7 +124,7 @@
 								<p>For Science, Technology and Innovation</p>
 							</div>
 						</div>
-						<div class="col-md-6 col-sm-6">
+						<div class="col-md-4 col-sm-4">
 							<!-- Navigation -->
 							<nav class="navbar navbar-default navbar-right" role="navigation">
 								<div class="container-fluid">
@@ -105,7 +144,7 @@
 											<li>
 												<a href="//www.costi.gov.lk" target="_blank" style="padding: 0px;"><img src="img/costi_logo.jpg" id="costi_logo" alt="" /></a>
 											</li>
-											<li>
+											<!-- <li>
 												<a href="#" class="dropdown-toggle" style="padding: 5px 0px 5px 0px;margin-left:20px;" data-toggle="dropdown" >
 													<img src="img/srilanka4.png" id="dashboard_logo" alt="" />
 													<span style="margin-top:3px;">&nbsp;&nbsp;Dashboard<b class="caret"></b></span>
@@ -114,53 +153,38 @@
 													<li>
 														<div class="row">
 															<div class="col-md-3 col-sm-6">
-																<!-- Menu Item -->
 																<div class="menu-item">
-																	<!-- Heading -->
 																	<h3>Academic</h3>
-																	<!-- Image -->
 																	<img src="img/aca.jpg" class="img-responsive" alt="" />
-																	<!-- Button -->
 																	<a href="/academicDashboard" class="btn btn-danger btn-sm" style="font-weight:bold !important;">View</a>
 																</div>
 															</div>
 															<div class="col-md-3">
-																<!-- Menu Item -->
 																<div class="menu-item">
-																	<!-- Heading -->
 																	<h3>Administration</h3>
-																	<!-- Image -->
 																	<img src="img/adm.jpg" class="img-responsive" alt="" />
-																	<!-- Button -->
+																	Button
 																	<a href="/administrationDashboard" class="btn btn-danger btn-sm" style="font-weight:bold !important;">View</a>
 																</div>
 															</div>
 															<div class="col-md-3 col-sm-6">
-																<!-- Menu Item -->
 																<div class="menu-item">
-																	<!-- Heading -->
 																	<h3>Business</h3>
-																	<!-- Image -->
 																	<img src="img/bus.jpg" class="img-responsive" alt="" />
-																	<!-- Button -->
 																	<a href="/businessDashboard" class="btn btn-danger btn-sm" style="font-weight:bold !important;">View</a>
 																</div>
 															</div>
 															<div class="col-md-3">
-																<!-- Menu Item -->
 																<div class="menu-item">
-																	<!-- Heading -->
 																	<h3>General</h3>
-																	<!-- Image -->
 																	<img src="img/gen.png" class="img-responsive" alt="" />
-																	<!-- Button -->
 																	<a href="/dashboard" class="btn btn-danger btn-sm" style="font-weight:bold !important;">View</a>
 																</div>
 															</div>
 														</div>
 													</li>
 												</ul>
-											</li>
+											</li> -->
 										</ul>
 									</div><!-- /.navbar-collapse -->
 								</div><!-- /.container-fluid -->
@@ -246,11 +270,11 @@
 						</li> -->
 						<li data-transition="fade" data-slotamount="7" data-masterspeed="1000" >
 							<!-- MAIN IMAGE -->
-							<img src="img/ecosystem.png"  alt=""  data-bgfit="cover" data-bgposition="center bottom" data-bgrepeat="no-repeat">
+							<img src="img/ecosystem5.png"  alt=""  data-bgfit="cover" data-bgposition="center bottom" data-bgrepeat="no-repeat">
 							
 							<div class="tp-caption lfr largepinkbg br-blue white"
 								data-x="650" 
-								data-y="110"
+								data-y="210"
 								data-speed="1000"
 								data-start="100"
 								data-easing="Power4.easeOut"
@@ -260,7 +284,7 @@
 							</div>
 							<div class="tp-caption lfl medium_bg_darkblue br-green"
 								data-x="650"
-								data-y="180"
+								data-y="280"
 								data-speed="1500"
 								data-start="200"
 								data-easing="Power4.easeOut"
@@ -270,8 +294,20 @@
 								style="padding-left:81px;padding-right:82px;">ECOSYSTEM
 							</div>
 							<div class="tp-caption customin customout"
-								data-x="180" data-hoffset="-5"
-								data-y="160"
+								data-x="-115" data-hoffset="0"
+								data-y="0"
+								data-customin="x:0;y:0;z:0;rotationX:0;rotationY:0;rotationZ:0;scaleX:0;scaleY:0;skewX:0;skewY:0;opacity:0;transformPerspective:600;transformOrigin:50% 50%;"
+								data-customout="x:0;y:0;z:0;rotationX:0;rotationY:0;rotationZ:0;scaleX:0.75;scaleY:0.75;skewX:0;skewY:0;opacity:0;transformPerspective:600;transformOrigin:50% 50%;"
+								data-speed="700"
+								data-start="300"
+								data-easing="Power3.easeIn"
+								data-endspeed="300"
+								style="z-index: 8"><img src="img/ecosystem4.png" alt="" data-bgfit="cover" data-bgposition="center bottom" data-bgrepeat="no-repeat" />
+							</div>
+
+							<div class="tp-caption customin customout"
+								data-x="115" data-hoffset="-5"
+								data-y="100"
 								data-customin="x:0;y:0;z:0;rotationX:0;rotationY:0;rotationZ:0;scaleX:0;scaleY:0;skewX:0;skewY:0;opacity:0;transformPerspective:600;transformOrigin:50% 50%;"
 								data-customout="x:0;y:0;z:0;rotationX:0;rotationY:0;rotationZ:0;scaleX:0.75;scaleY:0.75;skewX:0;skewY:0;opacity:0;transformPerspective:600;transformOrigin:50% 50%;"
 								data-speed="1000"
@@ -286,62 +322,62 @@
 								data-customin="x:0;y:0;z:0;rotationX:0;rotationY:0;rotationZ:0;scaleX:0;scaleY:0;skewX:0;skewY:0;opacity:0;transformPerspective:600;transformOrigin:50% 50%;"
 								data-customout="x:0;y:0;z:0;rotationX:0;rotationY:0;rotationZ:0;scaleX:0.75;scaleY:0.75;skewX:0;skewY:0;opacity:0;transformPerspective:600;transformOrigin:50% 50%;"
 								data-speed="1000"
-								data-start="1300"
+								data-start="1200"
 								data-easing="Power3.easeInOut"
 								data-endspeed="600"
 								style="z-index: 8"><a href="/places"><img class="img-responsive" src="img/places2.png" alt=""  height="80" width="80"/></a>
 							</div>
 							<div class="tp-caption customin customout"
-								data-x="250" data-hoffset="-5"
-								data-y="20"
+								data-x="220" data-hoffset="-5"
+								data-y="40"
 								data-customin="x:0;y:0;z:0;rotationX:0;rotationY:0;rotationZ:0;scaleX:0;scaleY:0;skewX:0;skewY:0;opacity:0;transformPerspective:600;transformOrigin:50% 50%;"
 								data-customout="x:0;y:0;z:0;rotationX:0;rotationY:0;rotationZ:0;scaleX:0.75;scaleY:0.75;skewX:0;skewY:0;opacity:0;transformPerspective:600;transformOrigin:50% 50%;"
 								data-speed="1000"
-								data-start="2100"
+								data-start="1900"
 								data-easing="Power3.easeInOut"
 								data-endspeed="600"
 								style="z-index: 8"><a href="/position"><img class="img-responsive" src="img/position.png" alt=""  height="80" width="80"/></a>
 							</div>
 							<div class="tp-caption customin customout"
-								data-x="100" data-hoffset="-5"
-								data-y="230"
+								data-x="40" data-hoffset="-5"
+								data-y="240"
 								data-customin="x:0;y:0;z:0;rotationX:0;rotationY:0;rotationZ:0;scaleX:0;scaleY:0;skewX:0;skewY:0;opacity:0;transformPerspective:600;transformOrigin:50% 50%;"
 								data-customout="x:0;y:0;z:0;rotationX:0;rotationY:0;rotationZ:0;scaleX:0.75;scaleY:0.75;skewX:0;skewY:0;opacity:0;transformPerspective:600;transformOrigin:50% 50%;"
 								data-speed="1000"
-								data-start="2900"
+								data-start="2600"
 								data-easing="Power3.easeInOut"
 								data-endspeed="600"
 								style="z-index: 8"><a href="/partnerships"><img class="img-responsive" src="img/partnerships.png" alt=""  height="80" width="80"/></a>
 							</div>
 							<div class="tp-caption customin customout"
-								data-x="40" data-hoffset="-5"
+								data-x="-15" 
 								data-y="140"
 								data-customin="x:0;y:0;z:0;rotationX:0;rotationY:0;rotationZ:0;scaleX:0;scaleY:0;skewX:0;skewY:0;opacity:0;transformPerspective:600;transformOrigin:50% 50%;"
 								data-customout="x:0;y:0;z:0;rotationX:0;rotationY:0;rotationZ:0;scaleX:0.75;scaleY:0.75;skewX:0;skewY:0;opacity:0;transformPerspective:600;transformOrigin:50% 50%;"
 								data-speed="1000"
-								data-start="3700"
+								data-start="3300"
 								data-easing="Power3.easeInOut"
 								data-endspeed="600"
 								style="z-index: 8"><a href="/papers"><img class="img-responsive" src="img/papers.png" alt=""  height="80" width="80"/></a>
 							</div>
 							<div class="tp-caption customin customout"
-								data-x="300" data-hoffset="-5"
-								data-y="110"
+								data-x="260" data-hoffset="-5"
+								data-y="180"
 								data-customin="x:0;y:0;z:0;rotationX:0;rotationY:0;rotationZ:0;scaleX:0;scaleY:0;skewX:0;skewY:0;opacity:0;transformPerspective:600;transformOrigin:50% 50%;"
 								data-customout="x:0;y:0;z:0;rotationX:0;rotationY:0;rotationZ:0;scaleX:0.75;scaleY:0.75;skewX:0;skewY:0;opacity:0;transformPerspective:600;transformOrigin:50% 50%;"
 								data-speed="1000"
-								data-start="4500"
+								data-start="4000"
 								data-easing="Power3.easeInOut"
 								data-endspeed="600"
 								style="z-index: 8"><a href="/patents"><img class="img-responsive" src="img/patents.png" alt=""  height="80" width="80"/></a>
 							</div>
 							<div class="tp-caption customin customout"
-								data-x="420" data-hoffset="-5"
-								data-y="10"
+								data-x="400" data-hoffset="-5"
+								data-y="40"
 								data-customin="x:0;y:0;z:0;rotationX:0;rotationY:0;rotationZ:0;scaleX:0;scaleY:0;skewX:0;skewY:0;opacity:0;transformPerspective:600;transformOrigin:50% 50%;"
 								data-customout="x:0;y:0;z:0;rotationX:0;rotationY:0;rotationZ:0;scaleX:0.75;scaleY:0.75;skewX:0;skewY:0;opacity:0;transformPerspective:600;transformOrigin:50% 50%;"
 								data-speed="1000"
-								data-start="5300"
+								data-start="4700"
 								data-easing="Power3.easeInOut"
 								data-endspeed="600"
 								style="z-index: 8"><a href="/inventors"><img class="img-responsive" src="img/inventors.png" alt=""  height="80" width="80"/></a>
@@ -352,21 +388,43 @@
 								data-customin="x:0;y:0;z:0;rotationX:0;rotationY:0;rotationZ:0;scaleX:0;scaleY:0;skewX:0;skewY:0;opacity:0;transformPerspective:600;transformOrigin:50% 50%;"
 								data-customout="x:0;y:0;z:0;rotationX:0;rotationY:0;rotationZ:0;scaleX:0.75;scaleY:0.75;skewX:0;skewY:0;opacity:0;transformPerspective:600;transformOrigin:50% 50%;"
 								data-speed="1000"
-								data-start="6100"
+								data-start="5400"
 								data-easing="Power3.easeInOut"
 								data-endspeed="600"
 								style="z-index: 8"><a href="/financing"><img class="img-responsive" src="img/financing.png" alt=""  height="80" width="80"/></a>
 							</div>
 							<div class="tp-caption customin customout"
-								data-x="90" data-hoffset="-5"
-								data-y="30"
+								data-x="30" data-hoffset="-5"
+								data-y="50"
 								data-customin="x:0;y:0;z:0;rotationX:0;rotationY:0;rotationZ:0;scaleX:0;scaleY:0;skewX:0;skewY:0;opacity:0;transformPerspective:600;transformOrigin:50% 50%;"
 								data-customout="x:0;y:0;z:0;rotationX:0;rotationY:0;rotationZ:0;scaleX:0.75;scaleY:0.75;skewX:0;skewY:0;opacity:0;transformPerspective:600;transformOrigin:50% 50%;"
 								data-speed="1000"
-								data-start="6900"
+								data-start="6100"
 								data-easing="Power3.easeInOut"
 								data-endspeed="600"
 								style="z-index: 8"><a href="/legal"><img class="img-responsive" src="img/legal.png" alt=""  height="80" width="80"/></a>
+							</div>
+							<div class="tp-caption customin customout"
+								data-x="150" data-hoffset="-5"
+								data-y="190"
+								data-customin="x:0;y:0;z:0;rotationX:0;rotationY:0;rotationZ:0;scaleX:0;scaleY:0;skewX:0;skewY:0;opacity:0;transformPerspective:600;transformOrigin:50% 50%;"
+								data-customout="x:0;y:0;z:0;rotationX:0;rotationY:0;rotationZ:0;scaleX:0.75;scaleY:0.75;skewX:0;skewY:0;opacity:0;transformPerspective:600;transformOrigin:50% 50%;"
+								data-speed="1000"
+								data-start="6800"
+								data-easing="Power3.easeInOut"
+								data-endspeed="600"
+								style="z-index: 8"><a href="/legal"><img class="img-responsive" src="img/global_forum.png" alt=""  height="80" width="80"/></a>
+							</div>
+							<div class="tp-caption customin customout"
+								data-x="360" data-hoffset="-5"
+								data-y="130"
+								data-customin="x:0;y:0;z:0;rotationX:0;rotationY:0;rotationZ:0;scaleX:0;scaleY:0;skewX:0;skewY:0;opacity:0;transformPerspective:600;transformOrigin:50% 50%;"
+								data-customout="x:0;y:0;z:0;rotationX:0;rotationY:0;rotationZ:0;scaleX:0.75;scaleY:0.75;skewX:0;skewY:0;opacity:0;transformPerspective:600;transformOrigin:50% 50%;"
+								data-speed="1000"
+								data-start="7500"
+								data-easing="Power3.easeInOut"
+								data-endspeed="600"
+								style="z-index: 8"><a href="/legal"><img class="img-responsive" src="img/national_registry.png" alt=""  height="80" width="80"/></a>
 							</div>
 						</li>
 						<li data-transition="slidehorizontal" data-slotamount="1" data-masterspeed="600" >
@@ -565,7 +623,7 @@
 								data-elementdelay="0.2"
 								data-endelementdelay="0.08"
 								data-endspeed="300"
-								style="z-index: 10; max-width: 300px; max-height: auto; white-space: nowrap;font-weight:bold;">Sri Lanka’s competitive position<br/> in comparison with other <br/>South Asian countries and the <br/>rest of the world as per the <br/>Global Innovation Index
+								style="z-index: 10; max-width: 300px; max-height: auto; white-space: nowrap;font-weight:bold;">Sri Lanka's competitive position<br/> in comparison with other <br/>South Asian countries and the <br/>rest of the world as per the <br/>Global Innovation Index
 							</div>
 							<!-- LAYER NR. 4 -->
 							<div class="tp-caption sfb"
@@ -815,15 +873,31 @@
 				<div class="showcase">
 					<div class="container">
 						<div class="row">
-							<div class="col-md-12 col-sm-6">
+							<div class="col-md-4 col-sm-6">
+								<div class="list-group" style="font-style:'Open Sans'">
+									<a href="/dashboard" class="list-group-item" style="padding: 3px 5px !important;background-color:#8c9eff !important;">
+								    <h4 class="list-group-item-heading" style="margin-top: 2px !important;margin-bottom: 2px !important;"> <img class="img-thumbnail" src="img/gen.png" alt="" height="40" width="40" style="padding:2px !important;"> &nbsp;General <span style="color:#333;font-size:12px;"> Dashboard</span><div style="float:right;padding-top:10px;padding-right:5px;"><i class="fa fa-arrow-circle-o-right"></i></div></h4>
+								  </a>
+								  <a href="#" class="list-group-item" style="padding: 3px 5px !important;background-color:#ffe082 !important;">
+								    <h4 class="list-group-item-heading" style="margin-top: 2px !important;margin-bottom: 2px !important;"><img class="img-thumbnail" src="img/aca.jpg" alt="" height="40" width="40" style="padding:2px !important;"> &nbsp;Academic <span style="color:#333;font-size:12px;"> Dashboard</span><div style="float:right;padding-top:10px;padding-right:5px;"><i class="fa fa-arrow-circle-o-right"></i></div></h4>
+								  </a>
+								  <a href="#" class="list-group-item" style="padding: 3px 5px !important;background-color:#ef9a9a !important;">
+								    <h4 class="list-group-item-heading" style="margin-top: 2px !important;margin-bottom: 2px !important;"><img class="img-thumbnail" src="img/adm.jpg" alt="" height="40" width="40" style="padding:2px !important;"> &nbsp;Administrative <span style="color:#333;font-size:12px;"> Dashboard</span><div style="float:right;padding-top:10px;padding-right:5px;"><i class="fa fa-arrow-circle-o-right"></i></div></h4>
+								  </a>
+								  <a href="#" class="list-group-item" style="padding: 3px 5px !important;background-color:#81c784 !important;">
+								    <h4 class="list-group-item-heading" style="margin-top: 2px !important;margin-bottom: 2px !important;"> <img class="img-thumbnail" src="img/bus.jpg" alt="" height="40" width="40" style="padding:2px !important;"> &nbsp;Business <span style="color:#333;font-size:12px;"> Dashboard</span><div style="float:right;padding-top:10px;padding-right:5px;"><i class="fa fa-arrow-circle-o-right"></i></div></h4>
+								  </a>
+								  
+								</div>
+							</div>
+							<div class="col-md-8 col-sm-6">
 								<!-- Showcase section item -->
-								<div class="showcase-item">
+								<div class="showcase-item" style="background-color:#eceff1;">
 									<!-- Image -->
-									<img class="img-responsive" src="img/charts.png" alt="" />
+									<img class="img-responsive" src="img/charts.png" alt="" height="50" width="50" style="float:left;"/>
 									<!-- Heading -->
-									<h3></h3>
 									<!-- Paragraph -->
-									<p>A major creation of COSTI is the Sri Lanka
+									<p style="padding-top:5px;text-align:justify;">A major creation of COSTI is the Sri Lanka
                                 Innovation Dashboard. A system that can provide information
                                 about the current status of the country, with regard to Science,
                                 Technology and Innovation.The system will also facilitate the
@@ -845,91 +919,131 @@
 				<div class="testimonial padd">
 					<div class="container">
 						<div class="row">
-							<div class="col-md-6">
+							<div class="col-md-3">
 								<!-- BLock heading -->
-								<h3>Recent Events</h3>
+								<h3>Current Data Profile</h3>
 								<!-- Flex slider Content -->
-								<div class="flexslider-recent">
+								<!-- <div class="flexslider-recent">
 									<ul class="slides">
 										<li>
-											<!-- Image for background -->
 											<img class="img-responsive" src="img/events/4.jpg" alt="" />
-											<!-- Slide content -->
 											<div class="slider-content">
-												<!-- Heading -->
-												<!-- <h4>Event 1</h4> -->
-												<!-- Paragraph -->
 												<p>National Conference on Biotechnology: September: 2014</p>
 											</div>
 										</li>
 										<li>
-											<!-- Image for background -->
 											<img class="img-responsive" src="img/events/6.jpg" alt="" />
-											<!-- Slide content -->
 											<div class="slider-content">
-												<!-- Heading -->
-												<!-- <h4>Event 3</h4> -->
-												<!-- Paragraph -->
 												<p>National Conference in Disaster Management</p>
 											</div>
 										</li>
 									</ul>
+								</div> -->
+
+								<div class="col-xs-12" >
+									<p class="stat_header">Researchers</p>
+									<p class="stat_val"><%=researchers%></p>
+									<img src="img/stat1.png" class="stat" width="220" height="60">
+									
+								</div>
+								<div class="col-xs-12" >
+									<p class="stat_header">Places</p>
+									<p class="stat_val"><%=org_count%></p>
+									<img src="img/stat2.png" class="stat" width="220" height="60">
+								</div>
+								
+							</div>
+							<div class="col-md-3">
+								<h3>&nbsp;</h3>
+								<div class="col-xs-12" >
+									<p class="stat_header">Publications</p>
+									<p class="stat_val"><%=papers_count%></p>
+									<img src="img/stat3.png" class="stat" width="220" height="60">
+								</div>
+								<div class="col-xs-12" >
+									<p class="stat_header">Patents</p>
+									<p class="stat_val"><%=patent_count%></p>
+									<img src="img/stat4.png" class="stat" width="220" height="60">
+								</div>
+
+							</div>
+							<div class="col-md-3">
+								<h3>&nbsp;</h3>
+								<div class="col-xs-12" >
+									<p class="stat_header">Partnerships</p>
+									<p class="stat_val"><%=col_count%></p>
+									<img src="img/stat5.png" class="stat" width="220" height="60">
+									
+								</div>
+								<div class="col-xs-12" >
+									<p class="stat_header">Inventors</p>
+									<p class="stat_val"><%=inventors%></p>
+									<img src="img/stat7.png" class="stat" width="220" height="60">
 								</div>
 							</div>
-							<div class="col-md-6">
-								<!-- BLock heading -->
-								<h3>Testimonials</h3>
-								<!-- Flex slider Content -->
+							<div class="col-md-3">
+								<h3>&nbsp;</h3>
+								<div class="col-xs-12">
+									<p class="stat_header" >GII Rank</p>
+									<p class="stat_header" style="padding-top: 80px !important;">GII Score</p>
+									<p class="stat_val" style="padding-top: 48px !important;"><%=rank%></p>
+									<p class="stat_val" style="padding-top: 113px !important;"><%=score%></p>
+									<img src="img/stat6.png" class="stat" width="220" height="130">
+									
+								</div>
+								<!-- <div class="col-xs-12" >
+									<p class="stat_header">Places</p>
+									<p class="stat_val"><%=org_count%></p>
+									<img src="img/stat2.png" class="stat" width="300" height="80">
+								</div> -->
+							</div>
+							<!--<div class="col-md-7">
+								 <h3>Testimonials</h3>
 								<div class="flexslider-testimonial">
 									<ul class="slides">
 										<li>
-											<!-- Testimonial Content -->
 											<div class="testimonial-item">
-												<!-- Quote -->
 												<span class="quote lblue">&#8220;</span> 
-												<!-- Your comments -->
 												<blockquote>
-													<!-- Paragraph -->
 													<p>Comment1 Comment1 Comment1 Comment1 Comment1 Comment1 Comment1 Comment1 Comment1 Comment1 Comment1 Comment1 Comment1 Comment1 Comment1 Comment1 Comment1</p>
 												</blockquote>
-												<!-- Heading with image -->
 												<h4><img class="img-responsive img-circle" src="img/comments/1.jpg" alt="" />Prof. Tissa Vitharana<span>, Senior Minister</span></h4>
 												<div class="clearfix"></div>
 											</div>
 										</li>
 										<li>
-											<!-- Testimonial Content -->
 											<div class="testimonial-item">
-												<!-- Quote -->
 												<span class="quote lblue">&#8220;</span> 
-												<!-- Your comments -->
 												<blockquote>
-													<!-- Paragraph -->
 													<p> Comment2 Comment2 Comment2 Comment2 Comment2 Comment2 Comment2 Comment2 Comment2 Comment2 Comment2 Comment2 Comment2 Comment2 Comment2 Comment2 Comment2 </p>
 												</blockquote>
-												<!-- Heading with image -->
 												<h4><img class="img-responsive img-circle" src="img/comments/3.jpg" alt="" />Prof. Sirimali Fernando<span>, CEO</span></h4>
 												<div class="clearfix"></div>
 											</div>
 										</li>
 										<li>
-											<!-- Testimonial Content -->
 											<div class="testimonial-item">
-												<!-- Quote -->
 												<span class="quote lblue">&#8220;</span> 
-												<!-- Your comments -->
 												<blockquote>
-													<!-- Paragraph -->
 													<p>Comment3 Comment3 Comment3 Comment3 Comment3 Comment3 Comment3 Comment3 Comment3 Comment3 Comment3 Comment3 Comment3 Comment3 Comment3 Comment3 Comment3</p>
 												</blockquote>
-												<!-- Heading with image -->
 												<h4><img class="img-responsive img-circle" src="img/comments/2.jpg" alt="" />Prof. Ajith de Alwis<span>, Project Director</span></h4>
 												<div class="clearfix"></div>
 											</div>
 										</li>
+										<li>
+											<div class="testimonial-item">
+												<span class="quote lblue">&#8220;</span> 
+												<blockquote>
+													<p>Comment4 Comment4 Comment4 Comment4 Comment4 Comment4 Comment4 Comment4 Comment4 Comment4 Comment4 Comment4 Comment4 Comment4 Comment4 Comment4 Comment4</p>
+												</blockquote>
+												<h4><img class="img-responsive img-circle" src="img/comments/4.jpg" alt="" />Dr. Geetha Abeysinghe<span>, Director (IT)</span></h4>
+												<div class="clearfix"></div>
+											</div>
+										</li>
 									</ul>
-								</div>
-							</div>
+								</div> 
+							</div>-->
 						</div>
 					</div>
 				</div>
@@ -970,7 +1084,7 @@
 											<tr>
 												<td><img src="img/blog/2.jpg" width="60"
 													class="img-thumbnail" /></td><div>&nbsp;&nbsp;</v>
-												<td style="padding-left:10px;">Scientists at ITI develop a simple filter to strain out kidney disease ‘culprits’<a style="color:#333" href="https://costisl.wordpress.com/2014/11/14/scientists-at-iti-develop-a-simple-filter-to-strain-out-kidney-disease-culprits/"> Read more...</a>
+												<td style="padding-left:10px;">Scientists at ITI develop a simple filter to strain out kidney disease<a style="color:#333" href="https://costisl.wordpress.com/2014/11/14/scientists-at-iti-develop-a-simple-filter-to-strain-out-kidney-disease-culprits/"> Read more...</a>
 												</td>
 											</tr>
 										</table>
@@ -980,7 +1094,7 @@
 											<tr>
 												<td><img src="img/blog/3.jpg" width="60"
 													class="img-thumbnail" /></td>
-												<td style="padding-left:10px;">Sri Lanka’s National Centre for Non Destructive Testing opens<a style="color:#333" href="https://costisl.wordpress.com/2014/10/28/sri-lankas-national-centre-for-non-destructive-testing-opens/"> Read more...</a>
+												<td style="padding-left:10px;">Sri Lanka's National Centre for Non Destructive Testing opens<a style="color:#333" href="https://costisl.wordpress.com/2014/10/28/sri-lankas-national-centre-for-non-destructive-testing-opens/"> Read more...</a>
 												</td>
 											</tr>
 										</table>
@@ -1064,7 +1178,7 @@
 					<!-- Copyright -->
 					<div class="footer-copyright">
 						<!-- Paragraph -->
-						<p>&copy; Copyright 2014 <a href="http://www.opensource.lk">Lanka Software Foundation</a></p>
+						<p>&copy; Copyright 2015 <a href="http://costi.gov.lk" target="_blank">COSTI</a></p>
 					</div>
 				</div>
 			</div>
@@ -1125,7 +1239,7 @@
 				jQuery(document).ready(function() {
 					   jQuery('.tp-banner').revolution(
 						{
-							delay:11000,
+							delay:13000,
 							startheight:350,
 							
 							hideThumbs:10,
@@ -1162,7 +1276,7 @@
 				});
 				$('.flexslider-testimonial').flexslider({
 					animation: 		"fade",
-					slideshowSpeed:	5000,
+					slideshowSpeed:	10000,
 					animationSpeed:	1000,
 					controlNav:		true,
 					directionNav:	false
