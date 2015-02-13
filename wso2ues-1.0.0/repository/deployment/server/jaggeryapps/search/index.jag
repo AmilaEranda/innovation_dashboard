@@ -1,0 +1,193 @@
+<%
+	include_once("scripts/db.jag");
+%>
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>Advanced Search - Innovation Dashboard</title>
+		<link type="image/x-icon" href="images/dev/favicon.ico" rel="shortcut icon" />
+
+		<!-- Bootstrap core CSS -->
+		<link href="css/flatly/bootstrap.min.css" rel="stylesheet" type="text/css">
+		<link href="css/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+		<link href="css/styles.css" rel="stylesheet">
+
+		<script src="js/jquery/jquery-1.11.1.js"></script>
+		<script src="js/bootstrap/bootstrap.js"></script>
+		<script src="js/scripts/search-content.js"></script>
+	</head>
+
+	<body>
+		<% include_once("util/topnav.jag"); %>
+
+		<div class="container-fluid">
+			<div class="row">
+				<div class="col-sm-12">
+					<h1>Advanced Search</h1>
+				</div>
+			</div>
+			<div class="row">
+				<div class="form-group">
+					<div class="col-sm-4">
+						<div class="radio">
+							<label>
+								<input type="radio" name="search-type" value="res" checked="checked">Researchers
+							</label>
+						</div>
+					</div>
+					<div class="col-sm-4">
+						<div class="radio">
+							<label>
+								<input type="radio" name="search-type" value="pub">Publications
+							</label>
+						</div>
+					</div>
+					<div class="col-sm-4">
+						<div class="radio">
+							<label>
+								<input type="radio" name="search-type" value="pat">Patents
+							</label>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div id="div-form-researchers">
+				<form class="form-horizontal" id="form-researchers" action="" method="POST">
+					<div class="form-group">
+						<div class="col-sm-4">
+							<select id="aoi-selection-res" class="form-control">
+								<option value="0">-- Area of Interest --</option>
+							</select>
+						</div>
+						<div class="col-sm-4">
+							<select id="saoi-selection-res" class="form-control">
+								<option value="0">-- Sub Area of Interest --</option>
+							</select>
+						</div>
+						<div class="col-sm-4">
+							<select id="ssaoi-selection-res" class="form-control">
+								<option value="0">-- Field of Interest --</option>
+							</select>
+						</div>
+					</div>
+					<div class="form-group">
+						<div class="col-sm-6">
+							<input type="text" class="form-control" id="search-term-inits-fn" placeholder="Initials or First name">
+						</div>
+						<div class="col-sm-6">
+							<input type="text" class="form-control" id="search-term-ln" placeholder="Last name">
+						</div>
+					</div>
+					<div class="form-group">
+						<div class="col-sm-8">
+							<input type="text" class="form-control" id="search-term-expertise" placeholder="Expertise">
+						</div>
+						<div class="col-sm-2">
+							<select id="gender-selection" class="form-control">
+								<option value="-1">-- Gender --</option>
+								<option value="1">Male</option>
+								<option value="0">Female</option>
+							</select>
+						</div>
+						<div class="col-sm-2">
+							<button type="submit" class="btn btn-primary form-control" id="btn-search-res"><span class="glyphicon glyphicon-search" aria-hidden="true"></span>&nbsp; Search</button>
+						</div>
+					</div>
+				</form>
+			</div>
+			<div id="div-form-publications" style="display: none;">
+				<form class="form-horizontal" id="form-publications" action="" method="POST" >
+					<div class="form-group">
+						<div class="col-sm-4">
+							<select id="aoi-selection-pub" class="form-control">
+								<option value="0">-- Area of Interest --</option>
+							</select>
+						</div>
+						<div class="col-sm-4">
+							<select id="saoi-selection-pub" class="form-control">
+								<option value="0">-- Sub Area of Interest --</option>
+							</select>
+						</div>
+						<div class="col-sm-4">
+							<select id="ssaoi-selection-pub" class="form-control">
+								<option value="0">-- Field of Interest --</option>
+							</select>
+						</div>
+					</div>
+					<div class="form-group">
+						<div class="col-sm-6">
+							<input type="text" class="form-control" id="search-term-title" placeholder="Title of the publication">
+						</div>
+						<div class="col-sm-4">
+							<input type="text" class="form-control" id="search-term-auth-name" placeholder="Name of the author">
+						</div>
+						<div class="col-sm-2">
+							<input type="text" class="form-control" id="search-term-year" placeholder="Year">
+						</div>
+					</div>
+					<div class="form-group">
+						<div class="col-sm-6">
+							<input type="text" class="form-control" id="search-term-jn" placeholder="Journal / Conference / Book name">
+						</div>
+						<div class="col-sm-4">
+							<select id="pub-type-selection" class="form-control">
+								<option value="-1">-- Any type --</option>
+								<option value="1">Journal Article</option>
+								<option value="2">Book</option>
+								<option value="3">Technical Article</option>
+								<option value="4">Conference Proceeding</option>
+								<option value="5">Book chapter</option>
+							</select>
+						</div>
+						<div class="col-sm-2">
+							<button type="submit" class="btn btn-primary form-control" id="btn-search-pub"><span class="glyphicon glyphicon-search" aria-hidden="true"></span>&nbsp; Search</button>
+						</div>
+					</div>
+				</form>
+			</div>
+			<div id="div-form-patents" style="display: none;">
+				<form class="form-horizontal" id="form-patents" action="" method="POST" >
+					<div class="form-group">
+						<div class="col-sm-12">
+							<input type="text" class="form-control" id="search-term-pat-title" placeholder="Title of the patent">
+						</div>
+					</div>
+					<div class="form-group">
+						<div class="col-sm-8">
+							<input type="text" class="form-control" id="search-term-inventor" placeholder="Name of inventor">
+						</div>
+						<div class="col-sm-2">
+							<input type="text" class="form-control" id="search-term-pat-year" placeholder="Year">
+						</div>
+						<div class="col-sm-2">
+							<button type="submit" class="btn btn-primary form-control" id="btn-search-pat"><span class="glyphicon glyphicon-search" aria-hidden="true"></span>&nbsp; Search</button>
+						</div>
+					</div>
+				</form>
+			</div>
+			<div class="row" id="loading-status" style="padding: 8px 16px; text-align: center; display: none;">
+				<label><i class="fa fa-spinner fa-spin"></i>&nbsp; Searching...</label>
+			</div>
+			<div class="row">
+				<div class="col-sm-12" id="result-researchers">
+					<div style="text-align: center;"><img src="images/dev/researchers.svg" style="height: 280px; margin-top: 12px;" /></div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-sm-12" id="result-publications" style="display: none;">
+					<div style="text-align: center;"><img src="images/dev/publications.svg" style="height: 280px; margin-top: 12px;" /></div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-sm-12" id="result-patents" style="display: none;">
+					<div style="text-align: center;"><img src="images/dev/patents.svg" style="height: 280px; margin-top: 12px;" /></div>
+				</div>
+			</div>
+		</div>
+		
+		<% include_once("util/footer.jag"); %>
+	</body>
+</html>
+<% db.close(); %>

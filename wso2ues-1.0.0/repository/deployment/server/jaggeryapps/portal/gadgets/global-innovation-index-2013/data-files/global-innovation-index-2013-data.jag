@@ -1,13 +1,18 @@
 <%
 	include_once("../../../db/db.jag");
-	var globalIndexId = request.getParameter("giId");
+	var globalIndexId;
 	var pillarId = request.getParameter("pillarId");
 	
 	var dataObj = {};
 	
-	if(globalIndexId != null && pillarId == null){
+	if ("undefined" === typeof pillarId || pillarId === null || pillarId === "") {
+		strQuery = "SELECT gi.global_index_id AS gi_id FROM global_index gi WHERE gi.name = 'Global Innovation Index' AND gi.year = '2013'";
+		var result = db.query(strQuery);
+		if (result.length === 1) {
+			globalIndexId = result[0].gi_id;
+		}
 		dataObj.radar_data = getRadarDataOfPillars(globalIndexId);
-	} else if (pillarId != null){
+	} else if (pillarId !== null){
 		dataObj.radar_data = getRadarDataOfNis(pillarId);
 	}
 	
@@ -81,8 +86,7 @@
 	function getFormatedPillarData(pArr){
 		var pillarData = [];
 		for(var i = 0; i < pArr.length; i++){
-			pillarData.push({"axis": pArr[i].pillarName, "value": pArr[i].pillarScore, "dispvalue": pArr[i].pillarScore, "id": pArr[i].pillarId});
-			
+			pillarData.push({"axis": pArr[i].pillarName, "value": pArr[i].pillarScore, "dispvalue": pArr[i].pillarScore, "id": pArr[i].pillarId, "type": "pi"});
 		}
 		return pillarData;
 	}
@@ -90,7 +94,7 @@
 	function getFormatedNiData(niArr){
 		var niData = [];
 		for(var i = 0; i < niArr.length; i++){
-			niData.push({"axis": niArr[i].niName, "value": niArr[i].niScore, "dispvalue": niArr[i].niScore, "id": niArr[i].niId});
+			niData.push({"axis": niArr[i].niName, "value": niArr[i].niScore, "dispvalue": niArr[i].niScore, "id": niArr[i].niId, "type": "ni"});
 		}
 		return niData;
 	}

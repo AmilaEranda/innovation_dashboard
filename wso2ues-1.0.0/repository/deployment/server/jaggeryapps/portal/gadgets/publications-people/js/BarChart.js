@@ -32,7 +32,7 @@ function BarChart(area, data, options) {
 	
 	//$("#bar-tooltip" + (parseInt(this.globalBarNum) - 1)).remove();
 	
-    $("body").append('<div id="bar-tooltip' + this.globalBarNum + '"></div>');
+    $("body").append('<div id="bar-tooltip' + this.globalBarNum + '" class="bar-tooltip"></div>');
     $("#bar-tooltip" + this.globalBarNum).css({"position": "absolute", "background": "rgba(0, 0, 0, 0.8)", "color": "white", "font-family": "Arial", "font-size": "14px", "font-weight": "lighter", "z-index": "100", "pointer-events": "none"});
     $("#bar-tooltip" + this.globalBarNum).append('<div id="bar-tooltip-content' + this.globalBarNum + '" style="padding: 5px 10px 5px 10px;">');
     $("#bar-tooltip-content" + this.globalBarNum).append('<span id="bar-tooltip-desc' + this.globalBarNum + '" style="font-size: 12px;">desc of tooltip</span><br/>');
@@ -134,11 +134,12 @@ function BarChart(area, data, options) {
         var xAxis = d3.svg.axis()
                 .scale(xScale)
                 .orient("bottom");
-
+		
         var yAxis = d3.svg.axis()
+				.tickFormat(d3.format("d"))
                 .scale(yScale)
                 .orient("left")
-                .ticks(5);
+                .ticks(4); //Set rough # of ticks
 
         barChartGroup.append("g")
                 .selectAll("g.rule")
@@ -224,7 +225,8 @@ function BarChart(area, data, options) {
 					if (d.type === "peo"){
 						fetchCustomData("yea", d.id, d.name);
 					} else if (d.type === "yea"){
-						window.open("../../profile/person.jag?pid=" + d.id + "&year=" + d.name);
+						fetchCustomData("pub", d.id, d.name);
+						//window.open("../../profile/person.jag?pid=" + d.id + "&year=" + d.name);
 					}
 				});
 

@@ -5,55 +5,63 @@
                  height="230"
                  scrolling="true"
                  tags="Places"
-                 description="A map, that shows the geological locations of organizations and institutes of Sri Lanka">
-     </ModulePrefs>
+                 description="A map, that shows the geological locations of organizations and research institutes in Sri Lanka">
+		<Require feature="setprefs" />
+    </ModulePrefs>
+	<UserPref name="chartType" display_name="Chart Type" default_value="physical-map" datatype="enum" >
+		<EnumValue value="physical-map" />
+		<EnumValue value="administrative-map" />
+		<EnumValue value="list" />
+	</UserPref>
     <Content type="html">
     <![CDATA[
  <html>
  <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 	<title>Organizations and Institutes</title>
-	<link href="../../themes/portal/css/flot-graph.css" rel="stylesheet" type="text/css">
-	<link href="../../themes/portal/css/bootstrap.min.css" rel="stylesheet" type="text/css">
-	<style type="text/css">
-		.gmnoprint img {
-			max-width: none; 
-		}
-		
-		img {
-			max-width: none !important;
-		}
-		
-		#aoi-select-panel {
-			position: absolute;
-			top: 5px;
-			left: 20%;
-			/*margin-left: -180px;*/
-			z-index: 5;
-			/*background-color: #fff;*/
-			padding: 5px;
-			/*border: 1px solid #999;*/
-		}
-	</style>
-	<script language="javascript" type="text/javascript" src="../../js/flot/jquery.js"></script>
+	<link rel="stylesheet" href="../../themes/portal/css/flot-graph.css" type="text/css">
+	<link rel="stylesheet" href="../../themes/portal/css/bootstrap.min.css" type="text/css">
+	<link rel="stylesheet" href="css/font-awesome/css/font-awesome.min.css" type="text/css">
+	<link rel="stylesheet" href="css/ammap/ammap.css" type="text/css">
+	<link rel="stylesheet" href="css/styles.css" type="text/css">
+	
+	<script language="javascript" type="text/javascript" src="js/jquery-1.11.1.min.js"></script>
+	<script language="javascript" type="text/javascript" src="js/bootstrap.min.js"></script>
 	<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBh-rKFkb1hhmElavDCGaaUQnITpIw3-MI"></script>
+	
+	<script language="javascript" type="text/javascript" src="js/ammap/ammap.js"></script>
+	<script language="javascript" type="text/javascript" src="js/ammap/sriLankaHigh.js"></script>
+	
 	<script language="javascript" type="text/javascript" src="js/organization-map-core.js"></script>
 </head>
 
 <body>
 	<div>
-		<div id="aoi-select-panel">
-			<select id="aoi-selection" style="margin: 0px 0px 0px 0px; height: 26px; font-size: 12px; width: 140px;">
-				<option value="0">-- Area of Interest --</option>
-			</select>
-			<select id="saoi-selection" style="margin: 0px 0px 0px 0px; height: 26px; font-size: 12px; width: 170px;">
-				<option value="0">-- Sub Area of Interest --</option>
-			</select>
-			<select id="ssaoi-selection" style="margin: 0px 0px 0px 0px; height: 26px; font-size: 12px; width: 140px;">
-				<option value="0">-- Field of Interest --</option>
-			</select>
+		<div id="optionPanel">
+			<div id="optionsLeft">
+				<div class="btn-group">
+					<button type="button" class="btn btn-default btn-mini btn-success" id="btnChartTypePhysicalMap">Physical Map</button>
+					<button type="button" class="btn btn-default btn-mini" id="btnChartTypeAdministrativeMap">Administrative Map</button>
+					<button type="button" class="btn btn-default btn-mini" id="btnChartTypeList">List</button>
+				</div>
+				<select id="aoi-selection" style="margin: 0px 0px 0px 0px; height: 26px; font-size: 12px; width: 140px;">
+					<option value="0">-- Area of Interest --</option>
+				</select>
+				<select id="saoi-selection" style="margin: 0px 0px 0px 0px; height: 26px; font-size: 12px; width: 170px;">
+					<option value="0">-- Sub Area of Interest --</option>
+				</select>
+				<select id="ssaoi-selection" style="margin: 0px 0px 0px 0px; height: 26px; font-size: 12px; width: 140px;">
+					<option value="0">-- Field of Interest --</option>
+				</select>
+			</div>
+			<div id="optionsRight" class="seriesContainer">
+				<span class="text-info"><i id="info-icon" style="margin-top: 8px; cursor: pointer;" class="fa fa-info-circle fa-lg" data-toggle="tooltip"></i></span>
+			</div>
 		</div>
-		<div id="placeholder" style="height:98%;"></div>
+		
+		<div id="placeholder" style="height: 86%; width: 100%;"></div>
+		<div id="politicalmapholder" style="height: 86%; width: 100%; display: none;"></div>
+		<div id="listholder" style="height: 86%; width: 100%; display: none;"></div>
 	</div>
 </body>
 </html>

@@ -43,6 +43,7 @@ $(document).ready(function(){
 	
 	// on resize the window
 	$(window).resize(function(){
+		setWidthsForAOI();
 		drawChartsAndListWithRange(chartData);
 	});
 	
@@ -63,10 +64,7 @@ $(document).ready(function(){
 		} else if (selectedType === "pub") {
 			fetchCustomData("yea", selectedOid, selectedName, true);
 		}
-		
 		$(this).blur();
-		//setChartTitle("");
-		//$("#pub-org-back").hide();
 	});
 	
 	$("#aoi-selection").change(function(d, i) {
@@ -137,7 +135,8 @@ $(document).ready(function(){
 		}
 	});
 	
-	console.clear();
+	//console.clear();
+	setWidthsForAOI();
 });
 
 function fetchAOIData() {
@@ -172,7 +171,7 @@ function fetchCustomData(type, oid, name, isBack, isAoiChanged) {
 	var ssaoiId = $("#ssaoi-selection option:selected").val();
 	
 	selectedType = type;
-	if("undefined" === typeof isBack || isBack === false){
+	if ("undefined" === typeof isBack || isBack === false){
 		if (selectedType === "yea") {
 			selectedOid = oid;
 			selectedName = name;
@@ -180,7 +179,6 @@ function fetchCustomData(type, oid, name, isBack, isAoiChanged) {
 		} else if (selectedType === "pub") {
 			selectedYear = name;
 			selectedName = name;
-			console.log(selectedYear);
 		}
 	}
 	
@@ -246,7 +244,7 @@ function setChartTitle(type){
 }
 
 function setOptionsForCharts(){
-	if("undefined" === typeof selectedType || selectedType === "org"){
+	if ("undefined" === typeof selectedType || selectedType === "org") {
 		var cnfg = {
 			barBottomColor: "#3365CA",
 			barTopColor: "#254A94",
@@ -264,7 +262,7 @@ function setOptionsForCharts(){
 			cursorType: "pointer"
 		};
 		pieChart.setOptions(cnfg);
-	} else if (selectedType === "yea"){
+	} else if (selectedType === "yea") {
 		var cnfg = {
 			barBottomColor: "#E27100",
 			barTopColor: "#A75300",
@@ -288,7 +286,7 @@ function setOptionsForCharts(){
 function setInfoForCharts(){
 	$('#info-icon').tooltip('destroy');
 	$("#info-icon").removeAttr("title");
-	if("undefined" === typeof selectedType || selectedType === "org"){
+	if ("undefined" === typeof selectedType || selectedType === "org") {
 		$("#info-icon").tooltip({
 			animation: true,
 			placement: "left",
@@ -325,7 +323,7 @@ function drawChartsAndList(data){
 		var fromTo = value.split(';');
 		var newTo = parseInt(fromTo[1]);
 
-		if (selectedType === "org"){
+		if (selectedType === "org") {
 			if (gadgetWidth < 500){
 				newTo = parseInt(fromTo[0]) + 4;
 				$("#limitSlider").slider("value", fromTo[0] - 1, newTo);
@@ -339,28 +337,28 @@ function drawChartsAndList(data){
 				newTo = parseInt(fromTo[0]) + 19;
 				$("#limitSlider").slider("value", fromTo[0] - 1, newTo);
 			}
-		} else if (selectedType === "yea"){
-			if (gadgetWidth < 500){
+		} else if (selectedType === "yea") {
+			if (gadgetWidth < 500) {
 				fromTo[0] = newTo - 4;
 				$("#limitSlider").slider("value", fromTo[0], newTo + 1);
-			} else if (gadgetWidth < 1000){
+			} else if (gadgetWidth < 1000) {
 				fromTo[0] = newTo - 9;
 				$("#limitSlider").slider("value", fromTo[0], newTo + 1);
-			} else if (gadgetWidth < 1500){
+			} else if (gadgetWidth < 1500) {
 				fromTo[0] = newTo - 14;
 				$("#limitSlider").slider("value", fromTo[0], newTo + 1);
 			} else {
 				fromTo[0] = newTo - 19;
 				$("#limitSlider").slider("value", fromTo[0], newTo + 1);
 			}
-		} else if (selectedType === "pub"){
-			if (gadgetWidth < 500){
+		} else if (selectedType === "pub") {
+			if (gadgetWidth < 500) {
 				newTo = parseInt(fromTo[0]) + 4;
 				$("#limitSlider").slider("value", fromTo[0] - 1, newTo);
-			} else if (gadgetWidth < 1000){
+			} else if (gadgetWidth < 1000) {
 				newTo = parseInt(fromTo[0]) + 9;
 				$("#limitSlider").slider("value", fromTo[0] - 1, newTo);
-			} else if (gadgetWidth < 1500){
+			} else if (gadgetWidth < 1500) {
 				newTo = parseInt(fromTo[0]) + 14;
 				$("#limitSlider").slider("value", fromTo[0] - 1, newTo);
 			} else {
@@ -370,16 +368,16 @@ function drawChartsAndList(data){
 		}
 		var newData = getSlicedChartData(fromTo[0], newTo);
 
-		if (selectedType === "pub"){
+		if (selectedType === "pub") {
 			createPublicationList(newData);
 		} else {
-			if (chartType === "bar"){
+			if (chartType === "bar") {
 				drawBarChart(newData);
-			} else if (chartType === "line"){
+			} else if (chartType === "line") {
 				drawLineChart(newData);
-			} else if (chartType === "pie"){
+			} else if (chartType === "pie") {
 				drawPieChart(newData);
-			} else if (chartType === "list"){
+			} else if (chartType === "list") {
 				createList(newData);
 			}
 		}
@@ -389,8 +387,6 @@ function drawChartsAndList(data){
 function drawChartsAndListWithRange(data){
 	var place = $("#placeholder");
 	place.empty();
-	
-	
 
 	if ('undefined' !== typeof data) {
 		if (data.length < 1) {
@@ -420,7 +416,7 @@ function drawChartsAndListWithRange(data){
 }
 
 function createPublicationList(data){
-	if ('undefined' === typeof data){
+	if ('undefined' === typeof data) {
 		data = chartData;
 	}
 	var place = $("#placeholder");
@@ -457,7 +453,7 @@ function createPublicationList(data){
 		} else {
 			publicationType = "Other";
 		}
-		divElemName.innerHTML = '<h4><a href="publication/path/publication.jag?pid=' + data[i].id + '" target="_blank">' + data[i].name + '</a>&nbsp; <small>' + publicationType + '</small></h4>';
+		divElemName.innerHTML = '<h4><a href="/publication/index.jag?pid=' + data[i].id + '" target="_blank">' + data[i].name + '</a>&nbsp; <small>' + publicationType + '</small></h4>';
 		
 		var divElemPublishers = document.createElement("div");
 		divElemPublishers.innerHTML = '<span style="color: #666666;">' + data[i].publishers + '</span>';
@@ -489,7 +485,7 @@ function initSlider(fromVal, toVal){
 	var bElem = document.createElement("b");
 	var text;
 	if (selectedType === "org") {
-		text = document.createTextNode("Range of organizations: ");
+		text = document.createTextNode("Organizations: ");
 	} else if (selectedType === "yea") {
 		text = document.createTextNode("Year: ");
 	} else if (selectedType === "pub") {
@@ -515,7 +511,7 @@ function initSlider(fromVal, toVal){
 	var tickArr = [];
 	var step = 1;
 	var dif = (toVal - fromVal) + 1;
-	if(dif <= 10){
+	if (dif <= 10) {
 		step = 1;
 	} else if (dif <= 20){
 		step = 2;
@@ -526,7 +522,7 @@ function initSlider(fromVal, toVal){
 	} else {
 		step = 50;
 	}
-	for(var i = parseInt(fromVal); i <= parseInt(toVal); i = i + step){
+	for (var i = parseInt(fromVal); i <= parseInt(toVal); i = i + step) {
 		tickArr.push(i);
 	}
 	
@@ -714,28 +710,98 @@ function getSlicedChartData(fromValue, toValue){
 		toValue = fromValue;
 	}
 	var truncData = [];
-	if(selectedType == "org"){
-		if(chartData.length < toValue){
+	if (selectedType == "org") {
+		if (chartData.length < toValue) {
 			toValue = chartData.length;
 		}
-		for(var i = fromValue - 1; i < toValue; i++){
+		for (var i = fromValue - 1; i < toValue; i++) {
 			truncData.push(chartData[i]);
 		}
-	} else if (selectedType == "yea"){
-		for(var i = 0; i < chartData.length; i++){
+	} else if (selectedType == "yea") {
+		for (var i = 0; i < chartData.length; i++) {
 			var val = parseInt(chartData[i].name);
-			if(val >= fromValue && val <= toValue){
+			if (val >= fromValue && val <= toValue) {
 				truncData.push(chartData[i]);
 			}
 		}
 	} else if (selectedType == "pub"){
-		if(chartData.length < toValue){
+		if (chartData.length < toValue) {
 			toValue = chartData.length;
 		}
-		for(var i = fromValue - 1; i < toValue; i++){
+		for (var i = fromValue - 1; i < toValue; i++) {
 			truncData.push(chartData[i]);
 		}
 	}
 	return truncData;
 }
 
+function setWidthsForAOI(){
+	var place = $("#placeholder");
+	var placeWidth = place.width();
+	
+	var aoi = $("#aoi-selection");
+	var saoi = $("#saoi-selection");
+	var ssaoi = $("#ssaoi-selection");
+	
+	if (placeWidth < 320){
+		aoi.css({"width": "50px"});
+		saoi.css({"width": "80px"});
+		ssaoi.css({"width": "50px"});
+	} else if (placeWidth < 350){
+		aoi.css({"width": "60px"});
+		saoi.css({"width": "90px"});
+		ssaoi.css({"width": "60px"});
+	} else if (placeWidth < 380){
+		aoi.css({"width": "70px"});
+		saoi.css({"width": "100px"});
+		ssaoi.css({"width": "70px"});
+	} else if (placeWidth < 410){
+		aoi.css({"width": "80px"});
+		saoi.css({"width": "110px"});
+		ssaoi.css({"width": "80px"});
+	} else if (placeWidth < 440){
+		aoi.css({"width": "90px"});
+		saoi.css({"width": "120px"});
+		ssaoi.css({"width": "90px"});
+	} else if (placeWidth < 470){
+		aoi.css({"width": "100px"});
+		saoi.css({"width": "130px"});
+		ssaoi.css({"width": "100px"});
+	} else if (placeWidth < 500){
+		aoi.css({"width": "110px"});
+		saoi.css({"width": "140px"});
+		ssaoi.css({"width": "110px"});
+	} else if (placeWidth < 530){
+		aoi.css({"width": "120px"});
+		saoi.css({"width": "150px"});
+		ssaoi.css({"width": "120px"});
+	} else if (placeWidth < 560) {
+		aoi.css({"width": "130px"});
+		saoi.css({"width": "160px"});
+		ssaoi.css({"width": "130px"});
+	} else if (placeWidth < 590) {
+		aoi.css({"width": "140px"});
+		saoi.css({"width": "170px"});
+		ssaoi.css({"width": "140px"});
+	} else if (placeWidth < 620) {
+		aoi.css({"width": "150px"});
+		saoi.css({"width": "180px"});
+		ssaoi.css({"width": "150px"});
+	} else if (placeWidth < 650) {
+		aoi.css({"width": "160px"});
+		saoi.css({"width": "190px"});
+		ssaoi.css({"width": "160px"});
+	} else if (placeWidth < 680) {
+		aoi.css({"width": "170px"});
+		saoi.css({"width": "200px"});
+		ssaoi.css({"width": "170px"});
+	} else if (placeWidth < 710) {
+		aoi.css({"width": "180px"});
+		saoi.css({"width": "210px"});
+		ssaoi.css({"width": "180px"});
+	} else {
+		aoi.css({"width": "190px"});
+		saoi.css({"width": "220px"});
+		ssaoi.css({"width": "190px"});
+	}
+}

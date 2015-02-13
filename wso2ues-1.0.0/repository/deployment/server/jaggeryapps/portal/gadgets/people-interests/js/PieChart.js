@@ -4,7 +4,8 @@ function PieChart(area, data, options) {
         marginRight: 20,
         marginBottom: 20,
         marginLeft: 20,
-        colors: ["#3366CC", "#DC3912", "#FF9900", "#109618", "#990099", "#0099C6", "#DD4477", "#AAAA11", "#E67300", "#B77322", "#16D620"]
+        colors: ["#3366CC", "#DC3912", "#FF9900", "#109618", "#990099", "#0099C6", "#DD4477", "#AAAA11", "#E67300", "#B77322", "#16D620"],
+		cursorType: "auto"
     };
 
     if ('undefined' !== typeof options) {
@@ -21,7 +22,7 @@ function PieChart(area, data, options) {
 
     this.globalPieNum = globalPieNumber++;
 
-    $("body").append('<div id="pie-tooltip' + this.globalPieNum + '"></div>');
+    $("body").append('<div id="pie-tooltip' + this.globalPieNum + '" class="pie-tooltip"></div>');
     $("#pie-tooltip" + this.globalPieNum).css({"position": "absolute", "background": "rgba(0, 0, 0, 0.8)", "color": "white", "font-family": "Arial", "font-size": "14px", "font-weight": "lighter", "z-index": "100", "pointer-events": "none"});
     $("#pie-tooltip" + this.globalPieNum).append('<div id="pie-tooltip-content' + this.globalPieNum + '" style="padding: 5px 10px 5px 10px;">');
     $("#pie-tooltip-content" + this.globalPieNum).append('<span id="pie-tooltip-desc' + this.globalPieNum + '" style="font-size: 12px;">desc of tooltip</span><br/>');
@@ -33,6 +34,16 @@ function PieChart(area, data, options) {
     
     this.setData = function(newData){
         this.dataArray = newData;
+    };
+	
+	this.setOptions = function(newOptions) {
+    	if ('undefined' !== typeof newOptions) {
+            for (var i in newOptions) {
+                if ('undefined' !== typeof newOptions[i]) {
+                    cnfg[i] = newOptions[i];
+                }
+            }
+        }
     };
 
     this.draw = function() {
@@ -108,6 +119,7 @@ function PieChart(area, data, options) {
         arcGroup.append("path")
                 .attr("stroke", "#ffffff")
                 .attr("stroke-width", "1")
+				.style("cursor", cnfg.cursorType)
                 .attr("fill", function(d, i) {
                     return "url(#pieGrad-" + pieNum + "-" + i + ")";
                     //return color(d.data.name);

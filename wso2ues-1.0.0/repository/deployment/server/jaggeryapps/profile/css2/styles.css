@@ -30,3 +30,16 @@ p{
 .footer-title{
 	color: #FEFDF8;
 }
+
+.person-contact-icon{
+	text-align: left;
+	opacity: 0.8;
+	margin: 8px;
+	padding: 16px 12px 16px 8px;
+	vertical-align: top;
+}
+
+.person-contact-detail{
+	padding: 16px 0px 16px 0px;
+	font-weight: bold;
+}

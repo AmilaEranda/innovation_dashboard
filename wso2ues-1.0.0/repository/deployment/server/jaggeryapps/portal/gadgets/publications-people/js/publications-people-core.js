@@ -2,12 +2,12 @@ var pref = new gadgets.Prefs();
 var barChart, lineChart, pieChart;
 var chartData, aoiData;
 var chartType; // bar, line, pie, list
-var selectedType, selectedPid;
+var selectedType, selectedPid, selectedName, selectedPerName, selectedYear;
 
 $(document).ready(function(){
 	// setting chart type
 	chartType = pref.getString("chartType").toLowerCase();
-	if(chartType !== "bar" && chartType !== "line" && chartType !== "pie" && chartType !== "list"){
+	if (chartType !== "bar" && chartType !== "line" && chartType !== "pie" && chartType !== "list") {
 		chartType = "bar";
 	}
 	
@@ -36,14 +36,14 @@ $(document).ready(function(){
 	
 	initPieChart();
 	
-	//fetchData();
 	fetchCustomData("peo", null, "");
 	
 	fetchAOIData();
 	
 	// on resize the window
 	$(window).resize(function(){
-		drawChartsAndList(chartData);
+		setWidthsForAOI();
+		drawChartsAndListWithRange(chartData);
 	});
 	
 	// switching charts
@@ -56,12 +56,14 @@ $(document).ready(function(){
 	});
 	
 	$(".back").click(function(){
-		fetchCustomData("peo", null, "");
-		
-		//fetchCustomData();
+		if (selectedType === "yea") {
+			selectedName = "";
+			fetchCustomData("peo", 0, selectedName, true);
+			$("#pub-peo-back").hide();
+		} else if (selectedType === "pub") {
+			fetchCustomData("yea", selectedPid, selectedName, true);
+		}
 		$(this).blur();
-		setChartTitle("");
-		$("#pub-peo-back").hide();
 	});
 	
 	$("#aoi-selection").change(function(d, i) {
@@ -125,12 +127,14 @@ $(document).ready(function(){
 	});
 	
 	$("#ssaoi-selection").change(function(d, i) {
-		fetchCustomData(selectedType, selectedPid);
+		fetchCustomData(selectedType, selectedPid, selectedName, false, true);
 		$("#ssaoi-selection").blur();
 		if(selectedType == "peo"){
 			$("#pub-peo-back").hide();
 		}
 	});
+	
+	setWidthsForAOI();
 });
 
 function fetchAOIData() {
@@ -170,13 +174,22 @@ function fetchData() {
 	});
 }
 
-function fetchCustomData(type, pid, name) {
+function fetchCustomData(type, pid, name, isBack, isAoiChanged) {
 	var aoiId = $("#aoi-selection option:selected").val();
 	var saoiId = $("#saoi-selection option:selected").val();
 	var ssaoiId = $("#ssaoi-selection option:selected").val();
 	
 	selectedType = type;
-	selectedPid = pid;
+	if ("undefined" === typeof isBack || isBack === false){
+		if (selectedType === "yea") {
+			selectedPid = pid;
+			selectedName = name;
+			selectedPerName = name;
+		} else if (selectedType === "pub") {
+			selectedYear = name;
+			selectedName = name;
+		}
+	}
 	
 	var url = "../../portal/gadgets/publications-people/data-files/publications-people-data.jag";
 	
@@ -185,7 +198,9 @@ function fetchCustomData(type, pid, name) {
 		type: "GET",
 		dataType: "json",
 		data: {
+			type: selectedType,
 			pid: selectedPid,
+			year: selectedYear,
 			aoiId: aoiId,
 			saoiId: saoiId,
 			ssaoiId: ssaoiId
@@ -197,9 +212,11 @@ function fetchCustomData(type, pid, name) {
 	
 	setOptionsForCharts();
 	
-	setChartTitle(name, selectedPid);
+	if ("undefined" === typeof isAoiChanged || isAoiChanged === false){
+		setChartTitle(selectedType);
+	}
 	
-	if(selectedType == "yea"){
+	if (selectedType === "yea" || selectedType === "pub") {
 		$("#pub-peo-back").show();
 	}
 }
@@ -216,16 +233,22 @@ function onDataReceived(data) {
 			var highVal = parseInt(chartData[chartData.length - 1].name);
 			initSlider(lowVal, highVal);
 			$("#limitSlider").slider("value", (lowVal - 1), (highVal + 1));
+		} else if (selectedType === "pub") {
+			initSlider(1, chartData.length);
+			var highVal = (chartData.length > 9) ? 9 : chartData.length;
+			$("#limitSlider").slider('value', 0, (highVal + 1));
 		}
 	}
 	drawChartsAndList(chartData);
 }
 
-function setChartTitle(name, pid){
-	if("undefined" !== typeof name){
-		$("#chartState").html('<a href="../../profile/person.jag?pid=' + pid + '" target="_blank">' + name + '</a>');
-	} else {
-		$("#chartState").text(name);
+function setChartTitle(type){
+	if (type === "peo") {
+		$("#chartState").text("");
+	} else if (type === "yea") {
+		$("#chartState").html('<a href="../../profile/person.jag?pid=' + selectedPid + '" target="_blank">' + selectedPerName + '</a>');
+	} else if (type === "pub") {
+		$("#chartState").html('<a href="../../profile/person.jag?pid=' + selectedPid + '" target="_blank">' + selectedPerName + '</a>' + ' / Year :&nbsp; ' + selectedYear + '');
 	}
 }
 
@@ -282,7 +305,7 @@ function drawChartsAndList(data){
 		var fromTo = value.split(';');
 		var newTo = parseInt(fromTo[1]);
 	
-		if (selectedType === "peo"){
+		if (selectedType === "peo") {
 			if (gadgetWidth < 500){
 				newTo = parseInt(fromTo[0]) + 4;
 				$("#limitSlider").slider("value", fromTo[0] - 1, newTo);
@@ -296,7 +319,7 @@ function drawChartsAndList(data){
 				newTo = parseInt(fromTo[0]) + 19;
 				$("#limitSlider").slider("value", fromTo[0] - 1, newTo);
 			}
-		} else if (selectedType === "yea"){
+		} else if (selectedType === "yea") {
 			if (gadgetWidth < 500){
 				fromTo[0] = newTo - 4;
 				$("#limitSlider").slider("value", fromTo[0], newTo + 1);
@@ -310,11 +333,28 @@ function drawChartsAndList(data){
 				fromTo[0] = newTo - 19;
 				$("#limitSlider").slider("value", fromTo[0], newTo + 1);
 			}
+		} else if (selectedType === "pub") {
+			if (gadgetWidth < 500) {
+				newTo = parseInt(fromTo[0]) + 4;
+				$("#limitSlider").slider("value", fromTo[0] - 1, newTo);
+			} else if (gadgetWidth < 1000) {
+				newTo = parseInt(fromTo[0]) + 9;
+				$("#limitSlider").slider("value", fromTo[0] - 1, newTo);
+			} else if (gadgetWidth < 1500) {
+				newTo = parseInt(fromTo[0]) + 14;
+				$("#limitSlider").slider("value", fromTo[0] - 1, newTo);
+			} else {
+				newTo = parseInt(fromTo[0]) + 19;
+				$("#limitSlider").slider("value", fromTo[0] - 1, newTo);
+			}
 		}
 		
 		var newData = getSlicedChartData(fromTo[0], newTo);
 
-		if ('undefined' !== typeof data) {
+		if (selectedType === "pub") {
+			console.log(newData);
+			createPublicationList(newData);
+		} else {
 			if(chartType === "bar"){
 				drawBarChart(newData);
 			} else if (chartType === "line"){
@@ -361,17 +401,84 @@ function drawChartsAndListWithRange(data){
 			$("#slider-area").empty();
 			showNotAvailbleMsg();
 		} else {
-			if(chartType === "bar"){
-				drawBarChart(newData);
-			} else if (chartType === "line"){
-				drawLineChart(newData);
-			} else if (chartType === "pie"){
-				drawPieChart(newData);
-			} else if (chartType === "list"){
-				createList(newData);
+			if (selectedType === "pub"){
+				createPublicationList(newData);
+			} else {
+				if(chartType === "bar"){
+					drawBarChart(newData);
+				} else if (chartType === "line"){
+					drawLineChart(newData);
+				} else if (chartType === "pie"){
+					drawPieChart(newData);
+				} else if (chartType === "list"){
+					createList(newData);
+				}
 			}
 		}
 	}
+}
+
+function createPublicationList(data){
+	if ('undefined' === typeof data) {
+		data = chartData;
+	}
+	var place = $("#placeholder");
+	$(".bar-tooltip").hide();
+	$(".line-tooltip").hide();
+	$(".pie-tooltip").hide();
+	place.empty();
+	
+	var divElem = document.createElement("div");
+	divElem.style.paddingLeft = "16px";
+	divElem.style.paddingRight = "16px";
+	
+	var tableElem = document.createElement("table");
+	tableElem.setAttribute("class", "table table-striped");
+	tableElem.style.width = "98%";
+	
+	var tbodyElem = document.createElement("tbody");
+	for (var i = 0; i < data.length; i++) {
+		trElem = document.createElement("tr");
+		var tdElem1 = document.createElement("td");
+		
+		var divElemName = document.createElement("div");
+		var publicationType = "";
+		if (data[i].pubtype === "1" || data[i].pubtype === 1) {
+			publicationType = "Journal Article";
+		} else if (data[i].pubtype === "2" || data[i].pubtype === 2) {
+			publicationType = "Book";
+		} else if (data[i].pubtype === "3" || data[i].pubtype === 3) {
+			publicationType = "Technical Article";
+		} else if (data[i].pubtype === "4" || data[i].pubtype === 4) {
+			publicationType = "Conference Proceeding";
+		} else if (data[i].pubtype === "5" || data[i].pubtype === 5) {
+			publicationType = "Book chapter";
+		} else {
+			publicationType = "Other";
+		}
+		divElemName.innerHTML = '<h4><a href="/publication/index.jag?pid=' + data[i].id + '" target="_blank">' + data[i].name + '</a>&nbsp; <small>' + publicationType + '</small></h4>';
+		
+		var divElemPublishers = document.createElement("div");
+		divElemPublishers.innerHTML = '<span style="color: #666666;">' + data[i].publishers + '</span>';
+		
+		var divElemYear = document.createElement("div");
+		divElemYear.innerHTML = '<span style="color: #999999;">' + data[i].year + '</span>';
+		
+		tdElem1.appendChild(divElemName);
+		tdElem1.appendChild(divElemPublishers);
+		tdElem1.appendChild(divElemYear);
+		
+		trElem.appendChild(tdElem1);
+		
+		tbodyElem.appendChild(trElem);
+	}
+	tableElem.appendChild(tbodyElem);
+	
+	divElem.appendChild(tableElem);
+	
+	$("#loading-status").hide();
+	$("#result-status").show();
+	place.append(divElem);
 }
 
 function initSlider(fromVal, toVal){
@@ -381,10 +488,12 @@ function initSlider(fromVal, toVal){
 	var bElem = document.createElement("b");
 	var text;
 	if(selectedType === "peo"){
-		text = document.createTextNode("Range of people: ");
+		text = document.createTextNode("People: ");
 	} else if(selectedType === "yea"){
 		text = document.createTextNode("Year: ");
-	}
+	} else if (selectedType === "pub") {
+		text = document.createTextNode("Publications: ");
+	} 
 	bElem.appendChild(text);
 	sliderArea.append(bElem);
 	
@@ -620,6 +729,13 @@ function getSlicedChartData(fromValue, toValue){
 				truncData.push(chartData[i]);
 			}
 		}
+	} else if (selectedType == "pub"){
+		if (chartData.length < toValue) {
+			toValue = chartData.length;
+		}
+		for (var i = fromValue - 1; i < toValue; i++) {
+			truncData.push(chartData[i]);
+		}
 	}
 	return truncData;
 }
@@ -635,3 +751,73 @@ function getStrDate(plmn) {
     return strDate;
 }
 
+function setWidthsForAOI(){
+	var place = $("#placeholder");
+	var placeWidth = place.width();
+	
+	var aoi = $("#aoi-selection");
+	var saoi = $("#saoi-selection");
+	var ssaoi = $("#ssaoi-selection");
+	
+	if (placeWidth < 320){
+		aoi.css({"width": "50px"});
+		saoi.css({"width": "80px"});
+		ssaoi.css({"width": "50px"});
+	} else if (placeWidth < 350){
+		aoi.css({"width": "60px"});
+		saoi.css({"width": "90px"});
+		ssaoi.css({"width": "60px"});
+	} else if (placeWidth < 380){
+		aoi.css({"width": "70px"});
+		saoi.css({"width": "100px"});
+		ssaoi.css({"width": "70px"});
+	} else if (placeWidth < 410){
+		aoi.css({"width": "80px"});
+		saoi.css({"width": "110px"});
+		ssaoi.css({"width": "80px"});
+	} else if (placeWidth < 440){
+		aoi.css({"width": "90px"});
+		saoi.css({"width": "120px"});
+		ssaoi.css({"width": "90px"});
+	} else if (placeWidth < 470){
+		aoi.css({"width": "100px"});
+		saoi.css({"width": "130px"});
+		ssaoi.css({"width": "100px"});
+	} else if (placeWidth < 500){
+		aoi.css({"width": "110px"});
+		saoi.css({"width": "140px"});
+		ssaoi.css({"width": "110px"});
+	} else if (placeWidth < 530){
+		aoi.css({"width": "120px"});
+		saoi.css({"width": "150px"});
+		ssaoi.css({"width": "120px"});
+	} else if (placeWidth < 560) {
+		aoi.css({"width": "130px"});
+		saoi.css({"width": "160px"});
+		ssaoi.css({"width": "130px"});
+	} else if (placeWidth < 590) {
+		aoi.css({"width": "140px"});
+		saoi.css({"width": "170px"});
+		ssaoi.css({"width": "140px"});
+	} else if (placeWidth < 620) {
+		aoi.css({"width": "150px"});
+		saoi.css({"width": "180px"});
+		ssaoi.css({"width": "150px"});
+	} else if (placeWidth < 650) {
+		aoi.css({"width": "160px"});
+		saoi.css({"width": "190px"});
+		ssaoi.css({"width": "160px"});
+	} else if (placeWidth < 680) {
+		aoi.css({"width": "170px"});
+		saoi.css({"width": "200px"});
+		ssaoi.css({"width": "170px"});
+	} else if (placeWidth < 710) {
+		aoi.css({"width": "180px"});
+		saoi.css({"width": "210px"});
+		ssaoi.css({"width": "180px"});
+	} else {
+		aoi.css({"width": "190px"});
+		saoi.css({"width": "220px"});
+		ssaoi.css({"width": "190px"});
+	}
+}

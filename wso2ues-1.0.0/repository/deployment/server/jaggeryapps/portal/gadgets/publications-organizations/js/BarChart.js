@@ -134,9 +134,10 @@ function BarChart(area, data, options) {
                 .orient("bottom");
 
         var yAxis = d3.svg.axis()
+				.tickFormat(d3.format("d"))
                 .scale(yScale)
                 .orient("left")
-                .ticks(5);
+                .ticks(4);
 
         barChartGroup.append("g")
                 .selectAll("g.rule")

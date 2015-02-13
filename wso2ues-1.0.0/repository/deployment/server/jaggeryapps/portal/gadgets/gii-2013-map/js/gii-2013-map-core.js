@@ -35,6 +35,7 @@ $(document).ready(function(){
 	
 	// on resize the window
 	$(window).resize(function(){
+		setWidthsForSelections();
 		drawMapsChartsAndList();
 	});
 	
@@ -75,6 +76,8 @@ $(document).ready(function(){
 		fetchCustomData();
 		$("#ni-selection").blur();
 	});
+	
+	setWidthsForSelections();
 });
 
 function fetchPiNIData() {
@@ -138,7 +141,6 @@ function fetchCustomData() {
 	
 	var prevData = getDataFromStore(pillarType, piId, niId);
 	if ("undefined" !== typeof prevData){
-		console.log("got prev data");
 		mapData = prevData;
 		drawMapsChartsAndList();
 	} else {
@@ -207,7 +209,7 @@ function drawMap(){
 	var minScore = getMinScore(); // mapData[mapData.length - 1].value;
 	var maxScore = mapData[0].value;
 	var temp;
-	if(minScore > maxScore){
+	if (minScore > maxScore) {
 		temp = minScore;
 		minScore = maxScore;
 		maxScore = temp;
@@ -224,7 +226,7 @@ function drawMap(){
 	var pillarType = $("#pillar-type-selection option:selected").val();
 	var niId = $("#ni-selection option:selected").val();
 	map.titles = [];
-	if(pillarType === "gv"){
+	if (pillarType === "gv") {
 		map.addTitle("The Global Innovation Index 2013", 18, "#000000", 1, true);// (text, size, color, alpha, bold)
 	} else if (pillarType === "pi" && niId === "0") {
 		var pillarName = $("#pillar-selection option:selected").text();
@@ -461,7 +463,7 @@ function drawIndexBarChart(data){
 	var pillarType = $("#pillar-type-selection option:selected").val();
 	var niId = $("#ni-selection option:selected").val();
 	var indexBarChartOptions;
-	if(pillarType === "gv"){
+	if (pillarType === "gv") {
 		indexBarChartOptions = {
 			chartTitle: "The Global Innovation Index 2013"
 		};
@@ -509,4 +511,83 @@ function setInfoForCharts(){
 			title: '<div style="text-align: left; font-size: 11px;"><h5><i class="fa fa-info-circle fa-lg"></i> GII - 2013</h5><p>The Global Innovation Index 2013: The Local Dynamics of Innovation is the result of a collaboration between Cornell University, INSEAD, and the World Intellectual Property Organization (WIPO) as co-publishers, and their Knowledge Partners.</p></div>'
 		});
 	}
+}
+
+function setWidthsForSelections(){
+	var place = $("#placeholder");
+	var placeWidth = place.width();
+	
+	var pillarTypeSelection = $("#pillar-type-selection");
+	var pillarSelection = $("#pillar-selection");
+	var niSelection = $("#ni-selection");
+	
+	var pillarTypeSelectionWidth = 20;
+	var pillarSelectionWidth = 20;
+	var niSelectionWidth = 20;
+	
+	if (placeWidth < 320){
+		pillarTypeSelectionWidth = 30;
+		pillarSelectionWidth = 15;
+		niSelectionWidth = 45;
+	} else if (placeWidth < 350){
+		pillarTypeSelectionWidth = 40;
+		pillarSelectionWidth = 25;
+		niSelectionWidth = 55;
+	} else if (placeWidth < 380){
+		pillarTypeSelectionWidth = 50;
+		pillarSelectionWidth = 35;
+		niSelectionWidth = 65;
+	} else if (placeWidth < 410){ // 2x2 in wide screen
+		pillarTypeSelectionWidth = 60;
+		pillarSelectionWidth = 45;
+		niSelectionWidth = 75;
+	} else if (placeWidth < 440){
+		pillarTypeSelectionWidth = 70;
+		pillarSelectionWidth = 55;
+		niSelectionWidth = 85;
+	} else if (placeWidth < 470){
+		pillarTypeSelectionWidth = 80;
+		pillarSelectionWidth = 65;
+		niSelectionWidth = 95;
+	} else if (placeWidth < 500){
+		pillarTypeSelectionWidth = 90;
+		pillarSelectionWidth = 75;
+		niSelectionWidth = 105;
+	} else if (placeWidth < 530){
+		pillarTypeSelectionWidth = 100;
+		pillarSelectionWidth = 85;
+		niSelectionWidth = 115;
+	} else if (placeWidth < 560) {
+		pillarTypeSelectionWidth = 110;
+		pillarSelectionWidth = 95;
+		niSelectionWidth = 125;
+	} else if (placeWidth < 590) {
+		pillarTypeSelectionWidth = 120;
+		pillarSelectionWidth = 105;
+		niSelectionWidth = 135;
+	} else if (placeWidth < 620) {
+		pillarTypeSelectionWidth = 130;
+		pillarSelectionWidth = 115;
+		niSelectionWidth = 145;
+	} else if (placeWidth < 650) { // 3x3 in wide screen
+		pillarTypeSelectionWidth = 140;
+		pillarSelectionWidth = 125;
+		niSelectionWidth = 155;
+	} else if (placeWidth < 680) {
+		pillarTypeSelectionWidth = 140;
+		pillarSelectionWidth = 135;
+		niSelectionWidth = 165;
+	} else if (placeWidth < 710) {
+		pillarTypeSelectionWidth = 140;
+		pillarSelectionWidth = 145;
+		niSelectionWidth = 175;
+	} else {
+		pillarTypeSelectionWidth = 140;
+		pillarSelectionWidth = 220;
+		niSelectionWidth = 240;
+	}
+	
+	pillarTypeSelection.css({"width": pillarTypeSelectionWidth + "px"});
+	pillarSelection.css({"width": pillarSelectionWidth + "px"});
+	niSelection.css({"width": niSelectionWidth + "px"});
 }

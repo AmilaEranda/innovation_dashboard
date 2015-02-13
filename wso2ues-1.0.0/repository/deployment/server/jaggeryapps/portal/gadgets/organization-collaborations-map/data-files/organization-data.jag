@@ -1,0 +1,15 @@
+<%
+
+include_once("../../../db/db.jag");
+
+function getDBData() {
+	var dbdt = [];
+	var result = db.query("SELECT DISTINCT org.organization_id AS `org_id`, org.name AS `org_name`, org.image_name AS `org_image`, org.longitude AS `org_long`, org.latitude AS `org_lati` FROM organization AS org LEFT JOIN country cou ON org.country_id = cou.country_id RIGHT JOIN collaboration col ON col.organization_id1 = org.organization_id WHERE cou.code = 'LK'");
+	for(var i = 0; i < result.length; i++){
+		dbdt.push({"org_id": result[i].org_id, "org_name": result[i].org_name, "org_image": result[i].org_image, "org_long": result[i].org_long, "org_lati": result[i].org_lati});
+	}
+	return {org_data: dbdt};
+}
+print(getDBData());
+
+%>

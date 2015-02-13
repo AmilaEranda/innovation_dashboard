@@ -1,10 +1,17 @@
 var indexBarChart;
 
 $(document).ready(function () {
-	$('#pub-table').DataTable();
-	
+	var pubsInitYear = parseInt($("#pubsYear").val());
+	if(isNaN(pubsInitYear)){
+		pubsInitYear = "";
+	}
+	$('#pub-table').DataTable({
+		"search": {
+			"search": "" + pubsInitYear + "" // insert search term here. (year)
+		},
+		"order": [2, 'desc']
+	});
 	initializeIndexBarChart();
-	
 });
 
 function initializeIndexBarChart(){

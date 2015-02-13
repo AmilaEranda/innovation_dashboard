@@ -185,16 +185,41 @@ function NormRadarChart(area, data, options) {
                 .style("stroke-width", "1px");
 				
         var legs = axis.append("text")
-                .attr("class", "legend")
+                //.attr("class", "legend")
 				.attr("onclick", function(d, i){
-					return "fetchCustomData(" + d.id + ", \"" + d.axis.toString() + "\")";
+					if (d.type === "pi"){
+						return "fetchCustomData(" + d.id + ", \"" + d.axis.toString() + "\")";
+					} else if (d.type === "ni"){
+						return "";
+					}
+				})
+				.attr("onmouseover", function(d, i){
+					if (d.type === "pi"){
+						return "prominentText(this)";
+					} else if (d.type === "ni"){
+						return "notProminentText(this)";
+					}
+				})
+				.attr("onmouseout", function(d, i){
+					if (d.type === "pi"){
+						return "notProminentText(this)";
+					} else if (d.type === "ni"){
+						return "notProminentText(this)";
+					}
 				})
                 .text(function(d) {
                     return d.axis;
                 })
-				.style("cursor", "pointer")
+				.style("cursor", function(d, i){
+					if (d.type === "pi"){
+						return "pointer";
+					} else if (d.type === "ni"){
+						return "auto";
+					}
+				})
                 .style("font-family", "sans-serif")
-                .style("font-size", "11px")
+                .style("font-size", "12px")
+				.style("fill", "#000000")
                 .attr("text-anchor", function(data, i) {
                     if (i === 0) {
                         return "middle";
@@ -480,6 +505,14 @@ function NormRadarChart(area, data, options) {
                 .text("www.globalinnovationindex.org");
 		*/
     };
+}
+
+function prominentText(obj){
+	$(obj).css({"fill": "#196A5F", "font-weight": "bold"});
+}
+
+function notProminentText(obj){
+	$(obj).css({"fill": "#000000", "font-weight": "normal"});
 }
 
 var globalNormRadarNumber = 0;

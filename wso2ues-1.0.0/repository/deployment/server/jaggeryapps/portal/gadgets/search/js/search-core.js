@@ -7,7 +7,7 @@ $(document).ready(function(){
 	
 	// on resize the window
 	$(window).resize(function(){
-		//drawChartsAndList(chartData);
+		
 	});
 	
 	// radio buttons
@@ -17,21 +17,27 @@ $(document).ready(function(){
 		$("#placeholder").empty();
 		$("#search-term").val("");
 		resetAoiSelections();
-		if (type === "res"){
+		if (type === "res") {
+			$("#aoi-area").show();
 			$("#search-term").attr("placeholder", "Enter first name or last name");
-			$("#result-status").html('<span><i class="fa fa-info-circle fa-lg"></i>&nbsp; Enter name of researcher and press <b>Search</b> button.</span>');
-		} else if (type === "pub"){
+			$("#result-status").html('<span><i class="fa fa-info-circle fa-lg"></i>&nbsp; Enter either name of a researcher or select area of interest and press <b>Search</b> button.</span><p>Need more tools? Go to <a href="/search/index.jag" target="_blank">advanced search</a>.</p><div style="text-align: center;"><img src="../../portal/gadgets/search/css/researchers.svg" style="height: 24%; margin-top: 12px;" /></div>');
+		} else if (type === "pub") {
+			$("#aoi-area").show();
 			$("#search-term").attr("placeholder", "Enter name of the publication");
-			$("#result-status").html('<span><i class="fa fa-info-circle fa-lg"></i>&nbsp; Enter name of publication and press <b>Search</b> button.</span>');
+			$("#result-status").html('<span><i class="fa fa-info-circle fa-lg"></i>&nbsp; Enter either name of a publication or select area of interest and press <b>Search</b> button.</span><p>Need more tools? Go to <a href="/search/index.jag" target="_blank">advanced search</a>.</p><div style="text-align: center;"><img src="../../portal/gadgets/search/css/publications.svg" style="height: 24%; margin-top: 12px;" /></div>');
+		} else if (type === "pat") {
+			$("#aoi-area").hide();
+			$("#search-term").attr("placeholder", "Enter title of the patent");
+			$("#result-status").html('<span><i class="fa fa-info-circle fa-lg"></i>&nbsp; Enter name of a patent and press <b>Search</b> button.</span><p>Need more tools? Go to <a href="/search/index.jag" target="_blank">advanced search</a>.</p><div style="text-align: center;"><img src="../../portal/gadgets/search/css/patents.svg" style="height: 24%; margin-top: 12px;" /></div>');
 		}
 		$(this).blur();
 	});
 	
 	//form submission
 	$( "#search-form" ).submit(function( event ) {
+		event.preventDefault();
 		fetchCustomData();
 		$("#search-btn").blur();
-		event.preventDefault();
 	});
 	
 	$("#aoi-selection").change(function(d, i) {
@@ -130,15 +136,30 @@ function fetchCustomData() {
 	$("#result-status").hide();
 
 	selectedType = $("input:radio[name=search-type]:checked").val();
-	var searchTerm = $("#search-term").val();
+	var searchTerm = $("#search-term").val().trim();
 	var aoiId = $("#aoi-selection option:selected").val();
 	var saoiId = $("#saoi-selection option:selected").val();
 	var ssaoiId = $("#ssaoi-selection option:selected").val();
 	
 	var url = "../../portal/gadgets/search/data-files/search-data.jag";
 	
-	if (searchTerm.trim() === "") {
-		$("#result-status").html('<span><i class="fa fa-exclamation-circle"></i>&nbsp; Enter your search term and then press <b>Search</b> button.</span>');
+	if (selectedType === "res" && searchTerm === "" && aoiId === "0" && saoiId === "0" && ssaoiId === "0") {
+		$("#placeholder").empty();
+		$("#result-status").html('<span><i class="fa fa-exclamation-circle"></i>&nbsp; Enter either a search term or select area of interest and then press <b>Search</b> button.</span><p>Need more tools? Go to <a href="/search/index.jag" target="_blank">advanced search</a>.</p>');
+		$("#result-status").show();
+		$("#loading-status").hide();
+		$("#search-term").val("");
+		$("#search-term").focus();
+	} else if (selectedType === "pub" && searchTerm === "" && aoiId === "0" && saoiId === "0" && ssaoiId === "0") {
+		$("#placeholder").empty();
+		$("#result-status").html('<span><i class="fa fa-exclamation-circle"></i>&nbsp; Enter either a search term or select area of interest and then press <b>Search</b> button.</span><p>Need more tools? Go to <a href="/search/index.jag" target="_blank">advanced search</a>.</p>');
+		$("#result-status").show();
+		$("#loading-status").hide();
+		$("#search-term").val("");
+		$("#search-term").focus();
+	} else if (selectedType === "pat" && searchTerm === "") {
+		$("#placeholder").empty();
+		$("#result-status").html('<span><i class="fa fa-exclamation-circle"></i>&nbsp; Enter search term and then press <b>Search</b> button.</span><p>Need more tools? Go to <a href="/search/index.jag" target="_blank">advanced search</a>.</p>');
 		$("#result-status").show();
 		$("#loading-status").hide();
 		$("#search-term").val("");
@@ -166,6 +187,8 @@ function onDataReceived(data) {
 		createResearcherList(resultData);
 	} else if (selectedType === "pub"){
 		createPublicationList(resultData);
+	} else if (selectedType === "pat"){
+		createPatentList(resultData);
 	}
 }
 
@@ -175,8 +198,15 @@ function createResearcherList(data){
 	}
 	
 	$("#result-status").empty();
-	var resTerm = data.length === 1 ? "" : "s";
-	$("#result-status").html('<span><b>'+ data.length +'</b>&nbsp; result' + resTerm + ' found.</span>');
+	if (data.length === 0) {
+		$("#result-status").html('<span>Your search did not match any researchers.</span><p>Need more tools? Go to <a href="/search/index.jag" target="_blank">advanced search</a>.</p>');
+	} else if (data.length === 1) {
+		$("#result-status").html('<span><b>1</b>&nbsp; researcher found.</span><span>Need more tools? Go to <a href="/search/index.jag" target="_blank">advanced search</a>.</span>');
+	} else if (data.length === 100) {
+		$("#result-status").html('<span>Showing first &nbsp;<b>100</b>&nbsp; researchers only.</span><span>Need more tools? Go to <a href="/search/index.jag" target="_blank">advanced search</a>.</span>');
+	} else {
+		$("#result-status").html('<span><b>'+ data.length +'</b>&nbsp; researchers found.</span><span>Need more tools? Go to <a href="/search/index.jag" target="_blank">advanced search</a>.</span>');
+	}
 	
 	var place = $("#placeholder");
 	place.empty();
@@ -246,8 +276,15 @@ function createPublicationList(data){
 	}
 	
 	$("#result-status").empty();
-	var resTerm = data.length === 1 ? "" : "s";
-	$("#result-status").html('<span><b>'+ data.length +'</b>&nbsp; result' + resTerm + ' found.</span>');
+	if (data.length === 0) {
+		$("#result-status").html('<span>Your search did not match any publications.</span><span>Need more tools? Go to <a href="/search/index.jag" target="_blank">advanced search</a>.</span>');
+	} else if (data.length === 1) {
+		$("#result-status").html('<span><b>1</b>&nbsp; publication found.</span><span>Need more tools? Go to <a href="/search/index.jag" target="_blank">advanced search</a>.</span>');
+	} else if (data.length === 100) {
+		$("#result-status").html('<span>Showing first &nbsp;<b>100</b>&nbsp; publications only.</span><span>Need more tools? Go to <a href="/search/index.jag" target="_blank">advanced search</a>.</span>');
+	} else {
+		$("#result-status").html('<span><b>'+ data.length +'</b>&nbsp; publications found.</span><span>Need more tools? Go to <a href="/search/index.jag" target="_blank">advanced search</a>.</span>');
+	}
 	
 	var place = $("#placeholder");
 	place.empty();
@@ -280,7 +317,7 @@ function createPublicationList(data){
 		} else {
 			publicationType = "Other";
 		}
-		divElemName.innerHTML = '<h4><a href="publication/path/publication.jag?pid=' + data[i].id + '" target="_blank">' + data[i].name + '</a>&nbsp; <small>' + publicationType + '</small></h4>';
+		divElemName.innerHTML = '<h4><a href="/publication/index.jag?pid=' + data[i].id + '" target="_blank">' + data[i].name + '</a>&nbsp; <small>' + publicationType + '</small></h4>';
 		
 		var divElemPublishers = document.createElement("div");
 		divElemPublishers.innerHTML = '<span style="color: #666666;">' + data[i].publishers + '</span>';
@@ -290,6 +327,66 @@ function createPublicationList(data){
 		
 		tdElem1.appendChild(divElemName);
 		tdElem1.appendChild(divElemPublishers);
+		tdElem1.appendChild(divElemYear);
+		
+		trElem.appendChild(tdElem1);
+		
+		tbodyElem.appendChild(trElem);
+	}
+	tableElem.appendChild(tbodyElem);
+	
+	divElem.appendChild(tableElem);
+	
+	$("#loading-status").hide();
+	$("#result-status").show();
+	place.append(divElem);
+}
+
+function createPatentList(data){
+	if ('undefined' === typeof data){
+		data = resultData;
+	}
+	
+	$("#result-status").empty();
+	if (data.length === 0) {
+		$("#result-status").html('<span>Your search did not match any patents.</span><span>Need more tools? Go to <a href="/search/index.jag" target="_blank">advanced search</a>.</span>');
+	} else if (data.length === 1) {
+		$("#result-status").html('<span><b>1</b>&nbsp; patent found.</span><span>Need more tools? Go to <a href="/search/index.jag" target="_blank">advanced search</a>.</span>');
+	} else if (data.length === 100) {
+		$("#result-status").html('<span>Showing first &nbsp;<b>100</b>&nbsp; patents only.</span><span>Need more tools? Go to <a href="/search/index.jag" target="_blank">advanced search</a>.</span>');
+	} else {
+		$("#result-status").html('<span><b>'+ data.length +'</b>&nbsp; patents found.</span><span>Need more tools? Go to <a href="/search/index.jag" target="_blank">advanced search</a>.</span>');
+	}
+	
+	var place = $("#placeholder");
+	place.empty();
+	
+	var divElem = document.createElement("div");
+	divElem.style.paddingLeft = "16px";
+	divElem.style.paddingRight = "16px";
+	
+	var tableElem = document.createElement("table");
+	tableElem.setAttribute("class", "table table-striped");
+	tableElem.style.width = "98%";
+	
+	var tbodyElem = document.createElement("tbody");
+	for (var i = 0; i < data.length; i++) {
+		trElem = document.createElement("tr");
+		var tdElem1 = document.createElement("td");
+		
+		var divElemName = document.createElement("div");
+		divElemName.style.marginTop = "16px";
+		divElemName.innerHTML = '<h4>' + data[i].patenttitle + '</h4>';
+		
+		var divElemInventors = document.createElement("div");
+		divElemInventors.innerHTML = '<p class="text-info">' + data[i].inventors + '</p>';
+		
+		var divElemYear = document.createElement("div");
+		divElemYear.style.marginBottom = "16px";
+		divElemYear.innerHTML = '<b>Granted Date:</b>&nbsp; <span style="color: #555555;">' + data[i].year + '</span>';
+		
+		tdElem1.appendChild(divElemName);
+		tdElem1.appendChild(divElemInventors);
 		tdElem1.appendChild(divElemYear);
 		
 		trElem.appendChild(tdElem1);

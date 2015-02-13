@@ -10,7 +10,7 @@ var ssaoiId = request.getParameter("ssaoiId");
 function getDBData() {
 	var dbdt = [];
 	var strQuery = "";
-	if ("undefined" == typeof searchType || searchType === null || searchType === "" || searchType === "res"){ // search researchers
+	if ("undefined" === typeof searchType || searchType === null || searchType === "" || searchType === "res") { // search researchers
 		if (aoiId === null || aoiId === "" || aoiId === "0" || "undefined" === typeof aoiId) {
 			strQuery = "SELECT per.person_id AS per_id, tit.title AS per_title, per.initials AS per_inits, per.first_name AS per_fname, per.last_name AS per_lname, per.image_name AS per_image, org.name AS per_org_name, COUNT(DISTINCT ppu.publication_id) AS per_pub_count, per.gender AS per_gender FROM person per LEFT JOIN title tit ON per.title_id = tit.title_id LEFT JOIN person_organization por ON per.person_id = por.person_id LEFT JOIN organization org ON por.organization_id = org.organization_id LEFT JOIN person_publication ppu ON per.person_id = ppu.person_id WHERE (per.first_name LIKE '%" + searchTerm + "%' OR per.initials LIKE '%" + searchTerm + "%' OR per.last_name LIKE '%" + searchTerm + "%') AND per.record_status = 1 AND por.his_default = 1 GROUP BY per.person_id ORDER BY COUNT(DISTINCT ppu.publication_id) DESC, per.last_name ASC LIMIT 100";
 		} else if (aoiId !== "0" && saoiId === "0" && ssaoiId === "0") {
@@ -45,7 +45,25 @@ function getDBData() {
 		var result = db.query(strQuery);
 		for (var i = 0; i < result.length; i++) {
 			var strYear = ("" + result[i].pub_year + "").substring(0, 4);
-			dbdt.push({"name": result[i].pub_title, "id": result[i].pub_id, "type": result[i].pub_type, "year": strYear, "publishers": result[i].pub_publishers});
+			dbdt.push({"name": result[i].pub_title.trim().replace(/\t+/g, " "), "id": result[i].pub_id, "type": result[i].pub_type, "year": strYear, "publishers": result[i].pub_publishers.trim().replace(/\t+/g, " ")});
+		}
+	} else if (searchType === "pat") { // search patents
+		strQuery = "SELECT pat.patent_id AS pat_id, pat.inventor_title AS pat_title, pat.inventor_name AS pat_inventor, pat.granted_date AS pat_grntd_date FROM patent pat WHERE pat.patent_id IS NOT NULL AND pat.inventor_title LIKE '%" + searchTerm + "%' ORDER BY pat.granted_date DESC, pat.inventor_title ASC";
+		var result = db.query(strQuery);
+		var patTitle, patInventor;
+		for (var i = 0; i < result.length; i++) {
+			var strYear = ("" + result[i].pat_grntd_date + "").substring(0, 10);
+			if (result[i].pat_title === null) {
+				patTitle = "";
+			} else {
+				patTitle = result[i].pat_title.trim().replace(/\t+/g, " ")
+			}
+			if (result[i].pat_inventor === null) {
+				patInventor = "";
+			} else {
+				patInventor = result[i].pat_inventor.trim().replace(/\t+/g, " ")
+			}
+			dbdt.push({"patenttitle": patTitle, "id": result[i].pat_id, "inventors": patInventor, "year": strYear});
 		}
 	}
 	return {search_data: dbdt};

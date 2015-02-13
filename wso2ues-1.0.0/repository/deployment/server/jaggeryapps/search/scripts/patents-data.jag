@@ -1,0 +1,42 @@
+<%
+include_once("db.jag");
+
+var title = request.getParameter("title").trim();
+var inventorName = request.getParameter("inname").trim();
+var grantedYear = request.getParameter("grntdyear").trim();
+
+function getDBData() {
+	var dbdt = [];
+	var strQuery = "SELECT pat.patent_id AS pat_id, pat.inventor_title AS pat_title, pat.inventor_name AS pat_inventor, pat.granted_date AS pat_grntd_date FROM patent pat WHERE pat.patent_id IS NOT NULL ";
+	if (title !== "") {
+		strQuery += "AND pat.inventor_title LIKE '%" + title + "%' ";
+	} 
+	if (grantedYear !== "") {
+		strQuery += "AND pat.granted_date LIKE '%" + grantedYear + "%' ";
+	}
+	if (inventorName !== "") {
+		strQuery += "AND pat.inventor_name LIKE '%" + inventorName + "%' ";
+	}
+	strQuery += "ORDER BY pat.granted_date DESC, pat.inventor_title ASC";
+	 
+	var result = db.query(strQuery);
+	var strYear, patTitle, patInventorName;
+	for (var i = 0; i < result.length; i++) {
+		strYear = ("" + result[i].pat_grntd_date + "").substring(0, 10);
+		if (result[i].pat_title === null) {
+			patTitle = "";
+		} else {
+			patTitle = result[i].pat_title.trim().replace(/\t+/g, " ");
+		}
+		if (result[i].pat_inventor === null) {
+			patInventorName = "";
+		} else {
+			patInventorName = result[i].pat_inventor.trim().replace(/\t+/g, " ");
+		}
+		dbdt.push({"title": patTitle, "inventor": patInventorName, "id": result[i].pat_id, "year": strYear});
+	}
+	return {search_data: dbdt};
+}
+print(getDBData());
+
+%>

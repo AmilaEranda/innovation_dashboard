@@ -99,14 +99,14 @@ function createPeopleList(start, end){
 		var imgElem = document.createElement("img");
 		if(psnData[i].per_image == null){
 			if(psnData[i].per_gender == 0){
-				imgElem.setAttribute("src", "images/people/blank/woman.svg");
+				imgElem.setAttribute("src", "/userforms/images/users/woman.png");
 			} else {
-				imgElem.setAttribute("src", "images/people/blank/man.svg");
+				imgElem.setAttribute("src", "/userforms/images/users/man.png");
 			}
 		} else {
-			imgElem.setAttribute("src", "images/people/" + psnData[i].per_image);
+			imgElem.setAttribute("src", "/userforms/images/users/" + psnData[i].per_id + "/" + psnData[i].per_image);
 		}
-		
+		$(imgElem).addClass("img-circle");
 		$(imgElem).css("width", "80px");
 		divCol2Elem.appendChild(imgElem);
 		

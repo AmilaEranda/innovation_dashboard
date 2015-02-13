@@ -22,7 +22,7 @@ function PieChart(area, data, options) {
 
     this.globalPieNum = globalPieNumber++;
 
-    $("body").append('<div id="pie-tooltip' + this.globalPieNum + '"></div>');
+    $("body").append('<div id="pie-tooltip' + this.globalPieNum + '" class="pie-tooltip"></div>');
     $("#pie-tooltip" + this.globalPieNum).css({"position": "absolute", "background": "rgba(0, 0, 0, 0.8)", "color": "white", "font-family": "Arial", "font-size": "14px", "font-weight": "lighter", "z-index": "100", "pointer-events": "none"});
     $("#pie-tooltip" + this.globalPieNum).append('<div id="pie-tooltip-content' + this.globalPieNum + '" style="padding: 5px 10px 5px 10px;">');
     $("#pie-tooltip-content" + this.globalPieNum).append('<span id="pie-tooltip-desc' + this.globalPieNum + '" style="font-size: 12px;">desc of tooltip</span><br/>');
@@ -167,7 +167,7 @@ function PieChart(area, data, options) {
 					if (d.data.type === "peo"){
 						fetchCustomData("yea", d.data.id, d.data.name);
 					} else if (d.data.type === "yea"){
-						window.open("../../profile/person.jag?pid=" + d.data.id + "&year=" + d.data.name);
+						fetchCustomData("pub", d.data.id, d.data.name);
 					}
 					/*
                     var isExpanded = d3.select(this).attr("class") === "expanded";

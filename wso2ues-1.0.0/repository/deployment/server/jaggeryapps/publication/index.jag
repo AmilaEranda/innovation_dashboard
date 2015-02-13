@@ -1,0 +1,452 @@
+<%
+	include_once("scripts/db.jag");
+
+	var pid = parseInt(request.getParameter("pid"));
+	var isValid = true;
+	
+	var pubId, pubType, pubTitle, pubName, pubYear, pubEdition, pubVolume, pubIssue, pubPages, pubMonth, pubFileName, pubConfDate, pubPublisher, pubIsbn, pubJournalTitle, pubPerId;
+
+	if (pid === null || isNaN(pid) || pid < 0) {
+		isValid = false;
+	}
+
+	if (isValid) {
+		var result = db.query("SELECT pu.publication_id AS `pub_id`, pu.publication_type AS `pub_type`, pu.title AS `pub_title`, pu.name AS `con_name`, pu.year AS `pub_year`, pu.editions AS `pub_edition`, pu.volume_number AS `pub_volume`, pu.issue_number AS `pub_issue`, pu.pages AS `pub_pages`, pu.month AS `pub_month`, pu.publication_file AS `pub_file_name`, pu.conference_date AS `pub_conf_date`, pu.publisher AS `pub_publisher`, pu.isbn_no AS `pub_isbn`, jo.journal_title AS `jou_title`, pu.person_id AS `pub_per_id` FROM publication pu LEFT JOIN journal jo ON pu.journal_id = jo.journal_id WHERE pu.publication_id = " + pid);
+		if (result.length > 0) {
+			pubId = result[0].pub_id;
+			pubType = result[0].pub_type;
+			pubTitle = result[0].pub_title;
+			pubName = result[0].con_name;
+			pubYear = "" + result[0].pub_year + "";
+			pubEdition = result[0].pub_edition;
+			pubVolume = result[0].pub_volume;
+			pubIssue = result[0].pub_issue;
+			pubPages = result[0].pub_pages;
+			pubMonth = result[0].pub_month;
+			pubFileName = result[0].pub_file_name;
+			pubConfDate = result[0].pub_conf_date;
+			pubPublisher = result[0].pub_publisher;
+			pubIsbn = result[0].pub_isbn;
+			pubJournalTitle = result[0].jou_title;
+			pubPerId = result[0].pub_per_id;
+			
+			pubYear = pubYear.trim().substring(0, 4);
+			
+			var authorResult = db.query("SELECT per.person_id AS `per_id`, tit.title AS `per_title`, CONCAT((CASE WHEN per.initials = '' THEN per.first_name WHEN per.initials IS NULL THEN per.first_name ELSE per.initials END), ' ', per.last_name) AS `per_name`, per.image_name AS `per_image`, per.gender AS `per_gender`, org.name AS `org_name`, org.organization_id AS `org_id` FROM person_publication ppu LEFT JOIN person per ON ppu.person_id = per.person_id LEFT JOIN title tit ON per.title_id = tit.title_id LEFT JOIN person_organization por ON per.person_id = por.person_id LEFT JOIN organization org ON por.organization_id = org.organization_id WHERE per.record_status = 1 AND por.his_default = 1 AND publication_id = " + pubId);
+		} else {
+			isValid = false;
+		}
+	}
+
+%>
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>Publication - Innovation Dashboard</title>
+		<link type="image/x-icon" href="images/dev/favicon.ico" rel="shortcut icon" />
+
+		<!-- Bootstrap core CSS -->
+		<link href="css/flatly/bootstrap.min.css" rel="stylesheet">
+		<link href="css/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+		<link href="css/styles.css" rel="stylesheet">
+
+		<script src="js/jquery/jquery-1.11.1.js"></script>
+		<script src="js/bootstrap/bootstrap.js"></script>
+		
+		<!-- google maps -->
+		<script src="js/scripts/publication.js"></script>
+	</head>
+
+	<body>
+		<% include_once("util/topnav.jag"); %>
+
+		<div class="container-fluid">
+			<% if(isValid){ %>
+			<div class="row" style="margin-bottom: 24px;">
+				<div class="col-sm-2">
+					<div style="text-align: center;">
+						<%
+						var typeImage = "images/dev/";
+						pubType = parseInt(pubType);
+						if (pubType === 1) {
+							typeImage += "journal-article.png";
+						} else if (pubType === 2) {
+							typeImage += "book.png";
+						} else if (pubType === 3) {
+							typeImage += "technical-article.png";
+						} else if (pubType === 4) {
+							typeImage += "conference.png";
+						} else if (pubType === 5) {
+							typeImage += "book-chapter.png";
+						} else {
+							typeImage += "journal-article.png";
+						}
+						%>
+						<img src="<%=typeImage %>" class="img" style="height: 160px;">
+					</div>
+				</div>
+				<div class="col-sm-10">
+					<h4 style="color: #999999;">
+					<%
+					if (pubType === 1) {
+						print("Journal Article");
+					} else if (pubType === 2) {
+						print("Book");
+					} else if (pubType === 3) {
+						print("Technical Article");
+					} else if (pubType === 4) {
+						print("Conference Proceeding");
+					} else if (pubType === 5) {
+						print("Book Chapter");
+					} else {
+						print("");
+					}
+					%>
+					</h4>
+					<h2><% print(pubTitle); %></h2>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-sm-8"><!-- left content -->
+					<div style="text-align: center;">
+						<h4>Details</h4>
+					</div>
+					<% if (pubType === 1) { %>
+					<div class="form-horizontal">
+						<% if (pubJournalTitle !== null && pubJournalTitle !== "") { %>
+						<div class="form-group">
+							<label class="col-sm-3 control-label">Journal Name</label>
+							<div class="col-sm-9">
+								<p class="form-control-static"><%=pubJournalTitle %></p>
+							</div>
+						</div>
+						<% } %>
+						<% if (pubVolume !== null && pubVolume !== "") { %>
+						<div class="form-group">
+							<label class="col-sm-3 control-label">Volume No.</label>
+							<div class="col-sm-9">
+								<p class="form-control-static"><%=pubVolume %></p>
+							</div>
+						</div>
+						<% } %>
+						<% if (pubIssue !== null && pubIssue !== "") { %>
+						<div class="form-group">
+							<label class="col-sm-3 control-label">Issue No.</label>
+							<div class="col-sm-9">
+								<p class="form-control-static"><%=pubIssue %></p>
+							</div>
+						</div>
+						<% } %>
+						<% if (pubEdition !== null && pubEdition !== "") { %>
+						<div class="form-group">
+							<label class="col-sm-3 control-label">Editions</label>
+							<div class="col-sm-9">
+								<p class="form-control-static"><%=pubEdition %></p>
+							</div>
+						</div>
+						<% } %>
+						<% if (pubPages !== null && pubPages !== "") { %>
+						<div class="form-group">
+							<label class="col-sm-3 control-label">Pages</label>
+							<div class="col-sm-9">
+								<p class="form-control-static"><%=pubPages %></p>
+							</div>
+						</div>
+						<% } %>
+						<% if (pubYear !== null && pubYear !== "") { %>
+						<div class="form-group">
+							<label class="col-sm-3 control-label">Year</label>
+							<div class="col-sm-9">
+								<p class="form-control-static"><%=pubYear %></p>
+							</div>
+						</div>
+						<% } %>
+						<% if (pubMonth !== null && pubMonth !== "" && pubMonth !== 0) { %>
+						<div class="form-group">
+							<label class="col-sm-3 control-label">Month</label>
+							<div class="col-sm-9">
+								<p class="form-control-static"><%=getStrMonth(pubMonth) %></p>
+							</div>
+						</div>
+						<% } %>
+						<% if (pubFileName !== null && pubFileName !== "") { %>
+						<div class="form-group">
+							<label class="col-sm-3 control-label"></label>
+							<div class="col-sm-9">
+								<a class="btn btn-success" href="<%="/userforms/publications/" + pubPerId + "/" + pubFileName %>"><i class="fa fa-download fa-lg"></i>&nbsp; Download</a>
+							</div>
+						</div>
+						<% } %>
+					</div>
+					<% } else if (pubType === 2) { %>
+					<div class="form-horizontal">
+						<% if (pubJournalTitle !== null && pubJournalTitle !== "") { %>
+						<div class="form-group">
+							<label class="col-sm-3 control-label">Book Name</label>
+							<div class="col-sm-9">
+								<p class="form-control-static"><%=pubName %></p>
+							</div>
+						</div>
+						<% } %>
+						<% if (pubPublisher !== null && pubPublisher !== "") { %>
+						<div class="form-group">
+							<label class="col-sm-3 control-label">Publisher</label>
+							<div class="col-sm-9">
+								<p class="form-control-static"><%=pubPublisher %></p>
+							</div>
+						</div>
+						<% } %>
+						<% if (pubEdition !== null && pubEdition !== "") { %>
+						<div class="form-group">
+							<label class="col-sm-3 control-label">Editions</label>
+							<div class="col-sm-9">
+								<p class="form-control-static"><%=pubEdition %></p>
+							</div>
+						</div>
+						<% } %>
+						<% if (pubIsbn !== null && pubIsbn !== "") { %>
+						<div class="form-group">
+							<label class="col-sm-3 control-label">ISBN</label>
+							<div class="col-sm-9">
+								<p class="form-control-static"><%=pubIsbn %></p>
+							</div>
+						</div>
+						<% } %>
+						<% if (pubYear !== null && pubYear !== "") { %>
+						<div class="form-group">
+							<label class="col-sm-3 control-label">Year</label>
+							<div class="col-sm-9">
+								<p class="form-control-static"><%=pubYear %></p>
+							</div>
+						</div>
+						<% } %>
+						<% if (pubFileName !== null && pubFileName !== "") { %>
+						<div class="form-group">
+							<label class="col-sm-3 control-label"></label>
+							<div class="col-sm-9">
+								<a class="btn btn-success" href="<%="/userforms/publications/" + pubPerId + "/" + pubFileName %>"><i class="fa fa-download fa-lg"></i>&nbsp; Download</a>
+							</div>
+						</div>
+						<% } %>
+					</div>
+					<% } else if (pubType === 3) { %>
+					<div class="form-horizontal">
+						<% if (pubName !== null && pubName !== "") { %>
+						<div class="form-group">
+							<label class="col-sm-3 control-label">Series Name</label>
+							<div class="col-sm-9">
+								<p class="form-control-static"><%=pubName %></p>
+							</div>
+						</div>
+						<% } %>
+						<% if (pubEdition !== null && pubEdition !== "") { %>
+						<div class="form-group">
+							<label class="col-sm-3 control-label">Editions</label>
+							<div class="col-sm-9">
+								<p class="form-control-static"><%=pubEdition %></p>
+							</div>
+						</div>
+						<% } %>
+						<% if (pubYear !== null && pubYear !== "") { %>
+						<div class="form-group">
+							<label class="col-sm-3 control-label">Year</label>
+							<div class="col-sm-9">
+								<p class="form-control-static"><%=pubYear %></p>
+							</div>
+						</div>
+						<% } %>
+						<% if (pubMonth !== null && pubMonth !== "" && pubMonth !== 0) { %>
+						<div class="form-group">
+							<label class="col-sm-3 control-label">Month</label>
+							<div class="col-sm-9">
+								<p class="form-control-static"><%=getStrMonth(pubMonth) %></p>
+							</div>
+						</div>
+						<% } %>
+						<% if (pubFileName !== null && pubFileName !== "") { %>
+						<div class="form-group">
+							<label class="col-sm-3 control-label"></label>
+							<div class="col-sm-9">
+								<a class="btn btn-success" href="<%="/userforms/publications/" + pubPerId + "/" + pubFileName %>"><i class="fa fa-download fa-lg"></i>&nbsp; Download</a>
+							</div>
+						</div>
+						<% } %>
+					</div>
+					<% } else if (pubType === 4) { %>
+					<div class="form-horizontal">
+						<% if (pubName !== null && pubName !== "") { %>
+						<div class="form-group">
+							<label class="col-sm-3 control-label">Proceeding Name</label>
+							<div class="col-sm-9">
+								<p class="form-control-static"><%=pubName %></p>
+							</div>
+						</div>
+						<% } %>
+						<% if (pubIsbn !== null && pubIsbn !== "") { %>
+						<div class="form-group">
+							<label class="col-sm-3 control-label">Editions</label>
+							<div class="col-sm-9">
+								<p class="form-control-static"><%=pubIsbn %></p>
+							</div>
+						</div>
+						<% } %>
+						<% if (pubPages !== null && pubPages !== "") { %>
+						<div class="form-group">
+							<label class="col-sm-3 control-label">Pages</label>
+							<div class="col-sm-9">
+								<p class="form-control-static"><%=pubPages %></p>
+							</div>
+						</div>
+						<% } %>
+						<% if (pubYear !== null && pubYear !== "") { %>
+						<div class="form-group">
+							<label class="col-sm-3 control-label">Year</label>
+							<div class="col-sm-9">
+								<p class="form-control-static"><%=pubYear %></p>
+							</div>
+						</div>
+						<% } %>
+						<% if (pubMonth !== null && pubMonth !== "" && pubMonth !== 0) { %>
+						<div class="form-group">
+							<label class="col-sm-3 control-label">Month</label>
+							<div class="col-sm-9">
+								<p class="form-control-static"><%=getStrMonth(pubMonth) %></p>
+							</div>
+						</div>
+						<% } %>
+						<% if (pubFileName !== null && pubFileName !== "") { %>
+						<div class="form-group">
+							<label class="col-sm-3 control-label"></label>
+							<div class="col-sm-9">
+								<a class="btn btn-success" href="<%="/userforms/publications/" + pubPerId + "/" + pubFileName %>"><i class="fa fa-download fa-lg"></i>&nbsp; Download</a>
+							</div>
+						</div>
+						<% } %>
+					</div>
+					<% } else if (pubType === 5) { %>
+					<div class="form-horizontal">
+						<% if (pubName !== null && pubName !== "") { %>
+						<div class="form-group">
+							<label class="col-sm-3 control-label">Chapter Title</label>
+							<div class="col-sm-9">
+								<p class="form-control-static"><%=pubTitle %></p>
+							</div>
+						</div>
+						<% } %>
+						<% if (pubPublisher !== null && pubPublisher !== "") { %>
+						<div class="form-group">
+							<label class="col-sm-3 control-label">Publisher</label>
+							<div class="col-sm-9">
+								<p class="form-control-static"><%=pubPublisher %></p>
+							</div>
+						</div>
+						<% } %>
+						<% if (pubEdition !== null && pubEdition !== "") { %>
+						<div class="form-group">
+							<label class="col-sm-3 control-label">Editions</label>
+							<div class="col-sm-9">
+								<p class="form-control-static"><%=pubEdition %></p>
+							</div>
+						</div>
+						<% } %>
+						<% if (pubPages !== null && pubPages !== "") { %>
+						<div class="form-group">
+							<label class="col-sm-3 control-label">Chapter No.</label>
+							<div class="col-sm-9">
+								<p class="form-control-static"><%=pubPages %></p>
+							</div>
+						</div>
+						<% } %>
+						<% if (pubIsbn !== null && pubIsbn !== "") { %>
+						<div class="form-group">
+							<label class="col-sm-3 control-label">ISBN</label>
+							<div class="col-sm-9">
+								<p class="form-control-static"><%=pubIsbn %></p>
+							</div>
+						</div>
+						<% } %>
+						<% if (pubYear !== null && pubYear !== "") { %>
+						<div class="form-group">
+							<label class="col-sm-3 control-label">Year</label>
+							<div class="col-sm-9">
+								<p class="form-control-static"><%=pubYear %></p>
+							</div>
+						</div>
+						<% } %>
+					</div>
+					<% } %>
+				</div>
+				<div class="col-sm-4"><!-- right content -->
+					<h4>Authors</h4>
+					<% for (var i= 0; i < authorResult.length; i++) { %>
+					<div class="row" style="margin-bottom: 12px;">
+						<div class="col-sm-3" style="text-align: center;">
+							<%
+							var perImgPath = "/userforms/images/users/";
+							if (authorResult[i].per_image === null && authorResult[i].per_gender === 1) {
+								perImgPath += "man.png"; 
+							} else if (authorResult[i].per_image === null && authorResult[i].per_gender === 0) {
+								perImgPath += "woman.png"; 
+							} else {
+								perImgPath += authorResult[i].per_id + "/" + authorResult[i].per_image; 
+							}
+							%>
+							<img src="<%=perImgPath %>" class="img img-thumbnail" style="width: 60px; margin-right: 8px;" >
+						</div>
+						<div class="col-sm-9">
+							<span><b><a href="/profile/person.jag?pid=<%=authorResult[i].per_id %>"><%=authorResult[i].per_name %></a></b></span><br>
+							<small><%=authorResult[i].org_name %></small>
+						</div>
+					</div>
+					
+					<% } %>
+				</div>
+			</div>
+			<% } else { %>
+			<div class="row">
+				<div class="col-sm-12">
+					<h3>Not Found</h3>
+					<p>The publication you are looking for is not found in Sri Lanka Innovation Dashboard</p>
+					<p>Go to <a href="/home/index.jag">home page</a></p>
+				</div>
+			</div>
+			<% } %>
+		</div>
+		
+		<% include_once("util/footer.jag"); %>
+	</body>
+</html>
+<% db.close(); %>
+<%
+function getStrMonth(monthIndex){
+	if (monthIndex === 1){
+		return "January"
+	} else if (monthIndex === 2){
+		return "February"
+	} else if (monthIndex === 3){
+		return "March"
+	} else if (monthIndex === 4){
+		return "April"
+	} else if (monthIndex === 5){
+		return "May"
+	} else if (monthIndex === 6){
+		return "June"
+	} else if (monthIndex === 7){
+		return "July"
+	} else if (monthIndex === 8){
+		return "August"
+	} else if (monthIndex === 9){
+		return "September"
+	} else if (monthIndex === 10){
+		return "October"
+	} else if (monthIndex === 11){
+		return "November"
+	} else if (monthIndex === 12){
+		return "December"
+	} else {
+		return ""
+	} 
+}
+%>

@@ -58,7 +58,7 @@
 			<div class="row">
 				<div class="col-md-2">
 					<div style="text-align: center; margin: 16px 8px;">
-						<img src="images/organizations/<% print(orgImage); %>" />
+						<img src="/images/organizations/<% print(orgImage); %>" />
 					</div>
 				</div>
 				<div class="col-md-10">
@@ -198,7 +198,6 @@
 								var perLName = result[i].last_name;
 								var perImage = result[i].per_image;
 								var perGender = result[i].per_gender;
-								print(perId);
 							%>
 							<div style="margin: 20px 0px 20px;">
 								<div class="row">
@@ -209,11 +208,11 @@
 										<% if(perImage == null){
 											if(perGender == 0){
 											%>
-											<img src="images/people/blank/woman.svg" style="width: 80px;" />
+											<img src="/userforms/images/users/woman.png" style="width: 80px;" />
 											<% } else { %>
-											<img src="images/people/blank/man.svg" style="width: 80px;" />
+											<img src="/userforms/images/users/man.png" style="width: 80px;" />
 										<% } } else { %>
-										<img src="<% print("images/people/" + perImage); %>" style="width: 80px;" />
+										<img src="/userforms/images/users/<% print(perId + "/" + perImage); %>" style="width: 80px;" />
 										<% } %>
 									</div>
 									<div class="col-md-9">

@@ -175,11 +175,11 @@ function setLocationTimeout(i, locName, markerImage, orgCount, orgsArr){
 				});
 				
 				var infoContent = '<div style="width: 200px;"><h5>' + locName + "</h5>";
-				infoContent += "<ol>"
+				infoContent += "<ul>"
 				for(var i = 0; i < orgsArr.length; i++){
 					infoContent += "<li>" + orgsArr[i] + "</li>";
 				}
-				infoContent += "</ol></div>"
+				infoContent += "</ul></div>"
 				
 				var infowindow = new google.maps.InfoWindow({
 					content: infoContent,

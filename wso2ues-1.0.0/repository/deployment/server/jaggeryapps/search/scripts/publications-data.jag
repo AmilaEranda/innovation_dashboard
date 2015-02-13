@@ -1,0 +1,113 @@
+<%
+include_once("db.jag");
+
+var title = request.getParameter("title").trim();
+var pubYear = request.getParameter("pubyear");
+var journalName = request.getParameter("jn");
+var authorName = request.getParameter("an");
+var pubType = request.getParameter("pubtype");
+var aoiId = request.getParameter("aoiId");
+var saoiId = request.getParameter("saoiId");
+var ssaoiId = request.getParameter("ssaoiId");
+
+if (pubType === "1" || pubType === 1) {
+	pubType = "1";
+} else if (pubType === "2" || pubType === 2) {
+	pubType = "2";
+} else if (pubType === "3" || pubType === 3) {
+	pubType = "3";
+} else if (pubType === "4" || pubType === 4) {
+	pubType = "4";
+} else if (pubType === "5" || pubType === 5) {
+	pubType = "5";
+} else {
+	pubType = "1,2,3,4,5";
+}
+
+function getDBData() {
+	var dbdt = [];
+	var strQuery = "SELECT DISTINCT pub.publication_id AS pub_id, pub.title AS pub_title, jou.journal_title AS jnl_title, pub.name AS pub_name, pub.publication_type AS pub_type, pub.year AS pub_year, GROUP_CONCAT(DISTINCT CONCAT((CASE WHEN per.initials = '' THEN per.first_name WHEN per.initials IS NULL THEN per.first_name ELSE per.initials END), ' ', per.last_name) SEPARATOR ', ') pub_publishers FROM publication pub LEFT JOIN journal jou ON pub.journal_id = jou.journal_id LEFT JOIN person_publication ppu ON pub.publication_id = ppu.publication_id LEFT JOIN person per ON per.person_id = ppu.person_id ";
+	if (aoiId === null || aoiId === "" || aoiId === "0" || "undefined" === typeof aoiId) {
+		strQuery += "WHERE "
+		if (title !== "") {
+			strQuery += "pub.title LIKE '%" + title + "%' AND ";
+		} 
+		if (pubYear !== "") {
+			strQuery += "pub.year LIKE '%" + pubYear + "%' AND ";
+		}
+		if (journalName !== "") {
+			strQuery += "(pub.name LIKE '%" + journalName + "%' OR jou.journal_title LIKE '%" + journalName + "%') AND ";
+		}
+		if (authorName !== "") {
+			strQuery += "per.full_name LIKE '%" + authorName + "%' AND ";
+		}
+		strQuery += "pub.publication_type IN(" + pubType + ")";
+		strQuery += "GROUP BY pub.publication_id ORDER BY pub.year DESC, pub.title ASC";
+	} else if (aoiId !== "0" && saoiId === "0" && ssaoiId === "0") {
+		strQuery += "LEFT JOIN publication_area_of_interest paoi ON paoi.publication_publication_id = pub.publication_id WHERE ";
+		if (title !== "") {
+			strQuery += "pub.title LIKE '%" + title + "%' AND ";
+		}
+		if (pubYear !== "") {
+			strQuery += "pub.year LIKE '%" + pubYear + "%' AND ";
+		}
+		if (journalName !== "") {
+			strQuery += "(pub.name LIKE '%" + journalName + "%' OR jou.journal_title LIKE '%" + journalName + "%') AND ";
+		}
+		strQuery += "pub.publication_type IN(" + pubType + ") AND paoi.area_of_interest_id = " + parseInt(aoiId) + " ";
+		strQuery += "GROUP BY pub.publication_id ORDER BY pub.year DESC, pub.title ASC";
+		//strQuery = "SELECT DISTINCT pub.publication_id AS pub_id, pub.title AS pub_title, jou.journal_title AS jnl_title, pub.name AS pub_name, pub.publication_type AS pub_type, pub.year AS pub_year, GROUP_CONCAT(DISTINCT CONCAT(per.initials, ' ', per.last_name) SEPARATOR ', ') pub_publishers FROM publication pub LEFT JOIN journal jou ON pub.journal_id = jou.journal_id LEFT JOIN person_publication ppu ON pub.publication_id = ppu.publication_id LEFT JOIN person per ON per.person_id = ppu.person_id LEFT JOIN publication_area_of_interest paoi ON paoi.publication_publication_id = pub.publication_id WHERE pub.title LIKE '%" + title + "%' AND pub.year LIKE '%" + pubYear + "%' AND pub.publication_type IN(" + pubType + ") AND (pub.name LIKE '%" + journalName + "%' OR jou.journal_title LIKE '%" + journalName + "%') AND paoi.area_of_interest_id = " + parseInt(aoiId) + " GROUP BY pub.publication_id ORDER BY pub.year DESC, pub.title ASC";
+	} else if(saoiId !== "0" && ssaoiId === "0") {
+		strQuery += "LEFT JOIN publication_area_of_interest paoi ON paoi.publication_publication_id = pub.publication_id WHERE ";
+		if (title !== "") {
+			strQuery += "pub.title LIKE '%" + title + "%' AND ";
+		}
+		if (pubYear !== "") {
+			strQuery += "pub.year LIKE '%" + pubYear + "%' AND ";
+		}
+		if (journalName !== "") {
+			strQuery += "(pub.name LIKE '%" + journalName + "%' OR jou.journal_title LIKE '%" + journalName + "%') AND ";
+		}
+		strQuery += "pub.publication_type IN(" + pubType + ") AND paoi.sub_area_of_interest_id = " + parseInt(saoiId) + " ";
+		strQuery += "GROUP BY pub.publication_id ORDER BY pub.year DESC, pub.title ASC";
+		//strQuery = "SELECT DISTINCT pub.publication_id AS pub_id, pub.title AS pub_title, jou.journal_title AS jnl_title, pub.name AS pub_name, pub.publication_type AS pub_type, pub.year AS pub_year, GROUP_CONCAT(DISTINCT CONCAT(per.initials, ' ', per.last_name) SEPARATOR ', ') pub_publishers FROM publication pub LEFT JOIN journal jou ON pub.journal_id = jou.journal_id LEFT JOIN person_publication ppu ON pub.publication_id = ppu.publication_id LEFT JOIN person per ON per.person_id = ppu.person_id LEFT JOIN publication_area_of_interest paoi ON paoi.publication_publication_id = pub.publication_id WHERE pub.title LIKE '%" + title + "%' AND pub.year LIKE '%" + pubYear + "%' AND pub.publication_type IN(" + pubType + ") AND (pub.name LIKE '%" + journalName + "%' OR jou.journal_title LIKE '%" + journalName + "%') AND paoi.sub_area_of_interest_id = " + parseInt(saoiId) + " GROUP BY pub.publication_id ORDER BY pub.year DESC, pub.title ASC";
+	} else if(ssaoiId !== "0") {
+		strQuery += "LEFT JOIN publication_area_of_interest paoi ON paoi.publication_publication_id = pub.publication_id WHERE ";
+		if (title !== "") {
+			strQuery += "pub.title LIKE '%" + title + "%' AND ";
+		}
+		if (pubYear !== "") {
+			strQuery += "pub.year LIKE '%" + pubYear + "%' AND ";
+		}
+		if (journalName !== "") {
+			strQuery += "(pub.name LIKE '%" + journalName + "%' OR jou.journal_title LIKE '%" + journalName + "%') AND ";
+		}
+		strQuery += "pub.publication_type IN(" + pubType + ") AND paoi.sub_sub_area_of_interest_id = " + parseInt(ssaoiId) + " ";
+		strQuery += "GROUP BY pub.publication_id ORDER BY pub.year DESC, pub.title ASC";
+		//strQuery = "SELECT DISTINCT pub.publication_id AS pub_id, pub.title AS pub_title, jou.journal_title AS jnl_title, pub.name AS pub_name, pub.publication_type AS pub_type, pub.year AS pub_year, GROUP_CONCAT(DISTINCT CONCAT(per.initials, ' ', per.last_name) SEPARATOR ', ') pub_publishers FROM publication pub LEFT JOIN journal jou ON pub.journal_id = jou.journal_id LEFT JOIN person_publication ppu ON pub.publication_id = ppu.publication_id LEFT JOIN person per ON per.person_id = ppu.person_id LEFT JOIN publication_area_of_interest paoi ON paoi.publication_publication_id = pub.publication_id WHERE pub.title LIKE '%" + title + "%' AND pub.year LIKE '%" + pubYear + "%' AND pub.publication_type IN(" + pubType + ") AND (pub.name LIKE '%" + journalName + "%' OR jou.journal_title LIKE '%" + journalName + "%') AND paoi.sub_sub_area_of_interest_id = " + parseInt(ssaoiId) + " GROUP BY pub.publication_id ORDER BY pub.year DESC, pub.title ASC";
+	}
+	var result = db.query(strQuery);
+	var strYear, pubTitle, pubPubName;
+	for (var i = 0; i < result.length; i++) {
+		strYear = ("" + result[i].pub_year + "").substring(0, 4);
+		if (result[i].pub_title === null) {
+			pubTitle = "";
+		} else {
+			pubTitle = result[i].pub_title.trim().replace(/\t+/g, " ");
+		}
+		if (result[i].pub_name === null) {
+			if (result[i].jnl_title === null){
+				pubPubName = "";
+			} else {
+				pubPubName = result[i].jnl_title.trim().replace(/\t+/g, " ");
+			}
+		} else {
+			pubPubName = result[i].pub_name.trim().replace(/\t+/g, " ");
+		}
+		dbdt.push({"title": pubTitle, "name": pubPubName, "id": result[i].pub_id, "type": result[i].pub_type, "year": strYear, "authors": result[i].pub_publishers.trim().replace(/\t+/g, " ")});
+	}
+	return {search_data: dbdt};
+}
+print(getDBData());
+
+%>

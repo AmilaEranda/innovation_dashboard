@@ -8,7 +8,7 @@
                  description="A Chart, that shows number of people works in different Area of Interests according to OECD (Organisation for Economic Co-operation and Development) classification">
 		<Require feature="setprefs" />
      </ModulePrefs>
-	<UserPref name="chartType" display_name="Chart Type" default_value="bar" datatype="enum" >
+	<UserPref name="chartType" display_name="Chart Type" default_value="pie" datatype="enum" >
 		<EnumValue value="bar" />
 		<EnumValue value="line" />
 		<EnumValue value="pie" />
@@ -22,10 +22,13 @@
 	<title>People - Interests</title>
 	<link href="../../themes/portal/css/flot-graph.css" rel="stylesheet" type="text/css">
 	<link href="../../themes/portal/css/bootstrap.min.css" rel="stylesheet" type="text/css">
+	<link rel="stylesheet" href="css/font-awesome/css/font-awesome.min.css" type="text/css">
 	<link href="css/d3-graph.css" rel="stylesheet" type="text/css">
 	
 	<script language="javascript" type="text/javascript" src="js/jquery-1.11.1.min.js"></script>
 	<script language="javascript" type="text/javascript" src="js/d3.min.js" charset="utf-8"></script>
+	<script language="javascript" type="text/javascript" src="js/bootstrap.min.js"></script>
+	
 	<script language="javascript" type="text/javascript" src="js/BarChart.js" charset="utf-8"></script>
 	<script language="javascript" type="text/javascript" src="js/LineChart.js" charset="utf-8"></script>
 	<script language="javascript" type="text/javascript" src="js/PieChart.js" charset="utf-8"></script>
@@ -47,6 +50,7 @@
 			</div>
 			<div id="optionsRight" class="seriesContainer">
 				<button class="btn btn-mini back" id="peo-int-back">&#171; back</button>
+				<span class="text-info"><i id="info-icon" style="margin-top: 10px; cursor: pointer;" class="fa fa-info-circle fa-lg" data-toggle="tooltip"></i></span>
 			</div>
 		</div>
 		<div id="placeholder" style="height:86%;"></div>

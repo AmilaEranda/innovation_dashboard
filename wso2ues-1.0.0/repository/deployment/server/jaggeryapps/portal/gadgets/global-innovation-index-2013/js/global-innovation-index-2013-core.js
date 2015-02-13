@@ -20,6 +20,8 @@ $(document).ready(function(){
 		$("#btnChartTypeRadar").addClass("btn-success");
 	}
 	
+	$("#gii-2013-back").hide();
+	
 	initRadarChart();
 	
 	initGroupedBarChart();
@@ -44,25 +46,25 @@ $(document).ready(function(){
 		fetchData();
 		$(this).blur();
 		setChartTitle("");
+		
+		$("#gii-2013-back").hide();
 	});
 });
 
 function fetchData() {
-	var url = "../../portal/gadgets/global-innovation-index-2013/data-files/global-innovation-index-2013-data.jag";// pref.getString("dataSource");
+	var url = "../../portal/gadgets/global-innovation-index-2013/data-files/global-innovation-index-2013-data.jag";
 	$.ajax({
 		url: url,
 		type: "GET",
 		dataType: "json",
-		data: {
-			giId: 2
-		},
 		success: onDataReceived
 	});
+	
+	setInfoForCharts();
 }
 
 function fetchCustomData(id, name) {
-	var url = "../../portal/gadgets/global-innovation-index-2013/data-files/global-innovation-index-2013-data.jag";// pref.getString("dataSource");
-	//url =  url + "?type=" + type + "&id=" + id;
+	var url = "../../portal/gadgets/global-innovation-index-2013/data-files/global-innovation-index-2013-data.jag";
 	$.ajax({
 		url: url,
 		type: "GET",
@@ -73,6 +75,8 @@ function fetchCustomData(id, name) {
 		success: onDataReceived
 	});
 	setChartTitle(name);
+	
+	$("#gii-2013-back").show();
 }
 
 function onDataReceived(data) {
@@ -129,7 +133,7 @@ function initRadarChart(){
         //TranslateX: 210, // horizontal translation from left
         //TranslateY: 65, // vertical translation from top
         valuePrecision: 2, // number of decimal points in values
-        colors: ["#109618", "#990099", "#DC3912", "#3366CC", "#FF9900", "#B42D00"]
+        colors: ["#b42d00", "#FF7900", "#196A5F", "#109618", "#990099", "#DC3912", "#3366CC"]
     };
 
     radarChart = new NormRadarChart("placeholder", data, radarChartOptions);
@@ -282,4 +286,16 @@ function createList(data){
 	divElem.appendChild(divSrcElem);
 	
 	place.append(divElem);
+}
+
+function setInfoForCharts(){
+	$('#info-icon').tooltip('destroy');
+	$("#info-icon").removeAttr("title");
+	
+	$("#info-icon").tooltip({
+		animation: true,
+		placement: "left",
+		html: true,
+		title: '<div style="text-align: left; font-size: 11px;"><h5><i class="fa fa-info-circle fa-lg"></i> GII - 2013</h5><p>The Global Innovation Index 2013: The Local Dynamics of Innovation is the result of a collaboration between Cornell University, INSEAD, and the World Intellectual Property Organization (WIPO) as co-publishers, and their Knowledge Partners.</p></div>'
+	});
 }

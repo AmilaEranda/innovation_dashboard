@@ -26,7 +26,7 @@ function LineChart(area, data, options) {
 
     this.globalLineNum = globalLineNumber++;
 
-    $("body").append('<div id="line-tooltip' + this.globalLineNum + '"></div>');
+    $("body").append('<div id="line-tooltip' + this.globalLineNum + '" class="line-tooltip"></div>');
     $("#line-tooltip" + this.globalLineNum).css({"position": "absolute", "background": "rgba(0, 0, 0, 0.8)", "color": "white", "font-family": "Arial", "font-size": "14px", "font-weight": "lighter", "z-index": "100", "pointer-events": "none"});
     $("#line-tooltip" + this.globalLineNum).append('<div id="line-tooltip-content' + this.globalLineNum + '" style="padding: 5px 10px 5px 10px;">');
     $("#line-tooltip-content" + this.globalLineNum).append('<span id="line-tooltip-desc' + this.globalLineNum + '" style="font-size: 12px;">desc of tooltip</span><br/>');
@@ -87,7 +87,7 @@ function LineChart(area, data, options) {
 
         var maxYValue = d3.max(dataArray.map(function(d) {
             return parseFloat(d.value);
-        })) + 1;
+        }));
 
         var yScale = d3.scale.linear()
                 .domain([minYValue, maxYValue])
@@ -98,9 +98,10 @@ function LineChart(area, data, options) {
                 .orient("bottom");
 
         var yAxis = d3.svg.axis()
+				.tickFormat(d3.format("d"))
                 .scale(yScale)
                 .orient("left")
-                .ticks(5);
+                .ticks(4);
 
         var line = d3.svg.line()
                 .x(function(d, i) {
@@ -273,10 +274,10 @@ function LineChart(area, data, options) {
                             .style("display", "none");
                 })
 				.on("click", function(d, i){
-					if (d.type === "peo"){
+					if (d.type === "peo") {
 						fetchCustomData("yea", d.id, d.name);
-					} else if (d.type === "yea"){
-						window.open("../../profile/person.jag?pid=" + d.id + "&year=" + d.name);
+					} else if (d.type === "yea") {
+						fetchCustomData("pub", d.id, d.name);
 					}
 				});
 

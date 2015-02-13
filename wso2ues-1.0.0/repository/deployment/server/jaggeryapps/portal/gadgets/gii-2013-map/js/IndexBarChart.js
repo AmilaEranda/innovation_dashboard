@@ -51,6 +51,10 @@ function IndexBarChart(area, data, options) {
         var indexBarNum = this.globalIndexBarNum;
         var dataArray = this.dataArray;
         var getCountryXPosition = this.getCountryXPosition;
+		
+		/*for (var i = 0; i < dataArray.length; i++) {
+			console.log(dataArray[i].rank + ": " + dataArray[i].name + " " + dataArray[i].score + ", ");
+		}*/
 
         chartWidth = $(areaId).width() - chartMargin.left - chartMargin.right;
         chartHeight = $(areaId).height() - chartDescHeight - chartMargin.top - chartMargin.bottom;
@@ -147,7 +151,11 @@ function IndexBarChart(area, data, options) {
 //            return parseInt(d.rank);
 //        }));
         maxScore = d3.max(dataArray.map(function(d) {
-            return parseFloat(d.score);
+			if(d.score === "N/A"){
+				return 0;
+			} else {
+				return parseFloat(d.score);
+			}
         }));
         var slRank, slScore;
 
@@ -156,10 +164,10 @@ function IndexBarChart(area, data, options) {
                 .enter()
                 .append("rect")
                 //.sort(sortDescItems)
-                .sort(sortAscRankItems)
+                .sort(sortAscRankItems) // no need. already sorted when arrived. but for assure
                 .style("fill", function(data) {
                     if (data.code.toString() === "LK") {
-                        return cnfg.barLKColor; // "#b42d00"; //FF7900
+                        return cnfg.barLKColor;
                     } else {
                         return cnfg.barColor;
                     }
@@ -167,7 +175,7 @@ function IndexBarChart(area, data, options) {
                 .attr("id", function(d, i) {
                     return d.code;
                 })
-                .style("stroke", cnfg.barBorderColor) // "#D6E0F6"
+                .style("stroke", cnfg.barBorderColor)
                 .style("stroke-width", "1px")
                 .attr("x", function(data, i) {
                     if (data.code.toString() === "LK") {
@@ -196,9 +204,15 @@ function IndexBarChart(area, data, options) {
                 .transition()
                 .duration(400)
                 .attr("y", function(data) {
+					if (data.score === "N/A") {
+						return 0;
+					}
                     return chartHeight - ((chartHeight * data.score) / maxScore);
                 })
                 .attr("height", function(data, i) {
+					if (data.score === "N/A") {
+						return 0;
+					}
                     return ((chartHeight * data.score) / maxScore);
                 });
         indexBarChartGroup.selectAll("rect")
@@ -259,8 +273,7 @@ function IndexBarChart(area, data, options) {
 
     this.getCountryXPosition = function(cCode, dataArray) {
         var cXPos = 0;
-        //dataArray.sort(sortDescItems);
-        dataArray.sort(sortAscRankItems);
+        dataArray.sort(sortAscRankItems); // this should be matched with sorted criteria
         dataArray.map(function(d, i) {
             if (d.code.toString() === cCode.toString()) {
                 var barW = (chartWidth / dataArray.length);
@@ -342,7 +355,7 @@ function IndexBarChart(area, data, options) {
                 .attr("transform", "translate(" + xPos + "," + (chartHeight + 2) + ")");
     };
 
-    var sortDescItems = function(a, b) {
+    var sortDescItems = function(a, b) { // change this to handle 'N/A' chances
         if (a.score > b.score) {
             return -1;
         } else if (a.score < b.score) {
@@ -351,7 +364,7 @@ function IndexBarChart(area, data, options) {
         return 0;
     };
 
-    var sortAscItems = function(a, b) {
+    var sortAscItems = function(a, b) { // change this to handle 'N/A' chances
         if (a.score > b.score) {
             return 1;
         } else if (a.score < b.score) {
@@ -361,7 +374,13 @@ function IndexBarChart(area, data, options) {
     };
 	
 	var sortDescRankItems = function(a, b) {
-        if (parseInt(a.rank) > parseInt(b.rank)) {
+        if (a.rank === "N/A" && b.rank === "N/A") {
+			return -1;
+		} else if (a.rank === "N/A") {
+			return -1;
+		} else if (b.rank === "N/A") {
+			return 1;
+		} else if (parseInt(a.rank) > parseInt(b.rank)) {
             return -1;
         } else if (parseInt(a.rank) < parseInt(b.rank)) {
             return 1;
@@ -370,7 +389,13 @@ function IndexBarChart(area, data, options) {
     };
 	
 	var sortAscRankItems = function(a, b) {
-        if (parseInt(a.rank) > parseInt(b.rank)) {
+		if (a.rank === "N/A" && b.rank === "N/A") {
+			return 1;
+		} else if (a.rank === "N/A") {
+			return 1;
+		} else if (b.rank === "N/A") {
+			return -1;
+		} else if (parseInt(a.rank) > parseInt(b.rank)) {
             return 1;
         } else if (parseInt(a.rank) < parseInt(b.rank)) {
             return -1;

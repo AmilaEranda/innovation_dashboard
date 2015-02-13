@@ -87,7 +87,7 @@ function LineChart(area, data, options) {
 
         var maxYValue = d3.max(dataArray.map(function(d) {
             return parseFloat(d.value);
-        })) + 1;
+        }));
 
         var yScale = d3.scale.linear()
                 .domain([minYValue, maxYValue])
@@ -98,9 +98,10 @@ function LineChart(area, data, options) {
                 .orient("bottom");
 
         var yAxis = d3.svg.axis()
+				.tickFormat(d3.format("d"))
                 .scale(yScale)
                 .orient("left")
-                .ticks(5);
+                .ticks(4);
 
         var line = d3.svg.line()
                 .x(function(d, i) {

@@ -61,8 +61,8 @@
 				<span id="chartState" style="display: inline-block; margin: 4px 0px 0px 6px; font-size: 14px; font-weight: bold;"></span>
 			</div>
 			<div id="optionsRight" class="seriesContainer">
-				<span class="text-info"><i id="info-icon" style="margin-top: 8px; cursor: pointer;" class="fa fa-info-circle fa-lg" data-toggle="tooltip"></i></span>
 				<button class="btn btn-mini back" id="pub-org-back">&#171; back</button>
+				<span class="text-info"><i id="info-icon" style="margin-top: 8px; cursor: pointer;" class="fa fa-info-circle fa-lg" data-toggle="tooltip"></i></span>
 			</div>
 		</div>
 		<div style="margin: 0px 0px 0px 20px; text-align: center;">

@@ -1,0 +1,7 @@
+.gmnoprint img {
+	max-width: none; 
+}
+
+img {
+	max-width: none !important;
+}

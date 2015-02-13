@@ -9,7 +9,8 @@ function LineChart(area, data, options) {
         yAxisTitle: "",
         lineColor: "#A52A2A",
         valuePrecision: 2,
-        nanMessage: "Not available"
+        nanMessage: "Not available",
+		cursorType: "auto"
     };
 
     if ('undefined' !== typeof options) {
@@ -25,7 +26,7 @@ function LineChart(area, data, options) {
 
     this.globalLineNum = globalLineNumber++;
 
-    $("body").append('<div id="line-tooltip' + this.globalLineNum + '"></div>');
+    $("body").append('<div id="line-tooltip' + this.globalLineNum + '" class="line-tooltip"></div>');
     $("#line-tooltip" + this.globalLineNum).css({"position": "absolute", "background": "rgba(0, 0, 0, 0.8)", "color": "white", "font-family": "Arial", "font-size": "14px", "font-weight": "lighter", "z-index": "100", "pointer-events": "none"});
     $("#line-tooltip" + this.globalLineNum).append('<div id="line-tooltip-content' + this.globalLineNum + '" style="padding: 5px 10px 5px 10px;">');
     $("#line-tooltip-content" + this.globalLineNum).append('<span id="line-tooltip-desc' + this.globalLineNum + '" style="font-size: 12px;">desc of tooltip</span><br/>');
@@ -86,7 +87,7 @@ function LineChart(area, data, options) {
 
         var maxYValue = d3.max(dataArray.map(function(d) {
             return parseFloat(d.value);
-        })) + 1;
+        }));
 
         var yScale = d3.scale.linear()
                 .domain([minYValue, maxYValue])
@@ -97,9 +98,10 @@ function LineChart(area, data, options) {
                 .orient("bottom");
 
         var yAxis = d3.svg.axis()
+				.tickFormat(d3.format("d"))
                 .scale(yScale)
                 .orient("left")
-                .ticks(5);
+                .ticks(4);
 
         var line = d3.svg.line()
                 .x(function(d, i) {
@@ -150,9 +152,10 @@ function LineChart(area, data, options) {
                 .call(yAxis)
                 .append("text")
                 .attr("transform", "rotate(-90)")
-                .attr("y", 6)
-                .attr("dy", ".71em")
+                .attr("y", -35)
+                .attr("dy", "0em")
                 .style("text-anchor", "end")
+				.style("font-size", "12px")
                 .text(cnfg.yAxisTitle);
 
         // chart title
@@ -184,6 +187,7 @@ function LineChart(area, data, options) {
                 .enter()
                 .append("circle")
                 .attr("fill", cnfg.lineColor)
+				.style("cursor", cnfg.cursorType)
                 .attr("fill-opacity", 1)
                 .attr("stroke", cnfg.lineColor)
                 .attr("stroke-opacity", 0.2)

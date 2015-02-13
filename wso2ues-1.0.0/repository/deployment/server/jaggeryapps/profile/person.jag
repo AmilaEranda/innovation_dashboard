@@ -2,36 +2,56 @@
 	include_once("scripts/db.jag");
 
 	var pid = parseInt(request.getParameter("pid"));
+	var pubsYear = parseInt(request.getParameter("year"));
 	var isValid = true;
-	var perName, perImage, perGender, perTitle, perPubCount;
+	var perName, perImage, perGender, perTitle, perEmail, perMobile, perOfficeNum, perDesignation, perPubCount, perInOut, perOrgName;
+	var perAcademicQualifications, perExpertise, perAddressOffice, perFax, perLinkedInUrl;
+	var showEmail, showMobile, showOfficePhone;
+	var imgFullPath;
 	
-	if(pid === null || pid === "" || isNaN(pid) || pid < 0){
+	if (pid === null || pid === "" || isNaN(pid) || pid < 0) {
 		isValid = false;
+	} else {
+		if (pubsYear === null || pubsYear === "" || isNaN(pubsYear) || pubsYear < 1950) {
+			pubsYear = "";
+		} else {
+			pubsYear = parseInt(pubsYear);
+		}
 	}
 
-	if(isValid){
-		var result = db.query("SELECT pe.first_name AS `per_fname`, pe.initials AS `per_initials`, pe.last_name AS `per_lname`, pe.gender AS `per_gender`, ti.title AS `per_title`, pe.designation AS `per_desig`, pe.in_out_country AS `per_inout`, COUNT(pp.publication_id) AS `per_pub_count`, org.name AS `per_org_name` FROM person pe LEFT JOIN title ti ON pe.title_id = ti.title_id LEFT JOIN person_publication pp ON pp.person_id = pe.person_id LEFT JOIN person_organization po ON pe.person_id = po.person_id LEFT JOIN organization org ON org.organization_id = po.organization_id WHERE pe.record_status = 1 AND po.his_default = 1 AND pe.person_id =" + pid);
-		if(result.length > 0){
+	if (isValid) {
+		var result = db.query("SELECT pe.first_name AS `per_fname`, pe.initials AS `per_initials`, pe.last_name AS `per_lname`, pe.gender AS `per_gender`, pe.email AS `per_email`, pe.mobile AS `per_mobile`, pe.telephone AS `per_office_num`, pe.image_name AS `per_image`, ti.title AS `per_title`, pe.designation AS `per_desig`, pe.academic_qualification AS `per_qlf`, pe.expertise AS `per_expertise`, pe.address_office AS `per_office_addr`, pe.fax AS `per_fax`, pe.linked_in_url AS `per_linkedin_url`, pe.in_out_country AS `per_inout`, COUNT(pp.publication_id) AS `per_pub_count`, org.name AS `per_org_name`, ppr.show_email AS `per_show_email`, ppr.show_mobile_no AS `per_show_mobile`, ppr.show_office_tel_no AS `per_show_office_phone` FROM person pe LEFT JOIN title ti ON pe.title_id = ti.title_id LEFT JOIN person_publication pp ON pp.person_id = pe.person_id LEFT JOIN person_organization po ON pe.person_id = po.person_id LEFT JOIN organization org ON org.organization_id = po.organization_id LEFT JOIN person_privacy ppr ON pe.person_id = ppr.person_id WHERE pe.record_status = 1 AND po.his_default = 1 AND pe.person_id =" + pid);
+		if (result.length > 0) {
 			perName = ""
-			if(result[0].per_fname === null || result[0].per_fname.trim().length === 0){
-				perName = result[0].per_initials.trim();
+			if (result[0].per_initials === null || result[0].per_initials === "") {
+				perName = result[0].per_fname + "".trim();
 			} else {
-				perName = result[0].per_fname.trim();
+				perName = result[0].per_initials.trim();
 			}
 			perName += " " + result[0].per_lname;
-			perImage = result[0].per_image;
 			perGender = result[0].per_gender;
+			perImage = result[0].per_image;
 			perTitle = result[0].per_title;
+			perEmail = result[0].per_email;
+			perMobile = result[0].per_mobile;
+			perOfficeNum = result[0].per_office_num;
 			perDesignation = result[0].per_desig;
+			perAcademicQualifications = result[0].per_qlf;
+			perExpertise = result[0].per_expertise;
+			perAddressOffice = result[0].per_office_addr;
+			perFax = result[0].per_fax;
+			perLinkedInUrl = result[0].per_linkedin_url;
 			perPubCount = result[0].per_pub_count;
-			perInOut = result[0].per_pub_inout;
+			perInOut = result[0].per_inout;
 			perOrgName = result[0].per_org_name;
+			showEmail = getShowStatus(result[0].per_show_email);
+			showMobile = getShowStatus(result[0].per_show_mobile);
+			showOfficePhone = getShowStatus(result[0].per_show_office_phone);
 			
 			if(result[0].per_fname === null && result[0].per_lname === null && result[0].per_initials === null){
-				print("per_fname: " + result[0].per_fname + ", ");
-				print("per_lname: " + result[0].per_lname + ", ");
-				print("per_initials: " + result[0].per_initials);
 				isValid = false;
+			} else {
+				var aoisResult = db.query("SELECT ssaoi.name AS per_ssaoi_name FROM person_area_of_interest paoi LEFT JOIN sub_sub_area_of_interest ssaoi ON paoi.sub_sub_area_of_interest_id = ssaoi.sub_sub_area_of_interest_id WHERE paoi.person_person_id = " + pid);
 			}
 		} else {
 			isValid = false;
@@ -50,9 +70,11 @@
 		<!-- Bootstrap core CSS -->
 		<!-- <link href="css2/bootstrap/bootstrap.min.css" rel="stylesheet"> -->
 		<link href="css2/flatly/bootstrap.min.css" rel="stylesheet">
-		<link href="css2/styles.css" rel="stylesheet">
+		<link href="css2/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+		<link href="css2/animate/animate.min.css" rel="stylesheet">
 		<link href="css2/datatable/jquery.dataTables.css" rel="stylesheet">
         <link href="css2/datatable/dataTables.bootstrap.css" rel="stylesheet">
+		<link href="css2/styles.css" rel="stylesheet">
 
 		<script src="js2/jquery/jquery-1.11.1.js"></script>
 		<script src="js2/bootstrap/bootstrap.js"></script>
@@ -61,6 +83,11 @@
 		<script src="js2/d3/d3.min.js"></script>
 		<script src="js2/d3/IndexBarChart.js"></script>
 		<script src="js2/scripts/person.js"></script>
+		<script type="text/javascript">
+			$(function () {
+				$('[data-toggle="tooltip"]').tooltip();
+			})
+		</script>
 	</head>
 
 	<body>
@@ -68,61 +95,233 @@
 
 		<div class="container-fluid">
 			<% if(isValid){ %>
+			<input type="hidden" id="pubsYear" value="<%=pubsYear%>" />
 			<div class="row">
-				<div class="col-md-1">
-					<div style="text-align: center;">
-						<img src="images/people/<%
-							if(perImage == null){
-								if(perGender == 0){
-									print("blank/woman.svg");
-								} else {
-									print("blank/man.svg");
-								}
-							} else {
-								print(perImage);
-							} %>" style="width: 80px;" class="img">
-					</div>
-				</div>
-				<div class="col-md-11">
-					<div class="page-header">
-						<h1><% print(perTitle + " " + perName); %></h1>
-					</div>
+				<div class="col-sm-12 text-center">
+					<%
+					imgFullPath = "/userforms/images/users/";
+					if ("undefined" === typeof perImage || perImage === null || perImage === "") {
+						if (perGender === "0" || perGender === 0) {
+							imgFullPath = imgFullPath + "woman.png";
+						} else {
+							imgFullPath = imgFullPath + "man.png";
+						}
+					} else {
+						imgFullPath = imgFullPath + pid + "/" + perImage;
+					}
+					%>
+					<img src="<%=imgFullPath %>" style="width: 100px;" class="img-circle">
 				</div>
 			</div>
 			<div class="row">
-				<div class="col-md-3">
-					<div class="text-center" style="margin-bottom: 10px;">
-						<% print(perOrgName); %>
-					</div>
-					<div class="text-center">
-						<strong>Organization</strong>
-					</div>
-				</div>
-				<div class="col-md-3">
-					<div class="text-center" style="margin-bottom: 10px;">
-						<% print(perDesignation); %> &nbsp;
-					</div>
-					<div class="text-center">
-						<strong>Designation</strong>
-					</div>
-				</div>
-				<div class="col-md-3">
-					<div class="text-center" style="margin-bottom: 10px;">
-						<% if(perPubCount != null){ print(perPubCount);} else {print("n/a");} %>
-					</div>
-					<div class="text-center">
-						<strong>Publications</strong>
-					</div>
-				</div>
-				<div class="col-md-3">
-					<div class="text-center" style="margin-bottom: 10px;">
-						<% if(perInOut === 1) {print("Relocating overseas");} %>
-					</div>
-					<div class="text-center">
-						<strong>&nbsp;</strong>
+				<div class="col-sm-12 text-center">
+					<div class="page-header" style="border-bottom: 4px double #EDEDED;">
+						<h1 class="animated fadeInDown"><% print(perTitle + " " + perName); %></h1>
+						<h4 class="animated fadeInUp"><%=perDesignation %></h4>
 					</div>
 				</div>
 			</div>
+			<% if ((showEmail === 1 && perEmail !== null && perEmail !== "") || (showMobile === 1 && perMobile !== null && perMobile !== "") || (showOfficePhone === 1 && perOfficeNum !== null && perOfficeNum !== "") || (perFax !== null && perFax !== "") || (perAddressOffice !== null && perAddressOffice !== "") || (perLinkedInUrl !== null && perLinkedInUrl !== "")) { %>
+			<div class="row">
+				<div class="col-sm-12">
+					<h2>Contact</h2>
+				</div>
+			</div>
+			<% } %>
+			<div class="row">
+			<% if (showEmail === 1 && perEmail !== null && perEmail !== "") { %>
+				<div class="col-sm-3">
+					<table>
+						<tr>
+							<td class="person-contact-icon">
+								<span title="Email" data-toggle="tooltip" data-placement="top"><i class="fa fa-envelope-o fa-lg"></i></span>
+							</td>
+							<td class="person-contact-detail">
+								<span><a href="mailto:<%=perEmail %>"><%=perEmail %></a></span>
+							</td>
+						</tr>
+					</table>
+				</div>
+			<% } %>
+			<% if (showMobile === 1 && perMobile !== null && perMobile !== "") { %>
+				<div class="col-sm-3">
+					<table>
+						<tr>
+							<td class="person-contact-icon">
+								<span title="Mobile phone number" data-toggle="tooltip" data-placement="top"><i class="fa fa-mobile fa-lg"></i></span>
+							</td>
+							<td class="person-contact-detail">
+								<span><%=perMobile %></span>
+							</td>
+						</tr>
+					</table>
+				</div>
+			<% } %>
+			<% if (showOfficePhone === 1 && perOfficeNum !== null && perOfficeNum !== "") { %>
+				<div class="col-sm-3">
+					<table>
+						<tr>
+							<td class="person-contact-icon">
+								<span title="Office phone number" data-toggle="tooltip" data-placement="top"><i class="fa fa-phone fa-lg"></i></span>
+							</td>
+							<td class="person-contact-detail">
+								<span><%=perOfficeNum %></span>
+							</td>
+						</tr>
+					</table>
+				</div>
+			<% } %>
+			<% if (perFax !== null && perFax !== "") { %>
+				<div class="col-sm-3">
+					<table>
+						<tr>
+							<td class="person-contact-icon">
+								<span title="Fax" data-toggle="tooltip" data-placement="top"><i class="fa fa-fax fa-lg"></i></span>
+							</td>
+							<td class="person-contact-detail">
+								<span><%=perFax %></span>
+							</td>
+						</tr>
+					</table>
+				</div>
+			<% } %>
+			<% if (perAddressOffice !== null && perAddressOffice !== "") { %>
+				<div class="col-sm-3">
+					<table>
+						<tr>
+							<td class="person-contact-icon">
+								<span title="Office address" data-toggle="tooltip" data-placement="top"><i class="fa fa-map-marker fa-lg"></i></span>
+							</td>
+							<td class="person-contact-detail">
+								<span><%=perAddressOffice %></span>
+							</td>
+						</tr>
+					</table>
+				</div>
+			<% } %>
+			<% if (perLinkedInUrl !== null && perLinkedInUrl !== "") { %>
+				<div class="col-sm-3">
+					<table>
+						<tr>
+							<td class="person-contact-icon">
+								<span title="Linkedin profile" data-toggle="tooltip" data-placement="top"><i class="fa fa-linkedin fa-lg"></i></span>
+							</td>
+							<td class="person-contact-detail">
+								<span><a href="<%=perLinkedInUrl %>" target="_blank"><%=perLinkedInUrl %></a></span>
+							</td>
+						</tr>
+					</table>
+				</div>
+			<% } %>
+			</div>
+			<div class="row">
+				<div class="col-sm-12">
+					<h2>About</h2>
+				</div>
+			</div>
+			<div class="row">
+			<% if (perOrgName !== null && perOrgName !== "") { %>
+				<div class="col-sm-3">
+					<table>
+						<tr>
+							<td class="person-contact-icon">
+								<span title="Organization" data-toggle="tooltip" data-placement="top"><i class="fa fa-university fa-lg"></i></span>
+							</td>
+							<td class="person-contact-detail">
+								<span><%=perOrgName %></span>
+							</td>
+						</tr>
+					</table>
+				</div>
+			<% } %>
+			<% if (perAcademicQualifications !== null && perAcademicQualifications !== "") { %>
+				<div class="col-sm-3">
+					<table>
+						<tr>
+							<td class="person-contact-icon">
+								<span title="Academic qualifications" data-toggle="tooltip" data-placement="top"><i class="fa fa-bookmark fa-lg"></i></span>
+							</td>
+							<td class="person-contact-detail">
+								<span><%=perAcademicQualifications %></span>
+							</td>
+						</tr>
+					</table>
+				</div>
+			<% } %>
+			<% if (perExpertise !== null && perExpertise !== "") { %>
+				<div class="col-sm-3">
+					<table>
+						<tr>
+							<td class="person-contact-icon">
+								<span title="Skills and Expertise" data-toggle="tooltip" data-placement="top"><i class="fa fa-star fa-lg"></i></span>
+							</td>
+							<td class="person-contact-detail">
+								<span><%=perExpertise %></span>
+							</td>
+						</tr>
+					</table>
+				</div>
+			<% } %>
+			<% if (aoisResult.length > 0) { %>
+				<div class="col-sm-3">
+					<table>
+						<tr>
+							<td class="person-contact-icon">
+								<span title="Areas of interest" data-toggle="tooltip" data-placement="top"><i class="fa fa-thumbs-up fa-lg"></i></span>
+							</td>
+							<td class="person-contact-detail">
+								<span><%=aoisResult[0].per_ssaoi_name %></span>
+							</td>
+						</tr>
+						<% for (var i = 1; i < aoisResult.length; i++) { %>
+						<tr>
+							<td>&nbsp;</td>
+							<td style="font-weight: bold; padding: 4px 0;">
+								<span><%=aoisResult[i].per_ssaoi_name %></span>
+							</td>
+						</tr>
+						<% } %>
+					</table>
+				</div>
+			<% } %>
+			<% if (perPubCount !== null && perPubCount !== "" && perPubCount !== 0 && perPubCount !== "0") { %>
+				<div class="col-sm-3">
+					<table>
+						<tr>
+							<td class="person-contact-icon">
+								<span title="Number of publications" data-toggle="tooltip" data-placement="top"><i class="fa fa-newspaper-o fa-lg"></i></span>
+							</td>
+							<td class="person-contact-detail">
+								<span><%=perPubCount %></span>
+							</td>
+						</tr>
+					</table>
+				</div>
+			<% } %>
+			<% if (perInOut !== null && perInOut !== "" && perInOut !== 0 && perInOut !== "0") { %>
+				<div class="col-sm-3">
+					<table>
+						<tr>
+							<td class="person-contact-icon">
+								<span title=""><i class="fa fa-plane fa-lg"></i></span>
+							</td>
+							<td class="person-contact-detail">
+								<span>Relocated overseas</span>
+							</td>
+						</tr>
+					</table>
+				</div>
+			<% } %>
+			</div>
+			<div class="row">
+			<% if (perPubCount !== null && parseInt(perPubCount) > 0) { %>
+				<div class="col-sm-12">
+					<h2>Publications of <% print(perTitle + " " + perName); %></h2>
+				</div>
+			<% } %>
+			</div>
+			
+			<!--
 			<div class="row">
 				<div class="col-md-12">
 					<div style="margin: 40px 0px;">
@@ -131,21 +330,21 @@
 					</div>
 				</div>
 			</div>
+			-->
 			<div class="row">
 				<div class="col-md-12">
 					<div style="margin: 40px 0px;">
 						<%
-						var resultPubs = db.query("SELECT pu.publication_id AS `pub_id`, pu.publication_type AS `pub_type`, pu.title AS `pub_title`, pu.year AS `pub_year`, pu.name AS `con_name`, jo.journal_title AS `jou_title` FROM person pe LEFT JOIN person_publication pp ON pp.person_id = pe.person_id LEFT JOIN publication pu ON pu.publication_id = pp.publication_id LEFT JOIN journal jo ON pu.journal_id = jo.journal_id WHERE pe.record_status = 1 AND pe.person_id =" + pid + " AND pu.publication_id IS NOT NULL");
+						var resultPubs = db.query("SELECT pu.publication_id AS `pub_id`, pu.publication_type AS `pub_type`, pu.title AS `pub_title`, pu.year AS `pub_year`, pu.name AS `con_name`, jo.journal_title AS `jou_title` FROM person pe LEFT JOIN person_publication pp ON pp.person_id = pe.person_id LEFT JOIN publication pu ON pu.publication_id = pp.publication_id LEFT JOIN journal jo ON pu.journal_id = jo.journal_id WHERE pe.record_status = 1 AND pe.person_id =" + pid + " AND pu.publication_id IS NOT NULL ORDER BY pu.year DESC");
 						if(resultPubs.length > 0){
 						%>
-						<div class="page-header"><h3>Publications of <% print(perTitle + " " + perName); %></h3></div>
 						<table id="pub-table" class="display" cellspacing="0" width="100%">
 							<thead>
 								<tr>
-									<th>Title</th>
-									<th>Authors</th>
-									<th>Year</th>
-									<th>Journal / Conference / Book</th>
+									<th style="width: 50%;">Title</th>
+									<th style="width: 15%;">Authors</th>
+									<th style="width: 5%;">Year</th>
+									<th style="width: 30%;">Journal / Conference / Book</th>
 								</tr>
 							</thead>
 							<tfoot>
@@ -158,17 +357,21 @@
 							</tfoot>
 							<tbody>
 								<%
-								for(var i = 0; i < resultPubs.length; i++){
+								for (var i = 0; i < resultPubs.length; i++) {
 								%>
 								<tr>
 									<td>
 									<%
-									if (parseInt(resultPubs[i].pub_type) === 1){
-										print(resultPubs[i].pub_title);
+									if (parseInt(resultPubs[i].pub_type) === 1) {
+										print("<h4><a href='/publication/?pid=" + resultPubs[i].pub_id + "'>" + resultPubs[i].pub_title + "</a>&nbsp; <small>Journal Article</small></h4>");
 									} else if (parseInt(resultPubs[i].pub_type) === 2) {
-										print(resultPubs[i].con_name);
-									} else if (parseInt(resultPubs[i].pub_type) === 3){
-										print(resultPubs[i].pub_title);
+										print("<h4><a href='/publication/?pid=" + resultPubs[i].pub_id + "'>" + resultPubs[i].con_name + "</a>&nbsp; <small>Book</small></h4>");
+									} else if (parseInt(resultPubs[i].pub_type) === 3) {
+										print("<h4><a href='/publication/?pid=" + resultPubs[i].pub_id + "'>" + resultPubs[i].pub_title + "</a>&nbsp; <small>Technical Article</small></h4>");
+									} else if (parseInt(resultPubs[i].pub_type) === 4) {
+										print("<h4><a href='/publication/?pid=" + resultPubs[i].pub_id + "'>" + resultPubs[i].pub_title + "</a>&nbsp; <small>Conference Proceeding</small></h4>");
+									} else if (parseInt(resultPubs[i].pub_type) === 5) {
+										print("<h4><a href='/publication/?pid=" + resultPubs[i].pub_id + "'>" + resultPubs[i].pub_title + "</a>&nbsp; <small>Book chapter</small></h4>");
 									} else {
 										print(resultPubs[i].pub_title);
 									}
@@ -179,10 +382,10 @@
 									var resultAuthors = db.query("SELECT pe.first_name AS `aut_fname`, pe.initials AS `aut_initials`, pe.last_name AS `aut_lname` FROM person_publication pp LEFT JOIN person pe ON pe.person_id = pp.person_id WHERE publication_id =" + resultPubs[i].pub_id);
 									for(var j = 0; j < resultAuthors.length; j++){
 										var autFullName = "";
-										if(resultAuthors[j].aut_fname === null || resultAuthors[j].aut_fname.trim().length === 0){
-											autFullName = resultAuthors[j].aut_initials;
+										if (resultAuthors[j].aut_initials === null || resultAuthors[j].aut_initials === "") {
+											autFullName = resultAuthors[j].aut_fname + "".trim();
 										} else {
-											autFullName = resultAuthors[j].aut_fname;
+											autFullName = resultAuthors[j].aut_initials + "".trim();
 										}
 										autFullName += " " + resultAuthors[j].aut_lname;
 									%>	
@@ -200,13 +403,13 @@
 									</td>
 									<td>
 									<%
-									if (parseInt(resultPubs[i].pub_type) === 1){
+									if (parseInt(resultPubs[i].pub_type) === 1 && resultPubs[i].jou_title !== null){
 										print(resultPubs[i].jou_title);
 									} else if (parseInt(resultPubs[i].pub_type) === 2) {
 										print("");
-									} else if (parseInt(resultPubs[i].pub_type) === 3){
+									} else if (parseInt(resultPubs[i].pub_type) === 3 && resultPubs[i].con_name !== null){
 										print(resultPubs[i].con_name);
-									} else {
+									} else if (resultPubs[i].con_name !== null) {
 										print(resultPubs[i].con_name);
 									}
 									%>
@@ -235,3 +438,11 @@
   </body>
 </html>
 <% db.close(); %>
+<%
+function getShowStatus(showItem){
+	if (showItem === null) {
+		return 0;
+	}
+	return showItem;
+}
+%>

@@ -43,6 +43,7 @@ $(document).ready(function(){
 	
 	// on resize the window
 	$(window).resize(function(){
+		setWidthsForAOI();
 		drawChartsAndList(chartData);
 	});
 	
@@ -138,7 +139,8 @@ $(document).ready(function(){
 		}
 	});
 	
-	console.clear();
+	//console.clear();
+	setWidthsForAOI();
 });
 
 function fetchAOIData() {
@@ -345,14 +347,14 @@ function setInfoForCharts(){
 			animation: true,
 			placement: "left",
 			html: true,
-			title: '<div style="text-align: left; font-size: 12px; margin: 8px 5px;"><p><i class="fa fa-info-circle fa-lg"></i>&nbsp; <b>Number of researchers and scientists</b> in research organizations in Sri Lanka.</p><p>You can filter the results by selecting area of interests and range appropriately.</p><p>Each data item is clickable.</p><p>Click on a data item will take you to the next level in the <i>organization</i>.<br/><b>e.g.</b></p><ul><li>If it\'s a university, it will take you to faculties</li><li>If it\'s a research institute, it will take you to divisions</li></ul></div>'
+			title: '<div style="text-align: left; font-size: 12px; margin: 8px 5px;"><p><i class="fa fa-info-circle fa-lg"></i>&nbsp; <b>Number of researchers and scientists</b> in research organizations in Sri Lanka.</p><p>You can filter the results by selecting area of interests and range appropriately.</p><p>Each data item is clickable.</p><p>Clicking on a data item will take you to the next level in the <i>organization</i>.<br/><b>e.g.</b></p><ul><li>If it\'s a university, it will take you to faculties</li><li>If it\'s a research institute, it will take you to divisions</li></ul></div>'
     		});
 	} else if (selectedType === "fac") { // maybe a division
 		$("#info-icon").tooltip({
 			animation: true,
 			placement: "left",
 			html: true,
-			title: '<div style="text-align: left; font-size: 12px; margin: 8px 5px;"><p><i class="fa fa-info-circle fa-lg"></i>&nbsp; <b>Number of researchers and scientists</b> in faculties or divisions.</p><p>Each data item is clickable.</p><p>Click on a data item will take you to the next level in the <i>faculty</i> or <i>division</i>.<br/><b>e.g.</b></p><ul><li>If it\'s a faculty, it will take you to departments</li><li>If it\'s a division, it will take you to details of researchers</li></ul></div>'
+			title: '<div style="text-align: left; font-size: 12px; margin: 8px 5px;"><p><i class="fa fa-info-circle fa-lg"></i>&nbsp; <b>Number of researchers and scientists</b> in faculties or divisions.</p><p>Each data item is clickable.</p><p>Clicking on a data item will take you to the next level in the <i>faculty</i> or <i>division</i>.<br/><b>e.g.</b></p><ul><li>If it\'s a faculty, it will take you to departments</li><li>If it\'s a division, it will take you to details of researchers</li></ul></div>'
 		});
 	} else if (selectedType === "dep") {
 		$("#info-icon").tooltip({
@@ -796,3 +798,73 @@ function getSlicedChartData(fromValue, toValue){
 	return truncData;
 }
 
+function setWidthsForAOI(){
+	var place = $("#placeholder");
+	var placeWidth = place.width();
+	
+	var aoi = $("#aoi-selection");
+	var saoi = $("#saoi-selection");
+	var ssaoi = $("#ssaoi-selection");
+	
+	if (placeWidth < 320){
+		aoi.css({"width": "50px"});
+		saoi.css({"width": "80px"});
+		ssaoi.css({"width": "50px"});
+	} else if (placeWidth < 350){
+		aoi.css({"width": "60px"});
+		saoi.css({"width": "90px"});
+		ssaoi.css({"width": "60px"});
+	} else if (placeWidth < 380){
+		aoi.css({"width": "70px"});
+		saoi.css({"width": "100px"});
+		ssaoi.css({"width": "70px"});
+	} else if (placeWidth < 410){
+		aoi.css({"width": "80px"});
+		saoi.css({"width": "110px"});
+		ssaoi.css({"width": "80px"});
+	} else if (placeWidth < 440){
+		aoi.css({"width": "90px"});
+		saoi.css({"width": "120px"});
+		ssaoi.css({"width": "90px"});
+	} else if (placeWidth < 470){
+		aoi.css({"width": "100px"});
+		saoi.css({"width": "130px"});
+		ssaoi.css({"width": "100px"});
+	} else if (placeWidth < 500){
+		aoi.css({"width": "110px"});
+		saoi.css({"width": "140px"});
+		ssaoi.css({"width": "110px"});
+	} else if (placeWidth < 530){
+		aoi.css({"width": "120px"});
+		saoi.css({"width": "150px"});
+		ssaoi.css({"width": "120px"});
+	} else if (placeWidth < 560) {
+		aoi.css({"width": "130px"});
+		saoi.css({"width": "160px"});
+		ssaoi.css({"width": "130px"});
+	} else if (placeWidth < 590) {
+		aoi.css({"width": "140px"});
+		saoi.css({"width": "170px"});
+		ssaoi.css({"width": "140px"});
+	} else if (placeWidth < 620) {
+		aoi.css({"width": "150px"});
+		saoi.css({"width": "180px"});
+		ssaoi.css({"width": "150px"});
+	} else if (placeWidth < 650) {
+		aoi.css({"width": "160px"});
+		saoi.css({"width": "190px"});
+		ssaoi.css({"width": "160px"});
+	} else if (placeWidth < 680) {
+		aoi.css({"width": "170px"});
+		saoi.css({"width": "200px"});
+		ssaoi.css({"width": "170px"});
+	} else if (placeWidth < 710) {
+		aoi.css({"width": "180px"});
+		saoi.css({"width": "210px"});
+		ssaoi.css({"width": "180px"});
+	} else {
+		aoi.css({"width": "190px"});
+		saoi.css({"width": "220px"});
+		ssaoi.css({"width": "190px"});
+	}
+}

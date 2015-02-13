@@ -13,7 +13,8 @@ function BarChart(area, data, options) {
         barBottomHighlightColor: "#be4620",
         barTopHighlightColor: "#a42800",
         barBorderHighlightColor: "#531400",
-        valuePrecision: 2
+        valuePrecision: 2,
+		cursorType: "auto"
     };
 
     if ('undefined' !== typeof options) {
@@ -31,7 +32,7 @@ function BarChart(area, data, options) {
 	
 	//$("#bar-tooltip" + (parseInt(this.globalBarNum) - 1)).remove();
 	
-    $("body").append('<div id="bar-tooltip' + this.globalBarNum + '"></div>');
+    $("body").append('<div id="bar-tooltip' + this.globalBarNum + '" class="bar-tooltip"></div>');
     $("#bar-tooltip" + this.globalBarNum).css({"position": "absolute", "background": "rgba(0, 0, 0, 0.8)", "color": "white", "font-family": "Arial", "font-size": "14px", "font-weight": "lighter", "z-index": "100", "pointer-events": "none"});
     $("#bar-tooltip" + this.globalBarNum).append('<div id="bar-tooltip-content' + this.globalBarNum + '" style="padding: 5px 10px 5px 10px;">');
     $("#bar-tooltip-content" + this.globalBarNum).append('<span id="bar-tooltip-desc' + this.globalBarNum + '" style="font-size: 12px;">desc of tooltip</span><br/>');
@@ -135,9 +136,10 @@ function BarChart(area, data, options) {
                 .orient("bottom");
 
         var yAxis = d3.svg.axis()
+				.tickFormat(d3.format("d"))
                 .scale(yScale)
                 .orient("left")
-                .ticks(5);
+                .ticks(4);
 
         barChartGroup.append("g")
                 .selectAll("g.rule")
@@ -158,6 +160,7 @@ function BarChart(area, data, options) {
                 .enter()
                 .append("rect")
                 .attr("class", "bar")
+				.style("cursor", cnfg.cursorType)
                 .attr("rx", 2)
                 .attr("ry", 2)
 				.attr("data-id", function(d, i){
@@ -242,9 +245,10 @@ function BarChart(area, data, options) {
                 .call(yAxis)
                 .append("text")
                 .attr("transform", "rotate(-90)")
-                .attr("y", 6)
-                .attr("dy", ".71em")
+                .attr("y", -35)
+                .attr("dy", "0em")
                 .style("text-anchor", "end")
+                .style("font-size", "12px")
                 .text(cnfg.yAxisTitle);
 
         // title

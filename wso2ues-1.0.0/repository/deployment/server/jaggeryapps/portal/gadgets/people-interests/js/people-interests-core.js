@@ -27,6 +27,8 @@ $(document).ready(function(){
 	
 	$("#peo-int-back").hide();
 	
+	selectedType = "aoi";
+	
 	initBarChart();
 	
 	initLineChart();
@@ -57,12 +59,9 @@ $(document).ready(function(){
 			$("#peo-int-back").hide();
 		}
 		$(this).blur();
-	
-		//fetchCustomData("aoi");
-		//$(this).blur();
-		//setChartTitle("");
-		//$("#peo-int-back").hide();
 	});
+	
+	//console.clear();
 });
 
 function fetchData() {
@@ -75,6 +74,10 @@ function fetchData() {
 		dataType: "json",
 		success: onDataReceived
 	});
+	
+	setOptionsForCharts();
+	
+	setInfoForCharts();
 }
 
 function fetchCustomData(type, id, name) {
@@ -92,8 +95,14 @@ function fetchCustomData(type, id, name) {
 		dataType: "json",
 		success: onDataReceived
 	});
+	
+	setOptionsForCharts();
+	
 	setChartTitle(name, type);
+	
 	$("#peo-int-back").show();
+	
+	setInfoForCharts();
 }
 
 function onDataReceived(data) {
@@ -109,6 +118,64 @@ function setChartTitle(name, type){
 		$("#chartState").text(newText);
 	} else {
 		$("#chartState").text(name);
+	}
+}
+
+function setOptionsForCharts(){
+	if ("undefined" === typeof selectedType || selectedType === "aoi") {
+		var cnfg = {
+			barBottomColor: "#3365CA",
+			barTopColor: "#254A94",
+			cursorType: "pointer"
+		};
+		barChart.setOptions(cnfg);
+		
+		cnfg = {
+			lineColor: "#254A94",
+			cursorType: "pointer"
+		};
+		lineChart.setOptions(cnfg);
+		
+		cnfg = {
+			cursorType: "pointer"
+		};
+		pieChart.setOptions(cnfg);
+	} else if (selectedType === "saoi"){
+		var cnfg = {
+			barBottomColor: "#0E8615",
+			barTopColor: "#109518",
+			cursorType: "pointer"
+		};
+		barChart.setOptions(cnfg);
+		
+		cnfg = {
+			lineColor: "#A75300",
+			cursorType: "pointer"
+		};
+		lineChart.setOptions(cnfg);
+		
+		cnfg = {
+			cursorType: "pointer"
+		};
+		pieChart.setOptions(cnfg);
+	} else if (selectedType === "ssaoi"){
+		var cnfg = {
+			barBottomColor: "#E27100",
+			barTopColor: "#A75300",
+			cursorType: "auto"
+		};
+		barChart.setOptions(cnfg);
+		
+		cnfg = {
+			lineColor: "#A75300",
+			cursorType: "auto"
+		};
+		lineChart.setOptions(cnfg);
+		
+		cnfg = {
+			cursorType: "auto"
+		};
+		pieChart.setOptions(cnfg);
 	}
 }
 
@@ -145,8 +212,8 @@ function initBarChart(){
         marginTop: 20,
         marginRight: 5,
         marginBottom: 50,
-        marginLeft: 30,
-        chartTitle: "Number of People over Area of Interests",
+        marginLeft: 45,
+        chartTitle: "",
         xAxisTitle: "",
         yAxisTitle: "Number of researchers",
         barBottomColor: "#447fb0",
@@ -180,10 +247,10 @@ function initLineChart(){
 			marginTop: 20,
 	        marginRight: 5,
 	        marginBottom: 50,
-	        marginLeft: 30,
-	        chartTitle: "Number of researchers over area of interests",
+	        marginLeft: 45,
+	        chartTitle: "",
 	        xAxisTitle: "",
-	        yAxisTitle: "",
+	        yAxisTitle: "Number of researchers",
 	        lineColor: "#A52A2A",
 	        valuePrecision: 2,
 	        nanMessage: "Data not available"
@@ -246,7 +313,7 @@ function createList(data){
 	thElem2.style.width = "30%";
 	var text = document.createTextNode("Area of Interest");
 	thElem1.appendChild(text);
-	text = document.createTextNode("Value");
+	text = document.createTextNode("Number of People");
 	thElem2.appendChild(text);
 	
 	trElem.appendChild(thElem1);
@@ -277,3 +344,30 @@ function createList(data){
 	place.append(divElem);
 }
 
+function setInfoForCharts(){
+	$('#info-icon').tooltip('destroy');
+	$("#info-icon").removeAttr("title");
+	
+	if (selectedType === "aoi") { // area of interest
+		$("#info-icon").tooltip({
+			animation: true,
+			placement: "left",
+			html: true,
+			title: '<div style="text-align: left; font-size: 11px;"><p><i class="fa fa-info-circle fa-lg"></i>&nbsp; <b>Number of researchers and scientists</b> in areas of interest</p><p>Each data item is clickable.</p><p>Clicking on a data item will take you to the next sub areas of interest level</p></div>'
+		});
+	} else if (selectedType === "saoi") { // sub area of interest
+		$("#info-icon").tooltip({
+			animation: true,
+			placement: "left",
+			html: true,
+			title: '<div style="text-align: left; font-size: 11px;"><p><i class="fa fa-info-circle fa-lg"></i>&nbsp; <b>Number of researchers and scientists</b> in sub areas of interest</p><p>Each data item is clickable.</p><p>Clicking on a data item will take you to the field of interest level</p></div>'
+		});
+	} else if (selectedType === "ssaoi") { // field of interest
+		$("#info-icon").tooltip({
+			animation: true,
+			placement: "left",
+			html: true,
+			title: '<div style="text-align: left; font-size: 11px;"><p><i class="fa fa-info-circle fa-lg"></i>&nbsp; <b>Number of researchers and scientists</b> in fields of interest</p></div>'
+		});
+	}
+}

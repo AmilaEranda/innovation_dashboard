@@ -1,0 +1,26 @@
+<%
+
+include_once("../../../db/db.jag");
+
+var orgId = request.getParameter("id");
+
+if ("undefined" === typeof orgId || orgId === "" || orgId === "NaN"){
+	orgId = null;
+} else {
+	orgId = parseInt(orgId);
+	if (isNaN(orgId)) {
+		orgId = null;
+	}
+}
+
+function getDBData() {
+	var dbdt = [];
+	var result = db.query("SELECT org.name AS `org_name`, cou.name AS `cou_name` FROM collaboration AS clb LEFT JOIN organization AS org ON clb.organization_id2 = org.organization_id LEFT JOIN country AS cou ON cou.country_id = org.country_id WHERE clb.organization_id1 = " + orgId + " AND cou.code <> 'LK'");
+	for (var i = 0; i < result.length; i++) {
+		dbdt.push({"name": result[i].org_name, "cou_name": result[i].cou_name});
+	}
+	return {clb_data: dbdt};
+}
+print(getDBData());
+
+%>
