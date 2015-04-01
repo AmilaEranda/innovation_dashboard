@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+    <Module>
+    <ModulePrefs title="GII Comparison - Score"
+                 author="LSF"
+                 height="230"
+                 scrolling="true"
+                 tags="gii"
+                 description="A comparison of Global innovation Index values across years">
+		<Require feature="setprefs" />
+     </ModulePrefs>
+	<UserPref name="chartType" display_name="Chart Type" default_value="pie" datatype="enum" >
+		<EnumValue value="bar" />
+		<EnumValue value="line" />
+		<EnumValue value="pie" />
+		<EnumValue value="list" />
+	</UserPref> 
+    <Content type="html">
+    <![CDATA[
+ <html>
+ <head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<title>GII Comparison - Score</title>
+	<link href="../../themes/portal/css/flot-graph.css" rel="stylesheet" type="text/css">
+	<link href="../../themes/portal/css/bootstrap.min.css" rel="stylesheet" type="text/css">
+	<link rel="stylesheet" href="css/font-awesome/css/font-awesome.min.css" type="text/css">
+	<link rel="stylesheet" href="css/select2/select2.css" type="text/css">
+	<link rel="stylesheet" href="css/select2/select2-bootstrap.css" type="text/css">
+	<link rel="stylesheet" href="css/d3-graph.css" type="text/css">
+	
+	<script language="javascript" type="text/javascript" src="js/jquery-1.11.1.min.js"></script>
+	<script language="javascript" type="text/javascript" src="js/bootstrap.min.js"></script>
+	<script language="javascript" type="text/javascript" src="js/d3.min.js" charset="utf-8"></script>
+	<script language="javascript" type="text/javascript" src="js/select2/select2.min.js"></script>
+	
+	<script language="javascript" type="text/javascript" src="js/MultiLineChart.js" charset="utf-8"></script>
+	<script language="javascript" type="text/javascript" src="js/gii-comparison-score-core.js"></script>
+</head>
+
+<body>
+	<div>
+		<div id="optionPanel">
+			<div id="optionsLeft">
+				<div class="btn-group">
+					<button type="button" class="btn btn-default btn-mini btn-success" id="btnChartTypeLine">Line</button>
+					<button type="button" class="btn btn-default btn-mini" id="btnChartTypeList">List</button>
+				</div>
+				<select id="country-selection" style="margin: 0px 0px 0px 0px; height: 34px; font-size: 12px; width: 220px;" multiple="multiple">
+				</select>
+				<select id="pillar-type-selection" style="margin: 0px 0px 0px 0px; height: 26px; font-size: 12px; width: 110px;">
+					<option value="gv">Global Values</option>
+					<option value="pi">Pillars</option>
+				</select>
+				<select id="pillar-selection" style="margin: 0px 0px 0px 0px; height: 26px; font-size: 12px; width: 120px; display: none;"></select>
+			</div>
+			<div id="optionsRight" class="seriesContainer">
+				<span class="text-info"><i id="info-icon" style="margin-top: 10px; cursor: pointer;" class="fa fa-info-circle fa-lg" data-toggle="tooltip"></i></span>
+			</div>
+		</div>
+		<div style="padding-left: 20px; padding-right: 16px; font-size: 12px;">
+			<span class="label label-warning">Note:</span><span>&nbsp; Higher score indicates a better performance</span>
+		</div>
+		<div id="placeholder" style="height:70%;"></div>
+		<div id="srcContent" style="text-align: right;">
+			<span style="font-size: 9px;">Source: The Global Innovation Index, <a href="http://www.globalinnovationindex.org/" target="_blank">www.globalinnovationindex.org</a></span>
+		</div>
+	</div>
+</body>
+</html>
+
+    ]]>
+</Content>
+</Module>
+
+

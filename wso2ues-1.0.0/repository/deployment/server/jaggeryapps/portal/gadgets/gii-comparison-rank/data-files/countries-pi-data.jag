@@ -1,0 +1,30 @@
+<%
+
+include_once("../../../db/db.jag");
+
+function getDBData() {
+	var cou_dbdt = [];
+	var pi_dbdt = [];
+	
+	var resultCountries = db.query("SELECT DISTINCT c.code AS `ccode`, c.name AS `cname` FROM country c RIGHT JOIN global_index_detail gid ON gid.country_id = c.country_id WHERE c.code <> 'LK' ORDER BY c.name");
+	var countryCode = "";
+	var countryName = "";
+	
+	for (var i = 0; i < resultCountries.length; i++){
+		countryCode = resultCountries[i].ccode;
+		countryName = resultCountries[i].cname.trim();
+		var countryObj = {"ccode": countryCode, "cname": countryName};
+		cou_dbdt.push(countryObj);
+	}
+	
+	var resultPillars = db.query("SELECT DISTINCT pi.name AS `pi_name` FROM pillar pi");
+	for (var i = 0; i < resultPillars.length; i++){
+		var pillarObj = {"piname": resultPillars[i].pi_name.trim()};
+		pi_dbdt.push(pillarObj);
+	}
+	
+	return {cou_data: cou_dbdt, pi_data: pi_dbdt};
+}
+print(getDBData());
+
+%>

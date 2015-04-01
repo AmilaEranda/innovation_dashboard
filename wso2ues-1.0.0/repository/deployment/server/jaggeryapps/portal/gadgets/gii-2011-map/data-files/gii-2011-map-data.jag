@@ -1,0 +1,33 @@
+<%
+include_once("../../../db/db.jag");
+var pillarType = request.getParameter("pillarType");
+var pillarId = request.getParameter("piId");
+var niId = request.getParameter("niId");
+
+function getDBData() {
+	var dbdt = [];
+	if (pillarType === null || pillarType === "" || pillarType === "gv" || "undefined" === typeof pillarType){ // global values
+		strQuery = "SELECT cou.code AS cou_code, cou.name AS cou_name, gid.score AS cou_score, gid.rank AS cou_rank FROM global_index gi LEFT JOIN global_index_detail gid ON gid.global_index_id = gi.global_index_id LEFT JOIN country cou ON cou.country_id = gid.country_id WHERE gi.name = 'Global Innovation Index' AND gi.year = 2011 ORDER BY ISNULL(gid.rank), gid.rank ASC, cou.name ASC";
+	} else if (pillarType === "pi" && niId === "0"){ // pillar values
+		strQuery = "SELECT cou.code AS cou_code, cou.name AS cou_name, pid.score AS cou_score, pid.rank AS cou_rank FROM pillar pi LEFT JOIN pillar_detail pid ON pi.pillar_id = pid.pillar_id LEFT JOIN country cou ON cou.country_id = pid.country_id WHERE pi.pillar_id = " + parseInt(pillarId) + " ORDER BY ISNULL(pid.rank), pid.rank ASC, cou.name ASC";
+	} else { // national indicator values
+		strQuery = "SELECT cou.code AS cou_code, cou.name AS cou_name, nid.score AS cou_score, nid.rank AS cou_rank FROM national_indicator ni LEFT JOIN national_indicator_detail nid ON ni.national_indicator_id = nid.national_indicator_id LEFT JOIN country cou ON cou.country_id = nid.country_id WHERE ni.national_indicator_id = " + parseInt(niId) + " ORDER BY ISNULL(nid.rank), nid.rank ASC, nid.score ASC, cou.name ASC";
+	}
+	var result = db.query(strQuery);
+	var modScore, modRank;
+	for(var i = 0; i < result.length; i++){
+		modRank = parseInt(result[i].cou_rank);
+		modScore = parseFloat(result[i].cou_score).toFixed(1);
+		if(isNaN(modScore)){
+			modScore = "N/A";
+		}
+		if(isNaN(modRank)){
+			modRank = "N/A";
+		}
+		dbdt.push({"title": result[i].cou_name, "name": result[i].cou_name, "id": result[i].cou_code, "code": result[i].cou_code, "value": result[i].cou_score, "score": modScore, "rank": modRank, "customData": "Rank: <strong>" + modRank + "</strong>, Score: <strong>" + modScore + "</strong>"});
+	}
+	return {gii_data: dbdt};
+}
+print(getDBData());
+
+%>

@@ -2,10 +2,12 @@ var pref = new gadgets.Prefs();
 var radarChart, groupedBarChart;
 var chartData;
 var chartType; // radar, bar, list
+var dataStore;
+var selectedPillarId;
 
 $(document).ready(function(){
 	chartType = pref.getString("chartType").toLowerCase(); // "radar";
-	if(chartType !== "radar" && chartType !== "bar" && chartType !== "list"){
+	if (chartType !== "radar" && chartType !== "bar" && chartType !== "list") {
 		chartType = "radar";
 	}
 	
@@ -22,11 +24,14 @@ $(document).ready(function(){
 	
 	$("#gii-2013-back").hide();
 	
+	dataStore = [];
+	
 	initRadarChart();
 	
 	initGroupedBarChart();
 	
-	fetchData();
+	setInfoForCharts();
+	fetchCustomData(0, "");
 	
 	// on resize the window
 	$(window).resize(function(){
@@ -43,7 +48,7 @@ $(document).ready(function(){
 	});
 	
 	$(".back").click(function(){
-		fetchData();
+		fetchCustomData(0, "");
 		$(this).blur();
 		setChartTitle("");
 		
@@ -51,37 +56,42 @@ $(document).ready(function(){
 	});
 });
 
-function fetchData() {
-	var url = "../../portal/gadgets/global-innovation-index-2013/data-files/global-innovation-index-2013-data.jag";
-	$.ajax({
-		url: url,
-		type: "GET",
-		dataType: "json",
-		success: onDataReceived
-	});
-	
-	setInfoForCharts();
-}
-
 function fetchCustomData(id, name) {
+	disableControls();
+	selectedPillarId = id; // for datastore actions
 	var url = "../../portal/gadgets/global-innovation-index-2013/data-files/global-innovation-index-2013-data.jag";
-	$.ajax({
-		url: url,
-		type: "GET",
-		dataType: "json",
-		data: {
-			pillarId: id
-		},
-		success: onDataReceived
-	});
+	
+	var prevData = getDataFromStore(id);
+	if ("undefined" !== typeof prevData){
+		chartData = prevData;
+		drawChartsAndList(chartData);
+		enableControls();
+	} else {
+		$.ajax({
+			url: url,
+			type: "GET",
+			dataType: "json",
+			data: {
+				pillarId: id
+			},
+			success: onDataReceived
+		});
+	}
 	setChartTitle(name);
 	
-	$("#gii-2013-back").show();
+	if (id === 0) {
+		$("#gii-2013-back").hide();
+	} else {
+		$("#gii-2013-back").show();
+	}
+	
 }
 
 function onDataReceived(data) {
 	chartData = data.radar_data;
+	fillDataStore();
 	drawChartsAndList(chartData);
+	enableControls();
 }
 
 function setChartTitle(name){
@@ -225,7 +235,7 @@ function createList(data){
 	var text = document.createTextNode("Pillar");
 	thElem1.appendChild(text);
 	trElem.appendChild(thElem1);
-	for(var i = 0; i < data.length; i++){
+	for (var i = 0; i < data.length; i++) {
 		var thElem = document.createElement("th");
 		var text = document.createTextNode(data[i].name);
 		thElem.appendChild(text);
@@ -239,7 +249,7 @@ function createList(data){
 	
 	var tbodyElem = document.createElement("tbody");
 	
-	for(var i = 0; i < innerLength; i++){
+	for (var i = 0; i < innerLength; i++) {
 		trElem = document.createElement("tr");
 		var tdElem = document.createElement("td");
 		var text = document.createTextNode(data[0].data[i].axis);
@@ -296,6 +306,32 @@ function setInfoForCharts(){
 		animation: true,
 		placement: "left",
 		html: true,
-		title: '<div style="text-align: left; font-size: 11px;"><h5><i class="fa fa-info-circle fa-lg"></i> GII - 2013</h5><p>The Global Innovation Index 2013: The Local Dynamics of Innovation is the result of a collaboration between Cornell University, INSEAD, and the World Intellectual Property Organization (WIPO) as co-publishers, and their Knowledge Partners.</p></div>'
+		title: '<div style="text-align: left; font-size: 11px;"><h5><i class="fa fa-info-circle fa-lg"></i> GII - 2013</h5><p>A composite indicator that ranks countries/economies in terms of their enabling environment to innovation and their innovation outputs. It is co-published by Cornell University, INSEAD and the World Intellectual Property Organization (WIPO).</p></div>'
 	});
+}
+
+function disableControls(){
+	$("#btnChartTypeRadar").attr("disabled", "disabled");
+	$("#btnChartTypeList").attr("disabled", "disabled");
+}
+
+function enableControls(){
+	$("#btnChartTypeRadar").removeAttr("disabled");
+	$("#btnChartTypeList").removeAttr("disabled");
+}
+
+function fillDataStore(){
+	var piId = selectedPillarId;
+	var obj = {
+		piId: piId,
+		data: chartData
+	}
+	dataStore.push(obj);
+}
+
+function getDataFromStore(piId){
+	for(var i = 0; i < dataStore.length; i++) {
+        if (dataStore[i].piId === piId)
+			return dataStore[i].data;
+    }
 }

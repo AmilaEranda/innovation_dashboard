@@ -5,14 +5,14 @@
 	
 	var dataObj = {};
 	
-	if ("undefined" === typeof pillarId || pillarId === null || pillarId === "") {
+	if ("undefined" === typeof pillarId || pillarId === null || pillarId === "" || pillarId === 0 || pillarId === "0") {
 		strQuery = "SELECT gi.global_index_id AS gi_id FROM global_index gi WHERE gi.name = 'Global Innovation Index' AND gi.year = '2013'";
 		var result = db.query(strQuery);
 		if (result.length === 1) {
 			globalIndexId = result[0].gi_id;
 		}
 		dataObj.radar_data = getRadarDataOfPillars(globalIndexId);
-	} else if (pillarId !== null){
+	} else if (pillarId !== null) {
 		dataObj.radar_data = getRadarDataOfNis(pillarId);
 	}
 	

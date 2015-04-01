@@ -1,0 +1,36 @@
+<%
+
+include_once("../../../db/db.jag");
+
+function getDBData() {
+	var dbdt = [];
+	
+	var resultPillar = db.query("SELECT pi.pillar_id AS pillar_id, pi.name AS pillar_name FROM global_index gi LEFT JOIN pillar pi ON gi.global_index_id = pi.global_index_id WHERE gi.name = 'Global Innovation Index' AND gi.year = 2014");
+	var pillar_id = "";
+	var pillar_name = "";
+	var ni_id = "";
+	var ni_name = "";
+	
+	for (var i = 0; i < resultPillar.length; i++){
+		var pillarObj = {};
+		pillar_id = resultPillar[i].pillar_id;
+		pillar_name = resultPillar[i].pillar_name.trim();
+		pillarObj.id = pillar_id;
+		pillarObj.name = pillar_name;
+		pillarObj.data = [];
+		var resultNI = db.query("SELECT ni.national_indicator_id AS ni_id, ni.name AS ni_name FROM pillar pi LEFT JOIN national_indicator ni ON ni.pillar_id = pi.pillar_id WHERE pi.pillar_id = "+ parseInt(pillar_id));
+		for (var j = 0; j < resultNI.length; j++){
+			var niObj = {};
+			ni_id = resultNI[j].ni_id;
+			ni_name = resultNI[j].ni_name.trim();
+			niObj.id = ni_id;
+			niObj.name = ni_name;
+			pillarObj.data.push(niObj);
+		}
+		dbdt.push(pillarObj);
+	}
+	return {pini_data: dbdt};
+}
+print(getDBData());
+
+%>

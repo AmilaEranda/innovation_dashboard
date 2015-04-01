@@ -1,0 +1,72 @@
+<%
+var type = request.getParameter("type");
+var pillar = request.getParameter("pillar");
+var strCouCodes = request.getParameter("coucodes");
+
+include_once("../../../db/db.jag");
+var log = new Log();
+
+function getDBData() {
+	var dbdt = [];
+	var resultCountry;
+	var oc = "";
+	if (type === null || type === "" || type === "gv") { // global values
+		// sri lanka
+		var data = [];
+		var result = db.query("SELECT cou.name AS `cou_name`, gi.year AS `gi_year`, gid.rank AS `gi_rank`, gid.score AS `gi_score` FROM global_index gi LEFT JOIN global_index_detail gid ON gid.global_index_id = gi.global_index_id LEFT JOIN country cou ON cou.country_id = gid.country_id WHERE gi.name = 'Global Innovation Index' AND cou.code = 'LK' ORDER BY gi.year");
+		for (var i = 0; i < result.length; i++) {
+			data.push({"name": result[i].gi_year.trim(), "value": result[i].gi_rank, "score": result[i].gi_score});
+		}
+		var dbObject = {"linename": "Sri Lanka", "data": data};
+		dbdt.push(dbObject);
+		
+		// other country
+		var ccodes = JSON.parse(strCouCodes);
+		if (ccodes !== null && ccodes !== "" && ccodes !== "0" && ccodes !== "null") {
+			for (var i = 0; i < ccodes.length; i++) {
+				data = [];
+				resultCountry = db.query("SELECT cou.name AS `cou_name` FROM country cou WHERE cou.code = '" + ccodes[i] + "'");
+				if (resultCountry.length > 0) {
+					oc = resultCountry[0].cou_name.trim();
+				}
+				result = db.query("SELECT cou.name AS `cou_name`, gi.year AS `gi_year`, gid.rank AS `gi_rank`, gid.score AS `gi_score` FROM global_index gi LEFT JOIN global_index_detail gid ON gid.global_index_id = gi.global_index_id LEFT JOIN country cou ON cou.country_id = gid.country_id WHERE gi.name = 'Global Innovation Index' AND cou.code = '" + ccodes[i] + "' ORDER BY gi.year");
+				for (var j = 0; j < result.length; j++) {
+					data.push({"name": result[j].gi_year.trim(), "value": result[j].gi_rank, "score": result[j].gi_score});
+				}
+				dbObject = {"linename": oc, "data": data};
+				dbdt.push(dbObject);
+			}
+		}
+	} else { // pillar values
+		// sri lanka
+		var data = [];
+		var result = db.query("SELECT cou.name AS `cou_name`, gi.year AS `gi_year`, pid.rank AS `pi_rank`, pid.score AS `pi_score` FROM global_index gi LEFT JOIN pillar pi ON pi.global_index_id = gi.global_index_id LEFT JOIN pillar_detail pid ON pid.pillar_id = pi.pillar_id LEFT JOIN country cou ON cou.country_id = pid.country_id WHERE gi.name = 'Global Innovation Index' AND pi.name = '" + pillar + "' AND cou.code = 'LK' ORDER BY gi.year");
+		for (var i = 0; i < result.length; i++) {
+			data.push({"name": result[i].gi_year.trim(), "value": result[i].pi_rank, "score": result[i].pi_score});
+		}
+		var dbObject = {"linename": "Sri Lanka", "data": data};
+		dbdt.push(dbObject);
+		
+		// other country
+		var ccodes = JSON.parse(strCouCodes);
+		if (ccodes !== null && ccodes !== "" && ccodes !== "0" && ccodes !== "null") {
+			for (var i = 0; i < ccodes.length; i++) {
+				data = [];
+				resultCountry = db.query("SELECT cou.name AS `cou_name` FROM country cou WHERE cou.code = '" + ccodes[i] + "'");
+				if (resultCountry.length > 0) {
+					oc = resultCountry[0].cou_name.trim();
+				}
+				result = db.query("SELECT cou.name AS `cou_name`, gi.year AS `gi_year`, pid.rank AS `pi_rank`, pid.score AS `pi_score` FROM global_index gi LEFT JOIN pillar pi ON pi.global_index_id = gi.global_index_id LEFT JOIN pillar_detail pid ON pid.pillar_id = pi.pillar_id LEFT JOIN country cou ON cou.country_id = pid.country_id WHERE gi.name = 'Global Innovation Index' AND pi.name = '" + pillar + "' AND cou.code = '" + ccodes[i] + "' ORDER BY gi.year");
+				for (var j = 0; j < result.length; j++) {
+					data.push({"name": result[j].gi_year.trim(), "value": result[j].pi_rank, "score": result[j].pi_score});
+				}
+				dbObject = {"linename": oc, "data": data};
+				dbdt.push(dbObject);
+			}
+		}
+	}
+	return {gii_data: dbdt};
+}
+print(getDBData());
+
+%>

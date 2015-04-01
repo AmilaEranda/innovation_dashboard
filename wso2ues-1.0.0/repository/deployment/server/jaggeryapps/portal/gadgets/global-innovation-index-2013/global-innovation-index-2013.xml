@@ -22,7 +22,7 @@
 	<link href="../../themes/portal/css/flot-graph.css" rel="stylesheet" type="text/css">
 	<link href="../../themes/portal/css/bootstrap.min.css" rel="stylesheet" type="text/css">
 	<link rel="stylesheet" href="css/font-awesome/css/font-awesome.min.css" type="text/css">
-	<link href="css/global-innovation-index-2013.css" rel="stylesheet" type="text/css">
+	<link href="css/styles.css" rel="stylesheet" type="text/css">
 	
 	<script language="javascript" type="text/javascript" src="js/jquery-1.11.1.min.js"></script>
 	<script language="javascript" type="text/javascript" src="js/d3.min.js" charset="utf-8"></script>

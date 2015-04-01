@@ -133,6 +133,7 @@ function initNISelection(){
 }
 
 function fetchCustomData() {
+	disableControls();
 	var pillarType = $("#pillar-type-selection option:selected").val();
 	var piId = $("#pillar-selection option:selected").val();
 	var niId = $("#ni-selection option:selected").val();
@@ -143,6 +144,7 @@ function fetchCustomData() {
 	if ("undefined" !== typeof prevData){
 		mapData = prevData;
 		drawMapsChartsAndList();
+		enableControls();
 	} else {
 		$.ajax({
 			url: url,
@@ -164,6 +166,7 @@ function onDataReceived(data) {
 	mapData = data.gii_data;
 	fillDataStore();
 	drawMapsChartsAndList();
+	enableControls();
 }
 
 function fillDataStore(){
@@ -268,7 +271,7 @@ function createList(){
 	h4TitleElem.setAttribute("style", "font-weight: bold; color: #000000; text-align: center;");
 	var titleText = document.createTextNode("");
 	
-	if(pillarType === "gv"){
+	if (pillarType === "gv") {
 		titleText = document.createTextNode("The Global Innovation Index 2013");
 	} else if (pillarType === "pi" && niId === "0") {
 		var pillarName = $("#pillar-selection option:selected").text();
@@ -281,7 +284,6 @@ function createList(){
 	h4TitleElem.appendChild(titleText);
 	divTitleElem.appendChild(h4TitleElem);
 	divElem.appendChild(divTitleElem);
-	
 	
 	// table
 	var tableElem = document.createElement("table");
@@ -501,14 +503,14 @@ function setInfoForCharts(){
 			animation: true,
 			placement: "left",
 			html: true,
-			title: '<div style="text-align: left; font-size: 11px;"><h5><i class="fa fa-info-circle fa-lg"></i> GII - 2013</h5><p>The Global Innovation Index 2013: The Local Dynamics of Innovation is the result of a collaboration between Cornell University, INSEAD, and the World Intellectual Property Organization (WIPO) as co-publishers, and their Knowledge Partners.</p></div>'
+			title: '<div style="text-align: left; font-size: 11px;"><h5><i class="fa fa-info-circle fa-lg"></i> GII - 2013</h5><p>A composite indicator that ranks countries/economies in terms of their enabling environment to innovation and their innovation outputs. It is co-published by Cornell University, INSEAD and the World Intellectual Property Organization (WIPO).</p></div>'
 		});
 	} else if (pillarType === "pi") { // pillar
 		$("#info-icon").tooltip({
 			animation: true,
 			placement: "left",
 			html: true,
-			title: '<div style="text-align: left; font-size: 11px;"><h5><i class="fa fa-info-circle fa-lg"></i> GII - 2013</h5><p>The Global Innovation Index 2013: The Local Dynamics of Innovation is the result of a collaboration between Cornell University, INSEAD, and the World Intellectual Property Organization (WIPO) as co-publishers, and their Knowledge Partners.</p></div>'
+			title: '<div style="text-align: left; font-size: 11px;"><h5><i class="fa fa-info-circle fa-lg"></i> GII - 2013</h5><p>A composite indicator that ranks countries/economies in terms of their enabling environment to innovation and their innovation outputs. It is co-published by Cornell University, INSEAD and the World Intellectual Property Organization (WIPO).</p></div>'
 		});
 	}
 }
@@ -590,4 +592,24 @@ function setWidthsForSelections(){
 	pillarTypeSelection.css({"width": pillarTypeSelectionWidth + "px"});
 	pillarSelection.css({"width": pillarSelectionWidth + "px"});
 	niSelection.css({"width": niSelectionWidth + "px"});
+}
+
+function disableControls(){
+	$("#btnChartTypeMap").attr("disabled", "disabled");
+	$("#btnChartTypeBar").attr("disabled", "disabled");
+	$("#btnChartTypeList").attr("disabled", "disabled");
+	
+	$("#pillar-type-selection").attr("disabled", "disabled");
+	$("#pillar-selection").attr("disabled", "disabled");
+	$("#ni-selection").attr("disabled", "disabled");
+}
+
+function enableControls(){
+	$("#btnChartTypeMap").removeAttr("disabled");
+	$("#btnChartTypeBar").removeAttr("disabled");
+	$("#btnChartTypeList").removeAttr("disabled");
+	
+	$("#pillar-type-selection").removeAttr("disabled");
+	$("#pillar-selection").removeAttr("disabled");
+	$("#ni-selection").removeAttr("disabled");
 }
