@@ -1,0 +1,34 @@
+<%
+include_once("db.jag");
+var orgId = request.getParameter("oid");
+var type = request.getParameter("type");
+var id = request.getParameter("id");
+
+function getDBData() {
+	var dbdt = [];
+	var strQuery = "";
+	if ("undefined" === typeof type || type === null || type === "" || type === "aoi") {
+		strQuery = "SELECT tbl1.area_of_interest_id AS `aoi_id`, tbl1.name AS `aoi_name`, COUNT(DISTINCT tbl2.publication_id) AS `pub_count` FROM (SELECT aoi.area_of_interest_id, aoi.name, puaoi.publication_publication_id FROM area_of_interest aoi LEFT JOIN publication_area_of_interest puaoi ON puaoi.area_of_interest_id = aoi.area_of_interest_id) tbl1 LEFT JOIN (SELECT DISTINCT pub.publication_id, opp.organization_id FROM publication pub LEFT JOIN person_publication ppu ON ppu.publication_id = pub.publication_id LEFT JOIN organization_person_publication opp ON opp.person_publication_id = ppu.person_publication_id WHERE opp.organization_id = " + parseInt(orgId) + ") tbl2 ON tbl2.publication_id = tbl1.publication_publication_id GROUP BY tbl1.area_of_interest_id ORDER BY tbl1.area_of_interest_id ASC";
+		var result = db.query(strQuery);
+		for (var i = 0; i < result.length; i++) {
+			dbdt.push({"id": result[i].aoi_id, "name": result[i].aoi_name, "value": result[i].pub_count, "type": "aoi"});
+		}
+	} else if (type === "saoi") {
+		strQuery = "SELECT tbl1.sub_area_of_interest_id AS `saoi_id`, tbl1.name AS `saoi_name`, COUNT(DISTINCT tbl2.publication_id) AS `pub_count` FROM (SELECT saoi.sub_area_of_interest_id, saoi.name, puaoi.publication_publication_id FROM area_of_interest aoi LEFT JOIN sub_area_of_interest saoi ON saoi.area_of_interest_id = aoi.area_of_interest_id LEFT JOIN publication_area_of_interest puaoi ON puaoi.sub_area_of_interest_id = saoi.sub_area_of_interest_id WHERE aoi.area_of_interest_id = " + parseInt(id) + ") tbl1 LEFT JOIN (SELECT DISTINCT pub.publication_id, opp.organization_id FROM publication pub LEFT JOIN person_publication ppu ON ppu.publication_id = pub.publication_id LEFT JOIN organization_person_publication opp ON opp.person_publication_id = ppu.person_publication_id WHERE opp.organization_id = " + parseInt(orgId) + ") tbl2 ON tbl2.publication_id = tbl1.publication_publication_id GROUP BY tbl1.sub_area_of_interest_id ORDER BY tbl1.sub_area_of_interest_id ASC";
+		var result = db.query(strQuery);
+		for (var i = 0; i < result.length; i++) {
+			dbdt.push({"id": result[i].saoi_id, "name": result[i].saoi_name, "value": result[i].pub_count, "type": "saoi"});
+		}
+	} else if (type === "ssaoi") {
+		strQuery = "SELECT tbl1.sub_sub_area_of_interest_id AS `ssaoi_id`, tbl1.name AS `ssaoi_name`, COUNT(DISTINCT tbl2.publication_id) AS `pub_count` FROM (SELECT ssaoi.sub_sub_area_of_interest_id, ssaoi.name, puaoi.publication_publication_id FROM sub_area_of_interest saoi LEFT JOIN sub_sub_area_of_interest ssaoi ON ssaoi.sub_area_of_interest_id = saoi.sub_area_of_interest_id LEFT JOIN publication_area_of_interest puaoi ON puaoi.sub_sub_area_of_interest_id = ssaoi.sub_sub_area_of_interest_id WHERE saoi.sub_area_of_interest_id = " + parseInt(id) + ") tbl1 LEFT JOIN (SELECT DISTINCT pub.publication_id, opp.organization_id FROM publication pub LEFT JOIN person_publication ppu ON ppu.publication_id = pub.publication_id LEFT JOIN organization_person_publication opp ON opp.person_publication_id = ppu.person_publication_id WHERE opp.organization_id = " + parseInt(orgId) + ") tbl2 ON tbl2.publication_id = tbl1.publication_publication_id GROUP BY tbl1.sub_sub_area_of_interest_id ORDER BY tbl1.sub_sub_area_of_interest_id ASC";
+		var result = db.query(strQuery);
+		for (var i = 0; i < result.length; i++) {
+			dbdt.push({"id": result[i].ssaoi_id, "name": result[i].ssaoi_name, "value": result[i].pub_count, "type": "ssaoi"});
+		}
+	}
+	
+	return {pub_count_data: dbdt};
+}
+print(getDBData());
+
+%>

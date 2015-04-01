@@ -3,22 +3,26 @@
 
 	var oid = parseInt(request.getParameter("oid"));
 	var isValid = true;
-	var orgName, orgImage, orgWeb, orgQSRank, orgTHRank, orgType, orgSector, depCount, facCount;
+	var orgName, orgImage, orgWeb, orgQSRank, orgTHRank, orgType, orgAddress, facCount, divCount, pubCount, perCount;
 	
 	if(oid == null || isNaN(oid) || oid < 0){
 		isValid = false;
 	}
 
 	if(isValid){
-		var result = db.query("SELECT o.name AS `org_name`, o.image_name AS `org_image`, o.type AS `org_type`, COUNT(DISTINCT d.department_id) AS `dep_count`, COUNT(DISTINCT f.faculty_id) AS `fac_count` FROM organization o LEFT JOIN country c ON c.country_id = o.country_id LEFT JOIN faculty f ON o.organization_id = f.organization_id LEFT JOIN department d ON d.faculty_id = f.faculty_id WHERE o.record_status = 1 AND c.code = 'LK' AND o.organization_id =" + parseInt(oid));
+		var result = db.query("SELECT org.name AS `org_name`, org.image_name AS `org_image`, org.address AS `org_address`, org.web_url AS `org_web`, org.type AS `org_type`, COUNT(DISTINCT fac.faculty_id) AS `fac_count`, COUNT(DISTINCT divi.division_id) AS `div_count`, COUNT(DISTINCT pbl.publication_id) AS `pub_count`, COUNT(DISTINCT per.person_id) AS `per_count` FROM organization org LEFT JOIN country cou ON cou.country_id = org.country_id LEFT JOIN faculty fac ON org.organization_id = fac.organization_id LEFT JOIN division divi ON divi.organization_id = org.organization_id LEFT JOIN organization_person_publication opp ON opp.organization_id = org.organization_id LEFT JOIN person_publication ppbl ON opp.person_publication_id = ppbl.person_publication_id LEFT JOIN publication pbl ON pbl.publication_id = ppbl.publication_id LEFT JOIN person_organization por ON por.organization_id = org.organization_id LEFT JOIN person per ON per.person_id = por.person_id WHERE org.record_status = 1 AND cou.code = 'LK' AND por.his_default IN (1, 2) AND per.record_status = 1 AND org.organization_id = " + parseInt(oid));
 		if(result.length > 0){
 			orgName = result[0].org_name;
 			orgImage = result[0].org_image;
 			orgType = result[0].org_type;
-			depCount = result[0].dep_count;
+			orgAddress = result[0].org_address;
+			orgWeb = result[0].org_web;
 			facCount = result[0].fac_count;
+			divCount = result[0].div_count;
+			pubCount = result[0].pub_count;
+			perCount = result[0].per_count;
 			
-			if(orgName == null || orgName == ""){
+			if(orgName === null || orgName === ""){
 				isValid = false;
 			}
 		} else {
@@ -38,16 +42,36 @@
 		<!-- Bootstrap core CSS -->
 		<!-- <link href="css2/bootstrap/bootstrap.min.css" rel="stylesheet"> -->
 		<link href="css2/flatly/bootstrap.min.css" rel="stylesheet">
+		<link href="css2/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+		<link href="css2/animate/animate.min.css" rel="stylesheet">
+		<link href="css2/datatable/jquery.dataTables.css" rel="stylesheet">
+        <link href="css2/datatable/dataTables.bootstrap.css" rel="stylesheet">
 		<link href="css2/styles.css" rel="stylesheet">
 
-		<script src="js2/jquery/jquery-1.11.1.js"></script>
-		<script src="js2/bootstrap/bootstrap.js"></script>
+		<script src="js/jquery/jquery-1.11.1.js"></script>
+		<script src="js/bootstrap/bootstrap.js"></script>
+		<script src="js/datatable/jquery.dataTables.js"></script>
+		<script src="js/d3/d3.min.js" language="javascript" type="text/javascript" charset="utf-8"></script>
+		<script src="js/d3/ResPieChart.js" language="javascript" type="text/javascript" charset="utf-8"></script>
+		<script src="js/d3/ResBarChart.js" language="javascript" type="text/javascript" charset="utf-8"></script>
+		<script src="js/d3/PubPieChart.js" language="javascript" type="text/javascript" charset="utf-8"></script>
+		<script src="js/d3/PubBarChart.js" language="javascript" type="text/javascript" charset="utf-8"></script>
 		
 		<!-- google maps -->
 		<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBh-rKFkb1hhmElavDCGaaUQnITpIw3-MI&libraries=geometry"></script>
-		<script src="js2/google-maps/markerwithlabel.js" type="text/javascript"></script>
-		<script src="js2/scripts/collaborations.js"></script>
-		<script src="js2/scripts/org-peo.js"></script>
+		<script src="js/google-maps/markerwithlabel.js" type="text/javascript"></script>
+		<script src="js/scripts/collaborations.js"></script>
+		
+		<script src="js/scripts/org-people-chart.js"></script>
+		<script src="js/scripts/org-people-list.js"></script>
+		
+		<script src="js/scripts/org-pubs-chart.js"></script>
+		
+		<script type="text/javascript">
+			$(function () {
+				$('[data-toggle="tooltip"]').tooltip();
+			})
+		</script>
 	</head>
 
 	<body>
@@ -55,174 +79,259 @@
 
 		<div class="container-fluid">
 			<% if(isValid){ %>
+			<input type="hidden" id="orgid" value="<%=oid %>">
 			<div class="row">
-				<div class="col-md-2">
-					<div style="text-align: center; margin: 16px 8px;">
-						<img src="/images/organizations/<% print(orgImage); %>" />
-					</div>
-				</div>
-				<div class="col-md-10">
-					<div class="page-header">
-						<h1><% print(orgName); %></h1>
+				<div class="col-sm-12">
+					<div style="border-bottom: 4px double #EDEDED; margin: 24px 0px; padding-bottom: 16px;">
+						<table style="width: 100%;" >
+							<tr>
+								<td style="width: 20%; text-align: center;"><img src="/images/organizations/<% print(orgImage); %>" /></td>
+								<td style="width: 80%;"><h1 class="animated fadeInDown"><% print(orgName); %></h1></td>
+							</tr>
+						</table>
 					</div>
 				</div>
 			</div>
 			<div class="row">
-				<div class="col-md-2">
-					<div style="margin-bottom: 10px;">
-						<%
-						if(orgWeb != null){ %>
-							<a href="<% print(orgWeb); %>" target="_blank"><% print(orgWeb); %></a>
-						<% } else {
-							print("n/a");
-						}
-						%>
+				<div class="col-sm-12"><!-- left content -->
+					<div class="row">
+						<% if (pubCount !== null && parseInt(pubCount) > 0) { %>
+						<div class="col-sm-2" style="margin: 12px 0px;">
+							<div style="margin-bottom: 10px;"><i class="fa fa-newspaper-o fa-lg"></i>&nbsp; <span>Publications</span></div>
+							<div style="margin-left: 32px;"><span class="text-info"><strong><%=pubCount %></strong></span></div>
+						</div>
+						<% } %>
+						<% if (perCount !== null && parseInt(perCount) > 0) { %>
+						<div class="col-sm-2" style="margin: 12px 0px;">
+							<div style="margin-bottom: 10px;"><i class="fa fa-users fa-lg"></i>&nbsp; <span>Researchers</span></div>
+							<div style="margin-left: 32px;"><span class="text-info"><strong><%=perCount %></strong></span></div>
+						</div>
+						<% } %>
+						<% if (facCount !== null && parseInt(facCount) > 0) { %>
+						<div class="col-sm-2" style="margin: 12px 0px;">
+							<div style="margin-bottom: 10px;"><i class="fa fa-flag fa-lg"></i>&nbsp; <span>Faculties</span></div>
+							<div style="margin-left: 32px;"><span class="text-info"><strong><%=facCount %></strong></span></div>
+						</div>
+						<% } %>
+						<% if (divCount !== null && parseInt(divCount) > 0) { %>
+						<div class="col-sm-2" style="margin: 12px 0px;">
+							<div style="margin-bottom: 10px;"><i class="fa fa-flag-o"></i>&nbsp; <span>Divisions</span></div>
+							<div style="margin-left: 32px;"><span class="text-info"><strong><%=divCount %></strong></span></div>
+						</div>
+						<% } %>
+						<% if (orgWeb !== null && orgWeb !== "") { %>
+						<div class="col-sm-2" style="margin: 12px 0px;">
+							<div style="margin-bottom: 10px;"><i class="fa fa-globe fa-lg"></i>&nbsp; <span>Website</span></div>
+							<div style="margin-left: 4px;"><strong><a target="_blank" href="<%=orgWeb %>"><%=orgWeb %></a></strong></div>
+						</div>
+						<% } %>
+						<% if (orgAddress !== null && orgAddress !== "") { %>
+						<div class="col-sm-2" style="margin: 12px 0px;">
+							<div style="margin-bottom: 10px;"><i class="fa fa-map-marker fa-lg"></i>&nbsp; <span>Address</span></div>
+							<div style="margin-left: 4px;"><strong><%=orgAddress %></strong></div>
+						</div>
+						<% } %>
 					</div>
-					<div>Web</div>
-				</div>
-				<div class="col-md-2">
-					<div style="margin-bottom: 10px;"><strong><% if(orgQSRank != null){ print(orgQSRank);} else {print("n/a");} %></strong></div>
-					<div>QS Rank</div>
-				</div>
-				<div class="col-md-2">
-					<div style="margin-bottom: 10px;"><strong><% if(orgTHRank != null){ print(orgTHRank);} else {print("n/a");} %></strong></div>
-					<div>Times Higher Rank</div>
-				</div>
-				<div class="col-md-2">
-					<div style="margin-bottom: 10px;">
-						<strong>
-						<%
-							if(orgSector == null && orgType == null){
-								print("n/a");
-							} else {
-								if(orgSector != null){
-									if(orgSector == "GOV"){
-										print("Government ");
-									} else if(orgSector == "PRI"){
-										print("Private ");
-									}
-								}
-								if(orgType != null){
-									if(orgType == "UNI"){
-										print("University");
-									} else if(orgType == "INS"){
-										print("Institute");
-									}
-								}
-							}
-						%>
-						</strong>
-					</div>
-					<div>Type</div>
-				</div>
-				<div class="col-md-2">
-					<div style="margin-bottom: 10px;"><strong><% print(depCount); %></strong></div>
-					<div>Departments</div>
-				</div>
-				<div class="col-md-2">
-					<div style="margin-bottom: 10px;"><strong><% print(facCount); %></strong></div>
-					<div>Faculties</div>
-				</div>
-			</div>
-			<div class="row">
-				<div class="col-md-12">
-					<a id="collaborations"></a>
-					<div class="page-header">
-						<div class="row">
-							<div class="col-md-10">
-								<h3>International Collaborations</h3>
-							</div>
-							<div class="col-md-2">
-								<div style="text-align: right; margin-top: 20px;">
-									<div class="btn-group" data-toggle="buttons">
-										<label class="btn btn-primary btn-sm active"><input type="radio" name="clb-view" id="map-view" value="map" checked>Map</label>
-										<label class="btn btn-primary btn-sm"><input type="radio" name="clb-view" id="list-view" value="list">List</label>
+					<div class="row">
+						<div class="col-sm-6">
+							<div class="row">
+								<div class="col-sm-9">
+									<h3>Number of Researchers based on Areas of Interest</h3>
+								</div>
+								<div class="col-sm-3">
+									<div style="text-align: right; margin-top: 21px;">
+										<div class="btn-group" data-toggle="buttons">
+											<label class="btn btn-primary btn-sm active"><input type="radio" name="peo-view" id="pie-view" value="pie" checked="checked"><i class="fa fa-pie-chart fa-lg"></i></label>
+											<label class="btn btn-primary btn-sm"><input type="radio" name="peo-view" id="bar-view" value="bar"><i class="fa fa-bar-chart fa-lg"></i></label>
+										</div>
 									</div>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-sm-11">
+									<div style="height: 32px;" id="res-chart-title"></div>
+								</div>
+								<div class="col-sm-1">
+									<div style="text-align: right;">
+										<button class="btn btn-primary btn-sm" type="button" id="peo-chart-back" style="display: none;" title="Go one level up" data-toggle="tooltip" data-placement="bottom"><i class="fa fa-chevron-left fa-lg"></i></button>
+									</div>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-sm-12">
+									<div id="res-chart-holder" style="height: 400px; width: 100%;"></div>
+								</div>
+							</div>
+						</div>
+						<div class="col-sm-6">
+							<div class="row">
+								<div class="col-sm-9">
+									<h3>Number of Publications based on Areas of Interest</h3>
+								</div>
+								<div class="col-sm-3">
+									<div style="text-align: right; margin-top: 21px;">
+										<div class="btn-group" data-toggle="buttons">
+											<label class="btn btn-primary btn-sm active"><input type="radio" name="pub-view" id="pub-pie-view" value="pie" checked="checked"><i class="fa fa-pie-chart fa-lg"></i></label>
+											<label class="btn btn-primary btn-sm"><input type="radio" name="pub-view" id="pub-bar-view" value="bar"><i class="fa fa-bar-chart fa-lg"></i></label>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-sm-11">
+									<div style="height: 32px;" id="pub-chart-title"></div>
+								</div>
+								<div class="col-sm-1">
+									<div style="text-align: right;">
+										<button class="btn btn-primary btn-sm" type="button" id="pub-chart-back" style="display: none;" title="Go one level up" data-toggle="tooltip" data-placement="bottom"><i class="fa fa-chevron-left fa-lg"></i></button>
+									</div>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-sm-12">
+									<div id="pub-chart-holder" style="height: 400px; width: 100%;"></div>
 								</div>
 							</div>
 						</div>
 					</div>
-					<div style="margin: 10px 0px; height: 500px;">
-						<div id="placeholder" style="height: 100%; width: 100%;"></div>
-						<div id="clb-org-details" style="height: 500px; width: 100%; overflow: auto;"></div>
-					</div>
-				</div>
-			</div>
-			<div class="row">
-				<div class="col-md-6">
-					<div class="page-header">
-						<h3>Departments</h3>
-					</div>
-					<div>
-						<ol>
-						<%
-						var result = db.query("SELECT d.description AS `dep_name` FROM organization o LEFT JOIN country c ON c.country_id = o.country_id LEFT JOIN faculty f ON o.organization_id = f.organization_id LEFT JOIN department d ON d.faculty_id = f.faculty_id WHERE o.record_status = 1 AND c.code = 'LK' AND d.description IS NOT NULL AND o.organization_id =" + oid); 
-						for(var i = 0; i < result.length; i++){
-							var depName = result[i].dep_name;
-						%>
-						<li><%=depName %></li>
-						<% } %>
-						</ol>
-					</div>
-				</div>
-				<div class="col-md-6">
-					<div class="page-header">
-						<h3>Faculties</h3>
-					</div>
-					<div>
-						<ol>
-						<%
-						var result = db.query("SELECT DISTINCT f.description AS `fac_name` FROM organization o LEFT JOIN country c ON c.country_id = o.country_id LEFT JOIN faculty f ON o.organization_id = f.organization_id WHERE o.record_status = 1 AND c.code = 'LK' AND f.description IS NOT NULL AND o.organization_id =" + oid);  
-						for(var i = 0; i < result.length; i++){
-							var facName = result[i].fac_name;
-						%>
-						<li><%=facName %></li>
-						<% } %>
-						</ol>
-					</div>
-				</div>
-			</div>
-			<div class="row">
-				<div class="col-md-12">
-					<div class="page-header">
-						<h3>Reseachers in <%=orgName %></h3>
-					</div>
-					<div id="people-details">
-							<%
-							var result = db.query("SELECT p.person_id AS `per_id`, t.title AS `per_title`, p.first_name AS `first_name`, p.last_name AS `last_name`, p.image_name AS `per_image`, p.gender AS `per_gender` FROM person p LEFT JOIN title t ON p.title_id = t.title_id LEFT JOIN person_organization po ON p.person_id = po.person_id WHERE p.record_status = 1 AND po.his_default = 1 AND po.record_status = 1 AND po.organization_id =" + oid + " LIMIT 1");
-							
-							for(var i = 0; i < result.length; i++){
-								var perId = result[i].per_id;
-								var perTitle = result[i].per_title;
-								var perFName = result[i].first_name;
-								var perLName = result[i].last_name;
-								var perImage = result[i].per_image;
-								var perGender = result[i].per_gender;
-							%>
-							<div style="margin: 20px 0px 20px;">
+					<div class="row" id="collaborations-area">
+						<div class="col-sm-12">
+							<a id="collaborations"></a>
+							<div class="page-header">
 								<div class="row">
-									<div class="col-md-1">
-										<% print(parseInt(i+1).toString() + "."); %>
+									<div class="col-sm-8">
+										<h3>International Collaborations</h3>
 									</div>
-									<div class="col-md-2">
-										<% if(perImage == null){
-											if(perGender == 0){
-											%>
-											<img src="/userforms/images/users/woman.png" style="width: 80px;" />
-											<% } else { %>
-											<img src="/userforms/images/users/man.png" style="width: 80px;" />
-										<% } } else { %>
-										<img src="/userforms/images/users/<% print(perId + "/" + perImage); %>" style="width: 80px;" />
-										<% } %>
-									</div>
-									<div class="col-md-9">
-										<h4><a href="person.jag?pid=<%=perId %>"><% print(perTitle + " " +perFName + " " + perLName); %></a></h4>
+									<div class="col-sm-4">
+										<div style="text-align: right; margin-top: 20px;">
+											<div class="btn-group" data-toggle="buttons">
+												<label class="btn btn-primary btn-sm active"><input type="radio" name="clb-view" id="map-view" value="map" checked><i class="fa fa-globe fa-lg"></i></label>
+												<label class="btn btn-primary btn-sm"><input type="radio" name="clb-view" id="list-view" value="list"><i class="fa fa-list-ul fa-lg"></i></label>
+											</div>
+										</div>
 									</div>
 								</div>
 							</div>
+							<div style="margin: 10px 0px; height: 500px;">
+								<div id="placeholder" style="height: 100%; width: 100%;"></div>
+								<div id="clb-org-details" style="height: 500px; width: 100%; overflow: auto;"></div>
+							</div>
+						</div>
+					</div>
+					<div class="row">
+						<%
+						var resultFaculties = db.query("SELECT DISTINCT f.description AS `fac_name`, f.web_url AS `fac_url` FROM organization o LEFT JOIN faculty f ON o.organization_id = f.organization_id WHERE o.record_status = 1 AND f.description IS NOT NULL AND o.organization_id = " + oid);
+						if (resultFaculties.length > 0) {
+						%>
+						<div class="col-sm-6">
+							<a id="faculties"></a>
+							<div class="row">
+								<div class="col-sm-12">
+									<h3>Faculties in <%=orgName %></h3>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-sm-12">
+									<ol>
+										<%
+										for (var i = 0; i < resultFaculties.length; i++) {
+											var facName = resultFaculties[i].fac_name;
+											var facUrl = resultFaculties[i].fac_url;
+											if (facUrl === null || facUrl === "") {
+										%>
+										<li><%=facName %></li>
+										<% } else { %>
+										<li><a href="<%=facUrl %>" target="_blank"><%=facName %></a></li>
+										<% } } %>
+									</ol>
+								</div>
+							</div>
+						</div>
+						<% } %>
+						<%
+						var resultDivisions = db.query("SELECT DISTINCT d.discription AS `div_name`, d.web_url AS `div_url` FROM organization o LEFT JOIN division d ON o.organization_id = d.organization_id WHERE o.record_status = 1 AND d.discription IS NOT NULL AND o.organization_id = " + oid);
+						if (resultDivisions.length > 0) {
+						%>
+						<div class="col-sm-6">
+							<a id="divisions"></a>
+							<div class="row">
+								<div class="col-sm-12">
+									<h3>Divisions in <%=orgName %></h3>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-sm-12">
+									<ol>
+										<%
+										for (var i = 0; i < resultDivisions.length; i++) {
+											var divName = resultDivisions[i].div_name;
+											var divUrl = resultDivisions[i].div_url;
+											if (divUrl === null || divUrl === "") {
+										%>
+										<li><%=divName %></li>
+										<% } else { %>
+										<li><a href="<%=divUrl %>" target="_blank"><%=divName %></a></li>
+										<% } } %>
+									</ol>
+								</div>
+							</div>
+						</div>
 						<% } %>
 					</div>
-					<div id="people-pagination" class="text-center"></div>
+					<%
+					var resultResearchers = db.query("SELECT per.person_id AS `per_id`, CONCAT(tt.title, ' ', (CASE WHEN per.initials = '' THEN per.first_name WHEN per.initials IS NULL THEN per.first_name ELSE per.initials END), ' ', per.last_name) AS `per_name`, per.image_name AS `per_image`, per.gender AS `per_gender`, COUNT(DISTINCT ppu.publication_id) AS `per_pub_count`, per.designation AS `per_desig` FROM person AS per LEFT JOIN person_organization AS po ON po.person_id = per.person_id LEFT JOIN organization AS org ON po.organization_id = org.organization_id LEFT JOIN title AS tt ON tt.title_id = per.title_id LEFT JOIN person_publication ppu ON per.person_id = ppu.person_id WHERE org.organization_id = " + parseInt(oid) + " AND po.his_default IN (1 , 2) AND per.record_status = 1 GROUP BY per.person_id ORDER BY COUNT(DISTINCT ppu.publication_id) DESC , per.last_name ASC");
+					if (resultResearchers.length > 0) {
+					%>
+					<div class="row">
+						<a id="researchers"></a>
+						<div class="col-sm-12">
+							<h3>Researchers in <%=orgName %></h3>
+						</div>
+						<div class="col-sm-12">
+							<table id="res-list" class="display" cellspacing="0" width="100%">
+								<thead>
+									<tr><th style="width: 20%;">Picture</th><th style="width: 50%;">Name</th><th style="width: 20%;">Designation</th><th style="width: 10%;">Publications Count</th></tr>
+								</thead>
+								<tfoot>
+									<tr><th>Picture</th><th>Name</th><th>Designation</th><th>Publications Count</th></tr>
+								</tfoot>
+								<tbody>
+									<%
+									var perId, perName, perImage, perGender, perDesig, perPubCount;
+									for (var i = 0; i < resultResearchers.length; i++) {
+										perId = resultResearchers[i].per_id;
+										perName = resultResearchers[i].per_name;
+										perImage = resultResearchers[i].per_image;
+										perGender = resultResearchers[i].per_gender;
+										perDesig = resultResearchers[i].per_desig;
+										perPubCount = resultResearchers[i].per_pub_count;
+									
+									%>
+									<tr>
+										<td style="text-align: center; padding: 5px 0px;">
+											<%
+											if (perImage === null || perImage === "") {
+												if (perGender === 0) { %>
+												<img src="/userforms/images/users/woman.png" style="width: 60px;">
+												<% } else { %>
+													<img src="/userforms/images/users/man.png" style="width: 60px;">
+												<% }
+											} else { 
+												var imgPath = "/userforms/images/users/" + perId + "/" + perImage;
+											%>
+												<img src="<%=imgPath %>" style="width: 60px;" class="img-rounded">
+											<% } %>
+										</td>
+										<td><h4><a target="_blank" href="/profile/person.jag?pid=<%=perId %>"><%=perName %></a></h4></td>
+										<td><% if(perDesig !== null){print(perDesig);} %></td>
+										<td><strong><%=perPubCount %></strong></td>
+									</tr>
+									<% } %>
+								</tbody>
+							</table>
+						</div>
+					</div>
+					<% } %>
 				</div>
 			</div>
 			<input type="hidden" id="orgid" value="<%=oid %>" />
@@ -242,3 +351,20 @@
 	</body>
 </html>
 <% db.close(); %>
+<% 
+function getOrganizationType(orgTyp){
+	var strOrgType = "";
+	if(orgTyp === null){
+		strOrgType = "n/a";
+	} else {
+		if(orgTyp != null){
+			if(orgTyp == "UNI"){
+				strOrgType = "University";
+			} else if(orgTyp == "INS"){
+				strOrgType = "Institute";
+			}
+		}
+	}
+	return strOrgType;
+}
+ %>

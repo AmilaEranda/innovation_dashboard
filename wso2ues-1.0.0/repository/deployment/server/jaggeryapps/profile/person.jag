@@ -4,7 +4,7 @@
 	var pid = parseInt(request.getParameter("pid"));
 	var pubsYear = parseInt(request.getParameter("year"));
 	var isValid = true;
-	var perName, perImage, perGender, perTitle, perEmail, perMobile, perOfficeNum, perDesignation, perPubCount, perInOut, perOrgName;
+	var perName, perImage, perGender, perTitle, perEmail, perMobile, perOfficeNum, perDesignation, perPubCount, perInOut, perCV, perOrgName;
 	var perAcademicQualifications, perExpertise, perAddressOffice, perFax, perLinkedInUrl;
 	var showEmail, showMobile, showOfficePhone;
 	var imgFullPath;
@@ -20,7 +20,7 @@
 	}
 
 	if (isValid) {
-		var result = db.query("SELECT pe.first_name AS `per_fname`, pe.initials AS `per_initials`, pe.last_name AS `per_lname`, pe.gender AS `per_gender`, pe.email AS `per_email`, pe.mobile AS `per_mobile`, pe.telephone AS `per_office_num`, pe.image_name AS `per_image`, ti.title AS `per_title`, pe.designation AS `per_desig`, pe.academic_qualification AS `per_qlf`, pe.expertise AS `per_expertise`, pe.address_office AS `per_office_addr`, pe.fax AS `per_fax`, pe.linked_in_url AS `per_linkedin_url`, pe.in_out_country AS `per_inout`, COUNT(pp.publication_id) AS `per_pub_count`, org.name AS `per_org_name`, ppr.show_email AS `per_show_email`, ppr.show_mobile_no AS `per_show_mobile`, ppr.show_office_tel_no AS `per_show_office_phone` FROM person pe LEFT JOIN title ti ON pe.title_id = ti.title_id LEFT JOIN person_publication pp ON pp.person_id = pe.person_id LEFT JOIN person_organization po ON pe.person_id = po.person_id LEFT JOIN organization org ON org.organization_id = po.organization_id LEFT JOIN person_privacy ppr ON pe.person_id = ppr.person_id WHERE pe.record_status = 1 AND po.his_default = 1 AND pe.person_id =" + pid);
+		var result = db.query("SELECT pe.first_name AS `per_fname`, pe.initials AS `per_initials`, pe.last_name AS `per_lname`, pe.gender AS `per_gender`, pe.email AS `per_email`, pe.mobile AS `per_mobile`, pe.telephone AS `per_office_num`, pe.image_name AS `per_image`, ti.title AS `per_title`, pe.designation AS `per_desig`, pe.academic_qualification AS `per_qlf`, pe.expertise AS `per_expertise`, pe.address_office AS `per_office_addr`, pe.fax AS `per_fax`, pe.linked_in_url AS `per_linkedin_url`, pe.in_out_country AS `per_inout`, pe.cv AS `per_cv`, COUNT(pp.publication_id) AS `per_pub_count`, org.name AS `per_org_name`, ppr.show_email AS `per_show_email`, ppr.show_mobile_no AS `per_show_mobile`, ppr.show_office_tel_no AS `per_show_office_phone` FROM person pe LEFT JOIN title ti ON pe.title_id = ti.title_id LEFT JOIN person_publication pp ON pp.person_id = pe.person_id LEFT JOIN person_organization po ON pe.person_id = po.person_id LEFT JOIN organization org ON org.organization_id = po.organization_id LEFT JOIN person_privacy ppr ON pe.person_id = ppr.person_id WHERE pe.record_status = 1 AND po.his_default IN (1,2) AND pe.person_id =" + pid);
 		if (result.length > 0) {
 			perName = ""
 			if (result[0].per_initials === null || result[0].per_initials === "") {
@@ -43,6 +43,7 @@
 			perLinkedInUrl = result[0].per_linkedin_url;
 			perPubCount = result[0].per_pub_count;
 			perInOut = result[0].per_inout;
+			perCV = result[0].per_cv;
 			perOrgName = result[0].per_org_name;
 			showEmail = getShowStatus(result[0].per_show_email);
 			showMobile = getShowStatus(result[0].per_show_mobile);
@@ -52,6 +53,9 @@
 				isValid = false;
 			} else {
 				var aoisResult = db.query("SELECT ssaoi.name AS per_ssaoi_name FROM person_area_of_interest paoi LEFT JOIN sub_sub_area_of_interest ssaoi ON paoi.sub_sub_area_of_interest_id = ssaoi.sub_sub_area_of_interest_id WHERE paoi.person_person_id = " + pid);
+				if (perDesignation === null) {
+					perDesignation = "";
+				}
 			}
 		} else {
 			isValid = false;
@@ -64,7 +68,7 @@
 	<head>
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
-		<title><% if(isValid){print(perName);} else {print("Invalid Researcher");} %> - Innovation Dashboard</title>
+		<title><% if(isValid){print(perTitle + " " + perName);} else {print("Invalid Researcher");} %> - Sri Lanka Innovation Dashboard</title>
 		<link type="image/x-icon" href="images/dev/favicon.ico" rel="shortcut icon" />
 
 		<!-- Bootstrap core CSS -->
@@ -76,13 +80,13 @@
         <link href="css2/datatable/dataTables.bootstrap.css" rel="stylesheet">
 		<link href="css2/styles.css" rel="stylesheet">
 
-		<script src="js2/jquery/jquery-1.11.1.js"></script>
-		<script src="js2/bootstrap/bootstrap.js"></script>
-		<script src="js2/datatable/jquery.dataTables.js"></script>
-        <!-- <script src="js2/datatable/dataTables.bootstrap.js"></script> -->
-		<script src="js2/d3/d3.min.js"></script>
-		<script src="js2/d3/IndexBarChart.js"></script>
-		<script src="js2/scripts/person.js"></script>
+		<script src="js/jquery/jquery-1.11.1.js"></script>
+		<script src="js/bootstrap/bootstrap.js"></script>
+		<script src="js/datatable/jquery.dataTables.js"></script>
+        <!-- <script src="js/datatable/dataTables.bootstrap.js"></script> -->
+		<script src="js/d3/d3.min.js"></script>
+		<script src="js/d3/IndexBarChart.js"></script>
+		<script src="js/scripts/person.js"></script>
 		<script type="text/javascript">
 			$(function () {
 				$('[data-toggle="tooltip"]').tooltip();
@@ -307,6 +311,21 @@
 							</td>
 							<td class="person-contact-detail">
 								<span>Relocated overseas</span>
+							</td>
+						</tr>
+					</table>
+				</div>
+			<% } %>
+			<% if (perCV !== null && perCV !== "") { %>
+				<div class="col-sm-3">
+					<table>
+						<tr>
+							<td class="person-contact-icon">
+								<span title="Curriculum Vitae" data-toggle="tooltip" data-placement="top"><i class="fa fa-file-text fa-lg"></i></span>
+							</td>
+							<td class="person-contact-detail">
+								<% var cvFullPath = "/userforms/cv/" + pid + "/" + perCV; %>
+								<span><a target="_blank" href="<%=cvFullPath %>">Download CV</a></span>
 							</td>
 						</tr>
 					</table>

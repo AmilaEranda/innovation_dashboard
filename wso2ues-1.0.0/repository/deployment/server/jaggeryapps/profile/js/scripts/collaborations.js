@@ -29,7 +29,7 @@ function initGeocoderAndMap() {
 	geocoder = new google.maps.Geocoder();
 	var latlng = new google.maps.LatLng(14.133358596831147, 41.94423948437499); // 7.904744859248549, 80.76626096874999
 	var mapOptions = {
-		zoom: 3,
+		zoom: 2,
 		center: latlng,
 		panControl: true,
   		zoomControl: true,
@@ -95,9 +95,12 @@ function onDataReceived(data) {
 	clbData = data.clb_data;
 	mapData = data.map_data;
 	startOrg = data.map_start_org;
-
-	setStartLocation(startOrg.org_name, startOrg.org_image);
 	
+	if (mapData.length > 0) {
+		setStartLocation(startOrg.org_name, startOrg.org_image);
+	} else {
+		$("#collaborations-area").remove();
+	}
 	//setGeoLocations(mapData);
 }
 
@@ -106,7 +109,7 @@ function setStartLocation(locName, locImage){
 		if (status == google.maps.GeocoderStatus.OK) {
 			var image = {
 				//url: '../../portal/gadgets/route-map/images/' + locImage,
-				url: 'images/organizations/' + locImage,
+				url: '/images/organizations/' + locImage,
 				scaledSize: new google.maps.Size(20, 20),
 				origin: new google.maps.Point(0, 0),
 				anchor: new google.maps.Point(10, 10)

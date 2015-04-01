@@ -1,0 +1,34 @@
+<%
+include_once("db.jag");
+var orgId = request.getParameter("oid");
+var type = request.getParameter("type");
+var id = request.getParameter("id");
+
+function getDBData() {
+	var dbdt = [];
+	var strQuery = "";
+	if ("undefined" === typeof type || type === null || type === "" || type === "aoi") {
+		strQuery = "SELECT tbl1.area_of_interest_id AS `aoi_id`, tbl1.name AS `aoi_name`, COUNT(DISTINCT tbl2.person_id) AS `per_count` FROM (SELECT aoi.area_of_interest_id, aoi.name, paoi.person_person_id FROM area_of_interest aoi LEFT JOIN person_area_of_interest paoi ON paoi.area_of_interest_id = aoi.area_of_interest_id) tbl1 LEFT JOIN (SELECT per.person_id, por.organization_id, per.record_status FROM person per LEFT JOIN person_organization por ON por.person_id = per.person_id WHERE por.organization_id = " + parseInt(orgId) + " AND por.his_default IN (1, 2) AND per.record_status = 1) tbl2 ON tbl1.person_person_id = tbl2.person_id GROUP BY tbl1.area_of_interest_id ORDER BY tbl1.area_of_interest_id ASC";
+		var result = db.query(strQuery);
+		for (var i = 0; i < result.length; i++) {
+			dbdt.push({"id": result[i].aoi_id, "name": result[i].aoi_name, "value": result[i].per_count, "type": "aoi"});
+		}
+	} else if (type === "saoi") {
+		strQuery = "SELECT tbl1.sub_area_of_interest_id AS `saoi_id`, tbl1.name AS `saoi_name`, COUNT(DISTINCT tbl2.person_id) AS `per_count` FROM (SELECT saoi.sub_area_of_interest_id, saoi.name, paoi.person_person_id FROM area_of_interest aoi LEFT JOIN sub_area_of_interest saoi ON saoi.area_of_interest_id = aoi.area_of_interest_id LEFT JOIN person_area_of_interest paoi ON paoi.sub_area_of_interest_id = saoi.sub_area_of_interest_id WHERE aoi.area_of_interest_id = " + parseInt(id) + ") tbl1 LEFT JOIN (SELECT per.person_id, por.organization_id, per.record_status FROM person per LEFT JOIN person_organization por ON por.person_id = per.person_id WHERE por.organization_id = " + parseInt(orgId) + " AND por.his_default IN (1, 2) AND per.record_status = 1) tbl2 ON tbl1.person_person_id = tbl2.person_id GROUP BY tbl1.sub_area_of_interest_id ORDER BY tbl1.sub_area_of_interest_id ASC";
+		var result = db.query(strQuery);
+		for (var i = 0; i < result.length; i++) {
+			dbdt.push({"id": result[i].saoi_id, "name": result[i].saoi_name, "value": result[i].per_count, "type": "saoi"});
+		}
+	} else if (type === "ssaoi") {
+		strQuery = "SELECT tbl1.sub_sub_area_of_interest_id AS `ssaoi_id`, tbl1.name AS `ssaoi_name`, COUNT(DISTINCT tbl2.person_id) AS `per_count` FROM (SELECT ssaoi.sub_sub_area_of_interest_id, ssaoi.name, paoi.person_person_id FROM sub_area_of_interest saoi LEFT JOIN sub_sub_area_of_interest ssaoi ON ssaoi.sub_area_of_interest_id = saoi.sub_area_of_interest_id LEFT JOIN person_area_of_interest paoi ON paoi.sub_sub_area_of_interest_id = ssaoi.sub_sub_area_of_interest_id WHERE saoi.sub_area_of_interest_id = " + parseInt(id) + ") tbl1 LEFT JOIN (SELECT per.person_id, por.organization_id, per.record_status FROM person per LEFT JOIN person_organization por ON por.person_id = per.person_id WHERE por.organization_id = " + parseInt(orgId) + " AND por.his_default IN (1, 2) AND per.record_status = 1) tbl2 ON tbl1.person_person_id = tbl2.person_id GROUP BY tbl1.sub_sub_area_of_interest_id ORDER BY tbl1.sub_sub_area_of_interest_id ASC";
+		var result = db.query(strQuery);
+		for (var i = 0; i < result.length; i++) {
+			dbdt.push({"id": result[i].ssaoi_id, "name": result[i].ssaoi_name, "value": result[i].per_count, "type": "ssaoi"});
+		}
+	}
+	
+	return {psn_count_data: dbdt};
+}
+print(getDBData());
+
+%>
